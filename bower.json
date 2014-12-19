@@ -1,0 +1,16 @@
+{
+  "name": "sochial-network",
+  "ignore": [
+    "node_modules",
+    "bower_components"
+  ],
+  "devDependencies": {
+    "jquery": "latest",
+    "underscore": "latest",
+    "backbone": "latest",
+    "bootstrap": "3",
+    "requirejs": "latest",
+    "requirejs-text": "latest"
+  }
+
+}
