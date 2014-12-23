@@ -37,7 +37,7 @@ app.configure(function(){
 app.get("/user/:email/:password", function(req, res){
    User.find({email: req.params.email, password: req.params.password}, function(err, data){
        if(err) throw err;
-       console.log(data);
+       //console.log(data);
        res.send(data);
    });
 });
@@ -60,6 +60,13 @@ app.post("/user", function(req, res) {
     });
 });
 
+app.get("/users", function(req, res){
+    User.find(function(err, data){
+        if(err) throw err;
+        console.log(data);
+        res.send(data);
+    });
+});
 http.createServer(app).listen(8888);
 
 

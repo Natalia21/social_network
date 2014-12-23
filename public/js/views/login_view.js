@@ -5,6 +5,7 @@ define([
     'text!/templates/login.html',
     '../models/user_model'
 ], function($, _, Backbone, loginTemplate, UserModel){
+
     var LoginView = Backbone.View.extend({
         el: $('#container'),
         initialize: function(){
@@ -30,6 +31,7 @@ define([
                         model.first_name = response[0].first_name;
                         model.last_name = response[0].last_name;
                         $("#loginForm").hide();
+                        console.log('profile/' + model._id);
                         Backbone.history.navigate('profile/' + model._id, true);
                     }
                     else{
@@ -40,6 +42,7 @@ define([
                     console.log(response);
                 }
             });
+            App.Models.user = userModel;
         },
         submitRegistering: function(){
             Backbone.history.navigate('registering', true);
