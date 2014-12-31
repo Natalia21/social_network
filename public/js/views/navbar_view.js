@@ -10,11 +10,10 @@ define([
     var NavbarView = Backbone.View.extend({
         el: $('#navbar'),
         id: '',
-        initialize: function(id){
-            console.log(Backbone);
-            this.id = id;
-            this.render();
-            new ProfileView();
+        initialize: function(){
+            $('#navbar').show();
+            var that = this;
+            this.getOwner(that);
         },
         events: {
             "click #profile": function(){
@@ -22,11 +21,31 @@ define([
             "click #friends": function(){},
             "click #msg": function(){}
         },
+        getOwner: function(that){
+            var ownerModel = new UserModel();
+            ownerModel.fetch({
+                success: function(model, response){
+                    if(response[0]){
+                        model.set({
+                            id: response[0]._id,
+                            email: response[0].email,
+                            password: response[0].password,
+                            first_name: response[0].first_name,
+                            last_name: response[0].last_name,
+                        });
+                        that.id = model.get("id");
+                        that.render();
+                    }
+                },
+                error: function(model,response){
+                    console.log('in error');
+                    console.log(response);
+                }
+            });
+        },
         render: function(){
-            $("#loginForm").hide();
-            $("#registeringForm").hide();
             var compiledTemplate = _.template(pageTemplate);
-            this.$el.append(compiledTemplate({id: this.id}));
+            this.$el.html(compiledTemplate({id: this.id}));
             this.addClasses();
             return this;
         },
@@ -37,8 +56,23 @@ define([
             $('#navbar').addClass('full');
             $('#content').addClass('full');
             $('#header').addClass('header_style');
-            $('#row').addClass('row_style');
         }
     });
     return NavbarView;
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

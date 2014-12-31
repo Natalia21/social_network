@@ -1,0 +1,10 @@
+<li class = "user_in_list" id = "<%= id %>">
+    <a href = '#profile/<%= id %>' class = "user_name" style = "display: inline-block;">
+        <h3>
+            <%= first_name %> <%= last_name %>
+        </h3>
+    </a>
+    <button type="submit" class="btn btn-primary addFriend" id = "<%= id %>friend">Добавить в друзья</button>
+    <button type="submit" class = "btn btn-primary kill_friend" id = "<%= id %>kill_friend">Удалить из друзей</button>
+    <button type="submit" class = "btn btn-primary" id = "<%= id %>msg">Написать сообщение</button>
+</li>

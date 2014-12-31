@@ -1,4 +1,9 @@
 .my_button{
-    margin-left: 96%;
+    margin-left: 92%;
     margin-top: 0.3%;
+}
+
+.header_friend_button{
+    margin-left: 92%;
+    margin-top: -78px;
 }

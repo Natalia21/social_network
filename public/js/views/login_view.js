@@ -16,35 +16,42 @@ define([
         },
         events: {
             "click #signIn": 'submitSignIn',
-            "click #register": 'submitRegistering'
+            "click #register_in_login": 'submitRegistering'
         },
         submitSignIn: function() {
-            var userModel = new UserModel({
-                email: this.email.val(),
-                password: this.password.val()});
-            userModel.fetch({
-                success: function(model, response){
-                    if(response[0]){
-                        model._id = response[0]._id;
-                        model.email = response[0].email;
-                        model.password = response[0].password;
-                        model.first_name = response[0].first_name;
-                        model.last_name = response[0].last_name;
-                        $("#loginForm").hide();
-                        console.log('profile/' + model._id);
-                        Backbone.history.navigate('profile/' + model._id, true);
+            if(this.email.val() != '') {
+                var userModel = new UserModel({
+                    email: this.email.val(),
+                    password: this.password.val()
+                });
+                userModel.fetch({
+                    success: function (model, response) {
+                        console.log(response);
+                        if (response[0]) {
+                            model.set({
+                                id: response[0]._id,
+                                email: response[0].email,
+                                password: response[0].password,
+                                first_name: response[0].first_name,
+                                last_name: response[0].last_name
+                            });
+                            $("#loginForm").remove();
+                            Backbone.history.navigate('profile/' + model.get("id"), true);
+                        }
+                        else {
+                            alert('Email or password is incorrect!');
+                        }
+                    },
+                    error: function (model, response) {
+                        console.log(response);
                     }
-                    else{
-                        alert('Email or password is incorrect!');
-                    }
-                },
-                error: function(model,response){
-                    console.log(response);
-                }
-            });
-            App.Models.user = userModel;
+                });
+            }
+            this.email.val('');
+            this.password.val('');
         },
         submitRegistering: function(){
+            $("#loginForm").remove();
             Backbone.history.navigate('registering', true);
         },
         render: function(){
