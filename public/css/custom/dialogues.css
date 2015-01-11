@@ -34,11 +34,9 @@ table{
 }
 
 #one_dialogue_text{
-    word-wrap:break-word;
-    padding-bottom: 10px;
-    padding-top: 5px;
+    word-wrap: break-word;
+    padding-bottom: 20px;
     font-size: 13pt;
-    padding-left: 180px;
     width: 100%;
 }
 #one_dialogue_time{
