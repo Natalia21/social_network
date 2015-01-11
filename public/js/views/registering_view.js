@@ -2,13 +2,14 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'socketio',
     'text!/templates/registering.html',
     '../models/user_model'
-], function($, _, Backbone, RegisteringTemplate, UserModel){
+], function($, _, Backbone, io, RegisteringTemplate, UserModel){
     var RegisteringView = Backbone.View.extend({
         el: $('#container'),
         initialize: function(){
-            console.log('in registering');
+            console.log('in registaring initialize');
             this.render();
             this.form = this.$('form');
             this.first_name = this.form.find('#first_name');
@@ -21,7 +22,6 @@ define([
         },
         submitRegistering: function() {
             if(this.email.val() != '') {
-                console.log('in event callback');
                 var userModel = new UserModel({
                     first_name: this.first_name.val(),
                     last_name: this.last_name.val(),
@@ -30,8 +30,7 @@ define([
                 });
                 userModel.save({contentType: "application/json"}, {
                     success: function (model, response) {
-                        console.log(response);
-                        model.set({id: response._id});
+                        model.set({id: response[0]._id, password: ''});
                         $("#registeringForm").remove();
                         Backbone.history.navigate('profile/' + model.get("id"), true);
                     },
@@ -45,7 +44,6 @@ define([
         },
 
         render: function(){
-            //$("#loginForm").hide();
             var compiledTemplate = _.template(RegisteringTemplate);
             this.$el.append(compiledTemplate);
             return this;

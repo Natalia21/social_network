@@ -18,9 +18,8 @@ define([
                         model.set({
                             id: response[0]._id,
                             email: response[0].email,
-                            password: response[0].password,
                             first_name: response[0].first_name,
-                            last_name: response[0].last_name,
+                            last_name: response[0].last_name
                         });
                         App.Models.user = model;
                     }

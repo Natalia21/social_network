@@ -12,7 +12,7 @@
     "grunt-contrib-copy": "^0.7.0",
     "grunt-contrib-watch": "^0.6.1",
     "mongoose": "*",
-    "socket.io": "*",
+    "socket.io": "latest",
     "express-session": "latest"
   }
 }

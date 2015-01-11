@@ -21,7 +21,6 @@ define([
                         model.set({
                             id: response[0]._id,
                             email: response[0].email,
-                            password: response[0].password,
                             first_name: response[0].first_name,
                             last_name: response[0].last_name,
                             friends: response[0].friends
@@ -33,7 +32,6 @@ define([
                 }
             }).then(function(){
                 var friends = getFriends.get("friends");
-                console.log(friends)
                 var num_of_not_confirm_friends = 0;
                 var count = 0;
                 friends.forEach(function(index){
@@ -46,7 +44,6 @@ define([
                                     model.set({
                                         id: response[0]._id,
                                         email: response[0].email,
-                                        password: response[0].password,
                                         first_name: response[0].first_name,
                                         last_name: response[0].last_name,
                                         friends: response[0].friends
@@ -67,7 +64,7 @@ define([
                     }
                 });
                 if(num_of_not_confirm_friends == 0){
-                    var compiledTemplate = _.template('<h2>У вас нет неподтверженных заявок</h2>');
+                    var compiledTemplate = _.template('<h2>У вас нет неподтвержденных заявок</h2>');
                     that.$el.html(compiledTemplate);
                 }
             });

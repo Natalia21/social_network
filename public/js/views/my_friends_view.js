@@ -10,7 +10,6 @@ define([
         confirm_friends: [],
         initialize: function(id){
             this.confirm_friends = [];
-            console.log('id = ' + id);
             this.render(id);
         },
         render: function(id){
@@ -22,7 +21,6 @@ define([
                         model.set({
                             id: response[0]._id,
                             email: response[0].email,
-                            password: response[0].password,
                             first_name: response[0].first_name,
                             last_name: response[0].last_name,
                             friends: response[0].friends
@@ -34,7 +32,6 @@ define([
                 }
             }).then(function(){
                 var friends = getFriends.get("friends");
-                console.log(friends);
                 var num_of_confirm_friends = 0;
                 var count = 0;
                 friends.forEach(function(index){
@@ -47,7 +44,6 @@ define([
                                     model.set({
                                         id: response[0]._id,
                                         email: response[0].email,
-                                        password: response[0].password,
                                         first_name: response[0].first_name,
                                         last_name: response[0].last_name,
                                         friends: response[0].friends

@@ -1,5 +1,7 @@
 @import "custom/form/my_form_style.css";
 @import "custom/main.css";
+@import "custom/msg.css";
+@import "custom/dialogues.css";
 @import "custom/content/content.css";
 @import "custom/navbar/navbar.css";
 @import "custom/header/header.css";

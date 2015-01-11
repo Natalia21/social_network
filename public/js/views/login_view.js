@@ -9,6 +9,7 @@ define([
     var LoginView = Backbone.View.extend({
         el: $('#container'),
         initialize: function(){
+            console.log('in login initialize');
             this.render();
             this.form = this.$('form');
             this.email = this.form.find('#email');
@@ -26,12 +27,11 @@ define([
                 });
                 userModel.fetch({
                     success: function (model, response) {
-                        console.log(response);
                         if (response[0]) {
                             model.set({
                                 id: response[0]._id,
                                 email: response[0].email,
-                                password: response[0].password,
+                                password: '',
                                 first_name: response[0].first_name,
                                 last_name: response[0].last_name
                             });
@@ -45,7 +45,7 @@ define([
                     error: function (model, response) {
                         console.log(response);
                     }
-                });
+                })
             }
             this.email.val('');
             this.password.val('');

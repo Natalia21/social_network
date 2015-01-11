@@ -43,6 +43,12 @@ module.exports = function(grunt) {
                 cwd: "bower_components/bootstrap/dist/css",
                 src: ["bootstrap.css", "bootstrap.css.map"],
                 dest: 'public/css/libs/bootstrap'
+            },
+            socketio: {
+                expand: true,
+                cwd: "node_modules/socket.io/node_modules/socket.io-client",
+                src: ["socket.io.js"],
+                dest: 'public/js/libs/socketio'
             }
         }
     });

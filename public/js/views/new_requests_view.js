@@ -14,9 +14,6 @@ define([
             this.id = id;
             this.render();
         },
-        events:{
-            'click .addFriend': 'addFriend'
-        },
         render: function(){
             var that = this;
             var getFriends = new UserModel({id: this.id});
@@ -26,7 +23,6 @@ define([
                         model.set({
                             id: response[0]._id,
                             email: response[0].email,
-                            password: response[0].password,
                             first_name: response[0].first_name,
                             last_name: response[0].last_name,
                             friends: response[0].friends
@@ -50,7 +46,6 @@ define([
                                     model.set({
                                         id: response[0]._id,
                                         email: response[0].email,
-                                        password: response[0].password,
                                         first_name: response[0].first_name,
                                         last_name: response[0].last_name,
                                         friends: response[0].friends
@@ -87,25 +82,6 @@ define([
                 that.$el.append(compiledTemplate(index.attributes));
             });
             $(".kill_friend").hide();
-        },
-        addFriend: function(e){
-            console.log('in new_req_view');
-            var that = this;
-            var addUserModel = new UserModel({id: this.id});
-            addUserModel.save({friends: {id: e.target.id.split('friend')[0], confirm: true, _new: false}},{
-                success: function(){
-                    var addedUser = new UserModel({id: e.target.id.split('friend')[0]});
-                    addedUser.save({friends: {id: that.id, confirm: true, _new: false}});
-                    $("#" + e.target.id.split('friend')[0]).remove();
-                    console.log('$("#my_friends_list")');
-                    console.log($("#my_friends_list"));
-                /*    if(!$("#my_friends_list").lastChild){
-                        var compiledTemplate = _.template('<h2>У вас нет новых заявок</h2>');
-                        this.$el = $("#content");
-                        this.$el.html(compiledTemplate);
-                    }*/
-                }
-            })
         }
     });
     return RefRequestsView;

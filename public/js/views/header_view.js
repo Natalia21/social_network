@@ -7,7 +7,8 @@ define([
 ], function($, _, Backbone, HeaderTemplate, UserModel){
     var HeaderView = Backbone.View.extend({
         el:  $('#header'),
-        initialize: function(){
+        initialize: function(sign_out_object){
+            this.sign_out_object = sign_out_object;
             $('#header').show();
             this.render();
         },
@@ -20,6 +21,7 @@ define([
                 $('#navbar').hide();
                 $('#content').hide();
                 $('#row').removeClass('full');
+                this.sign_out_object.trigger('sign_out');
                 var sign_out_model = new UserModel;
                 sign_out_model.save({}).then(function(){
                     Backbone.history.navigate('login', true);

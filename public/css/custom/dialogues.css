@@ -1,0 +1,52 @@
+#my_msgs{
+    width: 100%;
+}
+#time{
+    width: 10%;
+    text-align: center;
+}
+#name_of_user{
+    padding-left: 10px;
+    width: 40%;
+    border-right: 1px solid #D0D0D0;
+}
+#dialogues_text{
+    word-wrap:break-word;
+    width: 50%;
+    padding-left: 10px;
+    height: 90px;
+    border-right: 1px solid #D0D0D0;
+}
+
+#big_ref{
+    padding: 0px;
+}
+table{
+    table-layout: fixed;
+    width: 100%;
+}
+
+#msg_box{
+    margin-top: 20px;
+    margin-left: 50px;
+    width: 650px;
+    height: 350px;
+}
+
+#one_dialogue_text{
+    word-wrap:break-word;
+    padding-bottom: 10px;
+    padding-top: 5px;
+    font-size: 13pt;
+    padding-left: 180px;
+    width: 100%;
+}
+#one_dialogue_time{
+    text-align: right;
+}
+hr{
+    border: none; /* Убираем границу */
+    background-color: #D0D0D0; /* Цвет линии */
+    color: #D0D0D0; /* Цвет линии для IE6-7 */
+    height: 1px; /* Толщина линии */
+}

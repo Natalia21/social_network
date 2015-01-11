@@ -9,13 +9,11 @@ define([
     var KillFriendView = Backbone.View.extend({
         el: $("#content"),
         initialize: function(){
-          console.log('in initialize kill')
         },
         events: {
             "click .kill_friend": 'killFriend'
         },
         killFriend: function(e){
-            console.log('in kill_friend')
             var ownerModel = new UserModel();
             ownerModel.fetch({
                 success: function (model, response) {
@@ -23,7 +21,6 @@ define([
                         model.set({
                             id: response[0]._id,
                             email: response[0].email,
-                            password: response[0].password,
                             first_name: response[0].first_name,
                             last_name: response[0].last_name
                         });
@@ -38,14 +35,25 @@ define([
                     success: function (model, response) {
                         alert(response.text);
                         $("#" + e.target.id.split('kill')[0]).remove();
+                        if($("#my_friends_list")[0] &&  $("#my_friends_list")[0].children.length == 0 && document.URL.indexOf('reference_requests') != -1){
+                            var compiledTemplate = _.template('<h2>У вас нет неподтверждённых заявок</h2>');
+                            this.$el = $("#content");
+                            this.$el.html(compiledTemplate);
+                        }
+                        if($("#my_friends_list")[0] && $("#my_friends_list")[0].children.length == 0 && document.URL.indexOf('my_friends') != -1){
+                            var compiledTemplate = _.template('<h2>У вас пока нет друзей</h2>');
+                            this.$el = $("#content");
+                            this.$el.html(compiledTemplate);
+                        }
+                        $("#" + e.target.id).hide();
+                        $("#" + e.target.id.split('kill_')[0] + e.target.id.split('kill_')[1]).show();
                     },
                     error: function (response) {
                         console.log(response);
                     }
                 });
-
             });
         }
     });
     return KillFriendView;
-});
+})
