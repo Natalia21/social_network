@@ -22,8 +22,10 @@ define([
             }
         },
         render: function(){
+            console.log($('#navbar').css('width'));
             var compiledTemplate = _.template(HeaderTemplate);
             this.$el.html(compiledTemplate({id: this.id}));
+            $('.add_style').css('margin-left', $('#navbar').css('width'));
             return this;
         }
     });

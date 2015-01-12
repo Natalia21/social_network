@@ -1,5 +1,9 @@
 #my_msgs{
-    width: 100%;
+    margin: auto;
+    width: 650px;
+    height: 100%;
+    border-left: 1px solid #D0D0D0;
+    border-right: 1px solid #D0D0D0;
 }
 #time{
     width: 10%;
@@ -24,15 +28,44 @@
 table{
     table-layout: fixed;
     width: 100%;
+    border-top: 1px solid #D0D0D0;
 }
 
 #msg_box{
-    margin-top: 20px;
-    margin-left: 50px;
+    margin: auto;
     width: 650px;
-    height: 350px;
+    height: 500px;
+    border-left: 1px solid #D0D0D0;
+    border-right: 1px solid #D0D0D0;
+    border-bottom: 1px solid #D0D0D0;
+    overflow-y: scroll;
+}
+li{
+    list-style-type: none;
+}
+#div_for_name_and_msg{
+    height: 100%;
+    width: 90%;
+    padding-top: 450px;
+    float: left;
 }
 
+#for_name_and_msg{
+    display: inline-block;
+}
+#for_data{
+    display: inline-block;
+}
+
+.data_time{
+    margin-left: -50px;
+}
+#div_for_data{
+    height: 100%;
+    width: 10%;
+    padding-top: 450px;
+    float: right;
+}
 #one_dialogue_text{
     word-wrap: break-word;
     padding-bottom: 20px;
@@ -42,9 +75,19 @@ table{
 #one_dialogue_time{
     text-align: right;
 }
-hr{
-    border: none; /* Убираем границу */
-    background-color: #D0D0D0; /* Цвет линии */
-    color: #D0D0D0; /* Цвет линии для IE6-7 */
-    height: 1px; /* Толщина линии */
+.dialogue_in_dialogues{
+    border-bottom: 1px solid #D0D0D0;
+}
+
+#div_with_textarea{
+    width: 650px;
+    margin: auto;
+}
+
+#text{
+    height: 120px;
+}
+
+#submit_msg_in_dialogue{
+    width: 100%;
 }

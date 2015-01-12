@@ -9,7 +9,6 @@ define([
     var LoginView = Backbone.View.extend({
         el: $('#container'),
         initialize: function(){
-            console.log('in login initialize');
             this.render();
             this.form = this.$('form');
             this.email = this.form.find('#email');

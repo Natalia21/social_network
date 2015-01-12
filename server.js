@@ -50,29 +50,25 @@ app.configure(function(){
 
 io.sockets.on('connection', function (socket) {
     var ID = socket.handshake.query.ID;
-    console.log(ID);
     Socket.find({user_id: ID}, function(err, data){
         if(err) throw err;
         if(!data[0]){
-            console.log('here');
             var new_user = new Socket({socket_id: socket.id, user_id: ID});
             new_user.save(function(err, data){
                 if(err) throw err;
-                console.log(data);
             });
         }
         else{
             Socket.update({user_id: ID}, {$set: {socket_id: socket.id}})
         }
     });
-    socket.on('message', function (message) {
+    socket.on('message_to_server', function (message) {
         var message = {
             from: ID,
             to: message.to,
             text: message.message,
             time: (new Date).toLocaleTimeString()
         };
-        console.log(message);
         try {
             User.update({_id: ID}, {$push:{messages: message}}, function(err, data){
                 if(err) throw err;
@@ -83,15 +79,12 @@ io.sockets.on('connection', function (socket) {
             socket.emit('message', message);
             Socket.find({user_id: message.to}, function(err, data){
                 if(err) throw err;
-                console.log(data);
                 if(data[0]) {
-                    console.log(data[0].socket_id);
                     io.to(data[0].socket_id).emit('message', message);
                 }
             })
         } catch (e) {
             console.log(e);
-           // client.disconnect();
         }
     });
 });

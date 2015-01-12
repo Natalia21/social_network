@@ -63,64 +63,64 @@ define([
         });
 
         app_router.on('route:showProfile', function(id){
+            new NavbarView();
             if(viewHeader){
                 viewHeader.initialize(sign_out_object);
             }
             else{
                 viewHeader =  new HeaderView(sign_out_object);
             }
-            new NavbarView();
             new ProfileView(id);
         });
 
         app_router.on('route:showMyFriends', function(id){
+            new NavbarView();
             if(viewHeaderFriends){
                 viewHeaderFriends.initialize(id);
             }
             else{
                 viewHeaderFriends =  new HeaderViewFriends(id);
             }
-             new NavbarView();
             new MyFriendsView(id);
         });
         app_router.on('route:showRefReq', function(id){
+            new NavbarView();
             if(viewHeaderFriends){
                 viewHeaderFriends.initialize(id);
             }
             else{
                 viewHeaderFriends =  new HeaderViewFriends(id);
             }
-            new NavbarView();
             new RefRequestsView(id);
         });
         app_router.on('route:showOneDialogue', function(id){
+            new NavbarView();
             if(viewHeader){
                 viewHeader.initialize(sign_out_object);
             }
             else{
                 viewHeader =  new HeaderView(sign_out_object);
             }
-            new NavbarView();
             new OneDialogueView(id);
         });
         app_router.on('route:showNewReq', function(id){
+            new NavbarView();
             if(viewHeaderFriends){
                 viewHeaderFriends.initialize(id);
             }
             else{
                 viewHeaderFriends =  new HeaderViewFriends(id);
             }
-            new NavbarView();
             new NewRequestsView(id);
         });
         app_router.on('route:showDialogues', function(){
+            new NavbarView();
             if(viewHeader){
                 viewHeader.initialize(sign_out_object);
             }
             else{
                 viewHeader =  new HeaderView(sign_out_object);
             }
-            new NavbarView();
             new DialoguesView();
         });
 
@@ -128,14 +128,13 @@ define([
             new RegisteringView();
         });
         app_router.on('route:showUsersList', function(){
+            new NavbarView();
             if(viewHeader){
                 viewHeader.initialize(sign_out_object);
             }
             else{
                 viewHeader =  new HeaderView(sign_out_object);
             }
-            new NavbarView();
-
             getUsersView =  new GetUsersView();
             object_for_filtred_data.trigger("getUsersView", getUsersView);
 
