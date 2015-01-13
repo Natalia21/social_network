@@ -3,21 +3,22 @@ define([
     'underscore',
     'backbone',
     'text!/templates/profile.html',
-    '../models/user_model',
-    './is_user_view'
-], function($, _, Backbone, ProfileTemplate, UserModel, IsUserView){
+    './do_smth_with_user_view'
+], function($, _, Backbone, ProfileTemplate, DoSmthWithUserView){
     var ProfileView = Backbone.View.extend({
         el:  $('#content'),
         initialize: function(id){
-            $('#content').show();
             var that = this;
-            new IsUserView(id, that);
+            $('#content').show();
+            this.user_action = new DoSmthWithUserView();
+            this.user_action.getUser(id);
+            this.user_action.object.once('user_is_fetched', function(user){
+                that.render(user);
+            });
         },
-        render: function(){
-            var this_user = {user: App.Models.user.attributes};
-            //console.log(this_user);
+        render: function(user){
             var compiledTemplate = _.template(ProfileTemplate);
-            this.$el.html(compiledTemplate(this_user));
+            this.$el.html(compiledTemplate(user.attributes));
             return this;
         }
     });

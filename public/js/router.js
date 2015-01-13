@@ -10,17 +10,16 @@ define([
     'views/header_view',
     'views/profile_view',
     'views/header_view_friends',
-    'views/my_friends_view',
-    'views/ref_requests_view',
-    'views/new_requests_view',
     'views/kill_friend_view',
     'views/confirm_request_view',
     'views/add_friend_view',
     'views/filter_search_view',
     'views/write_msg_view',
     'views/dialogues_view',
-    'views/one_dialogue_view'
-], function($, _, Backbone, io, LoginView, RegisteringView, NavbarView, GetUsersView, HeaderView, ProfileView, HeaderViewFriends, MyFriendsView, RefRequestsView, NewRequestsView, KillFriendView, ConfirmRequestView, AddFriendView, FilterSearchView, WriteMsgView, DialoguesView, OneDialogueView){
+    'views/one_dialogue_view',
+    'views/buttons_events',
+    'views/my_friends_view2'
+], function($, _, Backbone, io, LoginView, RegisteringView, NavbarView, GetUsersView, HeaderView, ProfileView, HeaderViewFriends, KillFriendView, ConfirmRequestView, AddFriendView, FilterSearchView, WriteMsgView, DialoguesView, OneDialogueView, ButtonsEvents, MyFriendsView2){
     var AppRouter = Backbone.Router.extend({
         routes: {
             '': 'showLogin',
@@ -39,105 +38,88 @@ define([
 
 
     var initialize = function(){
+        var viewHeader = null;
+        var viewHeaderFriends = null;
+        var navbar = null;
+        var getUsersView = null;
         var app_router = new AppRouter;
         var object_for_filtred_data = {};
         _.extend(object_for_filtred_data, Backbone.Events);
-        var getUsersView = null;
         var filtered_data = new FilterSearchView(getUsersView);
         object_for_filtred_data.once("getUsersView", function(getUsersView) {
             filtered_data.initialize(getUsersView);
         });
         var write_msg = new WriteMsgView();
         var sign_out_object = write_msg.sign_out_object;
+        new ButtonsEvents(sign_out_object);
         new KillFriendView();
         new ConfirmRequestView();
         new AddFriendView();
-        var viewHeader = null;
-        var viewHeaderFriends = null;
-        app_router.on('route:showLogin', function(){
-            new LoginView();
-        });
+
+
+        var check = function(It, it, params){
+            if(it){
+                it.initialize(params);
+            }
+            else{
+                it = new It(params)
+            }
+        };
 
         app_router.on('route:defaultAction', function(actions){
             console.log('No route:', actions);
         });
 
+        app_router.on('route:showLogin', function(){
+            check(LoginView);
+        });
+
         app_router.on('route:showProfile', function(id){
-            new NavbarView();
-            if(viewHeader){
-                viewHeader.initialize(sign_out_object);
-            }
-            else{
-                viewHeader =  new HeaderView(sign_out_object);
-            }
+            check(NavbarView, navbar);
+            check(HeaderView, viewHeader);
             new ProfileView(id);
         });
 
         app_router.on('route:showMyFriends', function(id){
-            new NavbarView();
-            if(viewHeaderFriends){
-                viewHeaderFriends.initialize(id);
-            }
-            else{
-                viewHeaderFriends =  new HeaderViewFriends(id);
-            }
-            new MyFriendsView(id);
+            check(NavbarView, navbar);
+            check(HeaderViewFriends, viewHeaderFriends, id);
+            new MyFriendsView2(id);
         });
+
         app_router.on('route:showRefReq', function(id){
-            new NavbarView();
-            if(viewHeaderFriends){
-                viewHeaderFriends.initialize(id);
-            }
-            else{
-                viewHeaderFriends =  new HeaderViewFriends(id);
-            }
-            new RefRequestsView(id);
+            check(NavbarView, navbar);
+            check(HeaderViewFriends, viewHeaderFriends, id);
+            new MyFriendsView2(id);
+
         });
+
         app_router.on('route:showOneDialogue', function(id){
-            new NavbarView();
-            if(viewHeader){
-                viewHeader.initialize(sign_out_object);
-            }
-            else{
-                viewHeader =  new HeaderView(sign_out_object);
-            }
+            check(NavbarView, navbar);
+            check(HeaderView, viewHeader);
             new OneDialogueView(id);
         });
+
         app_router.on('route:showNewReq', function(id){
-            new NavbarView();
-            if(viewHeaderFriends){
-                viewHeaderFriends.initialize(id);
-            }
-            else{
-                viewHeaderFriends =  new HeaderViewFriends(id);
-            }
-            new NewRequestsView(id);
+            check(NavbarView, navbar);
+            check(HeaderViewFriends, viewHeaderFriends, id);
+            new MyFriendsView2(id);
         });
+
         app_router.on('route:showDialogues', function(){
-            new NavbarView();
-            if(viewHeader){
-                viewHeader.initialize(sign_out_object);
-            }
-            else{
-                viewHeader =  new HeaderView(sign_out_object);
-            }
+            check(NavbarView, navbar);
+            check(HeaderView, viewHeader);
             new DialoguesView();
         });
 
         app_router.on('route:showRegistering', function(){
-            new RegisteringView();
+            check(RegisteringView);
         });
+
         app_router.on('route:showUsersList', function(){
-            new NavbarView();
-            if(viewHeader){
-                viewHeader.initialize(sign_out_object);
-            }
-            else{
-                viewHeader =  new HeaderView(sign_out_object);
-            }
+            check(NavbarView, navbar);
+            check(HeaderView, viewHeader);
             getUsersView =  new GetUsersView();
             object_for_filtred_data.trigger("getUsersView", getUsersView);
-
         });
 
         Backbone.history.start();

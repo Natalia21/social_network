@@ -13,16 +13,7 @@ define([
             this.id = id;
             this.render();
         },
-        events: {
-            "click #search": function(){
-                Backbone.history.navigate('search', true);
-            },
-            "click #signOut": function(){
-                Backbone.history.navigate('login', true);
-            }
-        },
         render: function(){
-            console.log($('#navbar').css('width'));
             var compiledTemplate = _.template(HeaderTemplate);
             this.$el.html(compiledTemplate({id: this.id}));
             $('.add_style').css('margin-left', $('#navbar').css('width'));

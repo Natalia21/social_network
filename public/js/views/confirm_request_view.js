@@ -37,16 +37,16 @@ define([
                         addedUser.save({friends: {id: this.id, confirm: true, _new: false}});
                         $("#" + e.target.id.split('friend')[0]).remove();
                         if($("#my_friends_list")[0].children.length == 0){
-                             var compiledTemplate = _.template('<h2>У вас нет новых заявок</h2>');
-                             this.$el = $("#content");
-                             this.$el.html(compiledTemplate);
-                         }
+                            var compiledTemplate = _.template('<h2>У вас нет новых заявок</h2>');
+                            this.$el = $("#content");
+                            this.$el.html(compiledTemplate);
+                        }
                     }
 
-            });
+                });
 
-        })
-    }
+            })
+        }
     });
     return ConfirmRequestView;
 });

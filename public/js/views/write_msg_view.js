@@ -6,22 +6,23 @@ define([
     'text!/templates/write_msg.html',
     'text!/templates/one_dialogue.html',
     '../models/user_model',
-    '../collections/users_collection'
-], function($, _, Backbone, io, writeMsgTemplate, DialogueTemplate, UserModel, UsersCollection){
+    './do_smth_with_user_view',
+    './do_smth_with_owner_view'
+], function($, _, Backbone, io, writeMsgTemplate, DialogueTemplate, UserModel, DoSmthWithUserView, DoSmthWithOwnerView){
     var WriteMsgView = Backbone.View.extend({
         el: $("#content"),
         initialize: function(){
             var that = this;
             this.catchEvent();
             this.sign_out_object = {};
+            this.socket_is_ready_obj = {};
+            this.user_obj = {};
             _.extend(this.sign_out_object, Backbone.Events);
+            _.extend(this.socket_is_ready_obj, Backbone.Events);
+            _.extend(this.user_obj, Backbone.Events);
             this.sign_out_object.on("sign_out", function(){
                 that.catchEvent();
             });
-            this.socket_is_ready_obj = {};
-            _.extend(this.socket_is_ready_obj, Backbone.Events);
-            this.user_obj = {};
-            _.extend(this.user_obj, Backbone.Events);
         },
         events: {
             "click .write_msg": 'writeMsg',
@@ -41,30 +42,15 @@ define([
             });
         },
         getSocket: function(){
-            console.log('in get socket');
             var that = this;
-            var ownerModel = new UserModel();
-            ownerModel.fetch({
-                success: function(model, response){
-                    if(response[0]){
-                        model.set({
-                            id: response[0]._id,
-                            email: response[0].email,
-                            first_name: response[0].first_name,
-                            last_name: response[0].last_name
-                        });
-                    }
-                },
-                error: function(model,response){
-                    console.log('in error');
-                    console.log(response);
-                }
-            }).then(function(){
+            this.owner_action = new DoSmthWithOwnerView();
+            this.owner_action.getOwner();
+            this.owner_action.object.once('owner_is_fetched', function(owner) {
                 if(that.socket){
-                     that.socket.off('message');
-                     that.socket = null;
+                    that.socket.off('message');
+                    that.socket = null;
                 }
-                that.socket = io.connect('http://localhost:8888', {query: 'ID=' + ownerModel.get("id"), 'forceNew':true});
+                that.socket = io.connect('http://localhost:8888', {query: 'ID=' + owner.get("id"), 'forceNew':true});
                 that.socket_is_ready_obj.trigger('socket_is_ready');
                 that.socket.on('message', function (message) {
                     if(document.URL.indexOf('messages') != -1){
@@ -72,10 +58,15 @@ define([
                         var current_height = $('#for_name_and_msg').css('height');
                         var compiledTemplate = _.template(DialogueTemplate);
                         var name = '';
-                        that.getOwnerModel();
-                        that.user_obj.once('user_is_ready', function(){
-                            if(message.from == that.ownerModel.get("id")){
-                                name = that.ownerModel.get("first_name") + ' ' + that.ownerModel.get("last_name");
+                        }
+                        that.user_action = new DoSmthWithUserView();
+                        that.user_action.getUser(document.URL.split('/')[document.URL.split('/').length - 1]);
+                        that.user_action.object.once('user_is_fetched', function(user) {
+                            that.user_obj.trigger('user_is_ready', user);
+                        });
+                        that.user_obj.once('user_is_ready', function(user){
+                            if(message.from == owner.get("id")){
+                                name = owner.get("first_name") + ' ' + owner.get("last_name");
                                 that.$el = $('#for_name_and_msg');
                                 that.$el.append(compiledTemplate({
                                     id: message.from,
@@ -84,7 +75,7 @@ define([
                                 }));
                             }
                             else{
-                                name = that.getUserByIdObj.get("first_name") + ' ' + that.getUserByIdObj.get("last_name");
+                                name = user.get("first_name") + ' ' + user.get("last_name");
                                 that.$el = $('#for_name_and_msg');
                                 that.$el.append(compiledTemplate({
                                     id: message.from,
@@ -107,33 +98,30 @@ define([
                             }
                             $('#msg_box').animate({"scrollTop":$('#for_name_and_msg').css("height")});
                         });
-
-                    }
                 });
-
             });
         },
+
         render: function(user){
             $(".msg_box").remove();
+            this.$el = $('#content');
             var compiledTemplate = _.template(writeMsgTemplate);
             this.$el.append(compiledTemplate(user));
             return this;
         },
         sendMsg: function(){
-            console.log('sendMsg');
             var that = this;
             var text = $("#text").val();
             if (text.length <= 0)
                 return;
-            this.socket.emit("message_to_server", {message: text, to: this.getUserByIdObj.get("id")});
+            this.socket.emit("message_to_server", {message: text, to: this.user.get("id")});
             setTimeout( function() {
                 $('.msg_box').hide();
                 $('#wrap').hide();
-                alert('Ваше сообщение пользователю ' + that.getUserByIdObj.get("first_name") + ' ' + that.getUserByIdObj.get("last_name") + ' отправлено');
+                alert('Ваше сообщение пользователю ' + that.user.get("first_name") + ' ' + that.user.get("last_name") + ' отправлено');
             } , 500)
         },
         sendMsgInDialogue: function(){
-            console.log('sendMsgInDialogue');
             if(!this.socket){
                 this.object.trigger("getSocket");
             }
@@ -142,7 +130,7 @@ define([
             if (text.length <= 0)
                 return;
             if(!this.socket) {
-                this.socket_is_ready_obj.once('socket_is_ready', function () {
+                this.socket_is_ready_obj.once('socket_is_ready', function (){
                     that.socket.emit("message_to_server", {
                         message: text,
                         to: document.URL.split('/')[document.URL.split('/').length - 1]
@@ -157,57 +145,19 @@ define([
             }
             $("#text").val('');
         },
-        getOwnerModel: function(){
-            var that = this;
-            this.ownerModel = new UserModel();
-            this.ownerModel.fetch({
-                success: function(model, response){
-                    if(response[0]){
-                        model.set({
-                            id: response[0]._id,
-                            email: response[0].email,
-                            first_name: response[0].first_name,
-                            last_name: response[0].last_name,
-                            messages: response[0].messages
-                        });
-                        that.getUserById(document.URL.split('/')[document.URL.split('/').length - 1]);
-                    }
-                },
-                error: function(model,response){
-                    console.log('in error');
-                    console.log(response);
-                }
-            });
-        },
-        getUserById: function(id){
-            var that = this;
-            this.getUserByIdObj = new UserModel({id: id});
-            this.getUserByIdObj.fetch({
-                success: function(model, response){
-                    if(response[0]){
-                        model.set({
-                            id: response[0]._id,
-                            email: response[0].email,
-                            first_name: response[0].first_name,
-                            last_name: response[0].last_name,
-                            friends: response[0].friends
-                        });
-                        that.user_obj.trigger('user_is_ready');
-                    }
-                },
-                error: function(model,response){
-                    console.log(response);
-                }
-            });
-        },
         writeMsg: function(e){
-            this.getUserById(e.target.id.split('msg')[0]);
+            this.user_action = new DoSmthWithUserView();
+            this.user_action.getUser(e.target.id.split('msg')[0]);
+            this.user_action.object.once('user_is_fetched', function(user) {
+                that.user = user;
+                that.user_obj.trigger('user_is_ready', user);
+            });
             if(!this.socket) {
                 this.object.trigger("getSocket");
             }
             var that = this;
-            this.user_obj.on('user_is_ready', function(){
-                that.render({name: that.getUserByIdObj.get("first_name") + " " + that.getUserByIdObj.get("last_name")});
+            this.user_obj.once('user_is_ready', function(user){
+                that.render({name: user.get("first_name") + " " + user.get("last_name")});
                 $('.msg_box').show();
                 $('#wrap').show();
             });

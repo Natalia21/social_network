@@ -4,8 +4,9 @@ define([
     'backbone',
     'text!/templates/navbar.html',
     './profile_view',
-    '../models/user_model'
-], function($, _, Backbone, pageTemplate, ProfileView, UserModel){
+    '../models/user_model',
+    './do_smth_with_owner_view'
+], function($, _, Backbone, pageTemplate, ProfileView, UserModel, DoSmthWithOwnerView){
 
     var NavbarView = Backbone.View.extend({
         el: $('#navbar'),
@@ -13,38 +14,15 @@ define([
         initialize: function(){
             $('#navbar').show();
             var that = this;
-            this.getOwner(that);
-        },
-        events: {
-            "click #profile": function(){
-            },
-            "click #friends": function(){},
-            "click #msg": function(){}
-        },
-        getOwner: function(that){
-            var ownerModel = new UserModel();
-            ownerModel.fetch({
-                success: function(model, response){
-                    if(response[0]){
-                        model.set({
-                            id: response[0]._id,
-                            email: response[0].email,
-                            first_name: response[0].first_name,
-                            last_name: response[0].last_name
-                        });
-                        that.id = model.get("id");
-                        that.render();
-                    }
-                },
-                error: function(model,response){
-                    console.log('in error');
-                    console.log(response);
-                }
+            this.owner_action = new DoSmthWithOwnerView();
+            this.owner_action.getOwner();
+            this.owner_action.object.once('owner_is_fetched', function(owner){
+                that.render(owner);
             });
         },
-        render: function(){
+        render: function(owner){
             var compiledTemplate = _.template(pageTemplate);
-            this.$el.html(compiledTemplate({id: this.id}));
+            this.$el.html(compiledTemplate({id: owner.get("id")}));
             this.addClasses();
             return this;
         },

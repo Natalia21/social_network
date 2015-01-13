@@ -3,12 +3,14 @@ define([
     'underscore',
     'backbone',
     'text!/templates/login.html',
-    '../models/user_model'
-], function($, _, Backbone, loginTemplate, UserModel){
+    './do_smth_with_user_view'
+], function($, _, Backbone, loginTemplate, DoSmthWithUserView){
 
     var LoginView = Backbone.View.extend({
         el: $('#container'),
         initialize: function(){
+            this.object = {};
+            _.extend(this.object, Backbone.Events);
             this.render();
             this.form = this.$('form');
             this.email = this.form.find('#email');
@@ -19,35 +21,20 @@ define([
             "click #register_in_login": 'submitRegistering'
         },
         submitSignIn: function() {
-            if(this.email.val() != '') {
-                var userModel = new UserModel({
-                    email: this.email.val(),
-                    password: this.password.val()
-                });
-                userModel.fetch({
-                    success: function (model, response) {
-                        if (response[0]) {
-                            model.set({
-                                id: response[0]._id,
-                                email: response[0].email,
-                                password: '',
-                                first_name: response[0].first_name,
-                                last_name: response[0].last_name
-                            });
-                            $("#loginForm").remove();
-                            Backbone.history.navigate('profile/' + model.get("id"), true);
-                        }
-                        else {
-                            alert('Email or password is incorrect!');
-                        }
-                    },
-                    error: function (model, response) {
-                        console.log(response);
-                    }
-                })
-            }
-            this.email.val('');
-            this.password.val('');
+            this.user_action = new DoSmthWithUserView();
+            this.user_action.loginUser(this.email.val(), this.password.val());
+            this.user_action.object.once('user_is_logined', function(params) {
+                var model = params[0];
+                var response = params[1];
+                if(response.text){
+                    alert('Email or password is incorrect!');
+                }
+                else{
+                    $("#loginForm").remove();
+                    Backbone.history.navigate('profile/' + model.get("id"), true);
+                }
+
+            });
         },
         submitRegistering: function(){
             $("#loginForm").remove();

@@ -4,8 +4,9 @@ define([
     'backbone',
     'socketio',
     'text!/templates/registering.html',
-    '../models/user_model'
-], function($, _, Backbone, io, RegisteringTemplate, UserModel){
+    '../models/user_model',
+    './do_smth_with_user_view'
+], function($, _, Backbone, io, RegisteringTemplate, UserModel, DoSmthWithUserView){
     var RegisteringView = Backbone.View.extend({
         el: $('#container'),
         initialize: function(){
@@ -20,26 +21,17 @@ define([
             "click #register": 'submitRegistering'
         },
         submitRegistering: function() {
-            if(this.email.val() != '') {
-                var userModel = new UserModel({
-                    first_name: this.first_name.val(),
-                    last_name: this.last_name.val(),
-                    email: this.email.val(),
-                    password: this.password.val()
-                });
-                userModel.save({contentType: "application/json"}, {
-                    success: function (model, response) {
-                        model.set({id: response[0]._id, password: ''});
-                        $("#registeringForm").remove();
-                        Backbone.history.navigate('profile/' + model.get("id"), true);
-                    },
-                    error: function (model, response) {
-                        console.log(response);
-                        alert(response.responseText);
-                    }
-                });
-            }
-            this.email.val('');
+            this.user_action = new DoSmthWithUserView();
+            this.user_action.newUser({
+                first_name: this.first_name.val(),
+                last_name: this.last_name.val(),
+                email: this.email.val(),
+                password: this.password.val()
+            });
+            this.user_action.object.once('user_is_new', function(user){
+                $("#registeringForm").remove();
+                Backbone.history.navigate('profile/' + user.get("id"), true);
+            });
         },
 
         render: function(){

@@ -3,72 +3,40 @@ define([
     'underscore',
     'backbone',
     'text!/templates/one_dialogue.html',
-    '../models/user_model'
-], function($, _, Backbone, DialogueTemplate, UserModel){
+    '../models/user_model',
+    './do_smth_with_user_view',
+    './do_smth_with_owner_view'
+], function($, _, Backbone, DialogueTemplate, UserModel, DoSmthWithUserView, DoSmthWithOwnerView){
     var OneDialogueView = Backbone.View.extend({
         el:  $('#content'),
         initialize: function(id){
             this.id = id;
-            this.getOwner();
-        },
-        getUserById: function(){
             var that = this;
-            this.getUserByIdObj = new UserModel({id: this.id});
-            this.getUserByIdObj.fetch({
-                success: function (model, response) {
-                    if (response[0]) {
-                        model.set({
-                            id: response[0]._id,
-                            email: response[0].email,
-                            first_name: response[0].first_name,
-                            last_name: response[0].last_name,
-                            friends: response[0].friends
-                        });
-                        that.render();
-                    }
-                },
-                error: function (model, response) {
-                    console.log(response);
-                }
-            })
-        },
-        getOwner: function(){
-            var that = this;
-            this.ownerModel = new UserModel();
-            this.ownerModel.fetch({
-                success: function(model, response){
-                    if(response[0]){
-                        model.set({
-                            id: response[0]._id,
-                            email: response[0].email,
-                            first_name: response[0].first_name,
-                            last_name: response[0].last_name,
-                            messages: response[0].messages
-                        });
-                        that.getUserById();
-                    }
-                },
-                error: function(model,response){
-                    console.log('in error');
-                    console.log(response);
-                }
+            this.owner_action = new DoSmthWithOwnerView();
+            this.owner_action.getOwner();
+            this.owner_action.object.once('owner_is_fetched', function(owner){
+                that.user_action = new DoSmthWithUserView();
+                that.user_action.getUser(id);
+                that.user_action.object.once('user_is_fetched', function(user) {
+                    that.render(owner, user);
+                });
             });
         },
-        render: function(){
+        render: function(owner, user){
             var that = this;
             var compiledTemplate = _.template('<div  id = "msg_box"><div id = "div_for_name_and_msg"><ul id = "for_name_and_msg"></ul></div><div id = "div_for_data"><ul id = "for_data"></ul></div></div>');
             this.$el.html(compiledTemplate);
-            this.ownerModel.get("messages").forEach(function(index){
+            owner.get("messages").forEach(function(index){
                 if(index.to == that.id || index.from == that.id){
                     that.$el = $('#for_name_and_msg');
                     var current_height = $('#for_name_and_msg').css('height');
                     var compiledTemplate = _.template(DialogueTemplate);
                     var name = '';
-                    if(index.from == that.ownerModel.get("id")){
-                        name = that.ownerModel.get("first_name") + ' ' + that.ownerModel.get("last_name");
+                    if(index.from == owner.get("id")){
+                        name = owner.get("first_name") + ' ' + owner.get("last_name");
                     }
                     else{
-                        name = that.getUserByIdObj.get("first_name") + ' ' + that.getUserByIdObj.get("last_name");
+                        name = user.get("first_name") + ' ' + user.get("last_name");
                     }
                     that.$el.append(compiledTemplate({
                         id: index.from,

@@ -4,55 +4,52 @@ define([
     'backbone',
     'text!/templates/users_list.html',
     '../models/user_model',
-    '../collections/users_collection'
-], function($, _, Backbone, userListTemplate, UserModel, UsersCollection){
+    '../collections/users_collection',
+    './do_smth_with_owner_view'
+], function($, _, Backbone, userListTemplate, UserModel, UsersCollection, DoSmthWithOwnerView){
     var GetUsersView = Backbone.View.extend({
         initialize: function(){
+            var that = this;
             this.$el = $('#content');
             this.$el.html(_.template('<br/> <input type="text" class="form-control" placeholder="Начните вводить имя пользователя…" id = "user_name"> <br/> <div id = "forUL"></div>'));
             App.Collections.users = new UsersCollection();
-            this.getUsers();
+            this.owner_action = new DoSmthWithOwnerView();
+            this.owner_action.getOwner();
+            this.owner_action.object.once('owner_is_fetched', function(owner){
+                that.getUsers(owner);
+            });
         },
         events: {
             "click .write_msg": 'writeMsg'
         },
-        getOwner: function(that){
-            var ownerModel = new UserModel();
-            ownerModel.fetch({
-                success: function(model, response){
-                    if(response[0]){
-                        model.set({
-                            id: response[0]._id,
-                            email: response[0].email,
-                            first_name: response[0].first_name,
-                            last_name: response[0].last_name
-                        });
-                        that.id = model.get("id");
-                        that.render();
-                    }
-                },
-                error: function(model,response){
-                    console.log(response);
-                }
-            })
-        },
-        getUsers: function(){
+        getUsers: function(owner){
             var that = this;
             App.Collections.users.fetch({
                 success: function(model, response){
+                    var id_to_remove;
+                    var index_to_remove;
                     response.forEach(function(index, index2){
-                        model.models[index2].set({
-                            id: index._id,
-                            email: index.email,
-                            first_name: index.first_name,
-                            last_name: index.last_name
-                        });
+                            if (index._id != owner.id) {
+                                model.models[index2].set({
+                                    id: index._id,
+                                    email: index.email,
+                                    first_name: index.first_name,
+                                    last_name: index.last_name
+                                });
+                            }
+                            else {
+                                id_to_remove = model.models[index2].cid;
+                                index_to_remove = index2;
+                            }
                     });
-                    that.getOwner(that);
+                    if(id_to_remove){
+                        model.remove(id_to_remove);
+                    }
+                    that.render(owner);
                 }
             });
         },
-        render: function(){
+        render: function(owner){
             this.$el = $('#forUL');
             this.$el.html(_.template('<ul class="nav users_list" id = "list"></ul>'));
             this.$el = $('#list');
@@ -62,7 +59,7 @@ define([
                 var compiledTemplate = _.template(userListTemplate);
                 that.$el.append(compiledTemplate(index.attributes));
                 index.attributes.friends.forEach(function(element){
-                    if(element.id == that.id && element.confirm != false){
+                    if(element.id == owner.get("id") && element.confirm != false){
                         user_is_friend = true;
                     }
                 });

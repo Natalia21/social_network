@@ -4,8 +4,9 @@ define([
     'backbone',
     'text!/templates/users_list.html',
     '../models/user_model',
-    '../collections/users_collection'
-], function($, _, Backbone, userListTemplate, UserModel, UsersCollection){
+    './do_smth_with_user_view',
+    './do_smth_with_owner_view'
+], function($, _, Backbone, userListTemplate, UserModel, DoSmthWithUserView, DoSmthWithOwnerView){
     var AddFriendView = Backbone.View.extend({
         el: $("#content"),
         initialize: function () {
@@ -14,51 +15,21 @@ define([
             "click .add_friend": 'addFriend'
         },
         addFriend: function (e) {
-            var ownerModel = new UserModel();
-            ownerModel.fetch({
-                success: function (model, response) {
-                    if (response[0]) {
-                        model.set({
-                            id: response[0]._id,
-                            email: response[0].email,
-                            first_name: response[0].first_name,
-                            last_name: response[0].last_name
-                        });
-                        this.id = model.get("id");
-                    }
-                },
-                error: function (model, response) {
-                    console.log(response);
-                }
-            }).then(function () {
-                ownerModel.save({friends: {id: e.target.id.split('friend')[0], confirm: false, _new: false}}, {
-                    success: function (model, response) {
-                        var getUserById = new UserModel({id: e.target.id.split('friend')[0]});
-                        getUserById.save({friends: {id: ownerModel.get("id"), confirm: null, _new: true}}, {
-                            success: function (model, response) {
-                                if (response[0]) {
-                                    model.set({
-                                        id: response[0]._id,
-                                        email: response[0].email,
-                                        first_name: response[0].first_name,
-                                        last_name: response[0].last_name
-                                    });
-                                    alert("Вы отправили заявку в друзья пользователю " + model.get("first_name") + " " + model.get("last_name"));
-                                    $("#" + e.target.id.split('friend')[0] + "friend").hide();
-                                    $("#" + e.target.id.split('friend')[0] + "kill_friend").show();
-                                }
-                            },
-                            error: function (model, response) {
-                                console.log('in error');
-                                console.log(response);
-                            }
-                        });
-                    },
-                    error: function (response) {
-                        console.log(response);
-                    }
+            var that = this;
+            this.owner_action = new DoSmthWithOwnerView();
+            this.owner_action.getOwner();
+            this.owner_action.object.once('owner_is_fetched', function(owner){
+                that.owner_action.saveOwner(owner, {friends: {id: e.target.id.split('friend')[0], confirm: false, _new: false}});
+                that.owner_action.object.once('owner_is_saved', function(params){
+                    var owner = params[0];
+                    that.user_action = new DoSmthWithUserView();
+                    that.user_action.saveUser(e.target.id.split('friend')[0], {friends: {id: owner.get("id"), confirm: null, _new: true}});
+                    that.user_action.object.once('user_is_saved', function(user){
+                        alert("Вы отправили заявку в друзья пользователю " + user.get("first_name") + " " + user.get("last_name"));
+                        $("#" + e.target.id.split('friend')[0] + "friend").hide();
+                        $("#" + e.target.id.split('friend')[0] + "kill_friend").show();
+                    });
                 });
-
             });
         }
     });
