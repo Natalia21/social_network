@@ -38,7 +38,6 @@ define([
         if(method=='create' && !model.get("first_name") && !model.get("last_name") && !model.get("email") && !model.get("password")){
             options.url = '/sign_out';
         }
-
         return Backbone.sync(method, model, options);
     }
     return UserModel;
