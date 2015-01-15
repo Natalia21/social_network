@@ -15,6 +15,7 @@ define([
                 Backbone.history.navigate('search', true);
             },
             "click #signOut": function(){
+                console.log('sign out')
                 $('#header').hide();
                 $('#navbar').hide();
                 $('#content').hide();

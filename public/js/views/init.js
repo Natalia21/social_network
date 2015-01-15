@@ -29,7 +29,9 @@ define([
                 console.log('HERE ' + owner[1]);
                 socket = io.connect('http://localhost:8888', {query: 'ID=' + owner[0].get("id"), 'forceNew':true});
                 that.socket_is_ready_obj.trigger('socket_is_ready', socket, owner[0]);
-                Backbone.history.navigate('profile/' + owner[0].get("id"), true);
+                var url = document.URL.split('#');
+                console.log('url ' + url);
+                url[1] && url[1] != 'login' ? Backbone.history.navigate(url[1], true) : Backbone.history.navigate('profile/' + owner[0].get("id"), true);
             });
 
             this.sign_out_object.on("sign_out", function(){
