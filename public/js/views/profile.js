@@ -3,9 +3,8 @@ define([
     'underscore',
     'backbone',
     'text!/templates/profile.html',
-    './actions_with_user',
-    './actions_with_owner'
-], function($, _, Backbone, ProfileTemplate, DoSmthWithUserView, DoSmthWithOwnerView){
+    './requests_user'
+], function($, _, Backbone, ProfileTemplate, DoSmthWithUserView){
     var ProfileView = Backbone.View.extend({
         el:  $('#content'),
         initialize: function(id){

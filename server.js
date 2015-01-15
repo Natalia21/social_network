@@ -18,7 +18,6 @@ mongoose.connect("mongodb://localhost/test", function (err) {
 
 
 var User = require('./public/js/server/user_scheme');
-var Socket = require('./public/js/server/socket_scheme');
 
 
 app.configure(function(){
@@ -32,9 +31,9 @@ app.configure(function(){
     app.use(express.static(path.join(__dirname, 'public')));
 });
 
+
 module.exports.app = app;
 module.exports.io = io;
-module.exports.Socket = Socket;
 module.exports.User = User;
 
 

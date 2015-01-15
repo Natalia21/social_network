@@ -4,8 +4,8 @@ define([
     'backbone',
     'text!/templates/users_list.html',
     '../models/user_model',
-    './actions_with_user',
-    './actions_with_owner'
+    './requests_user',
+    './requests_owner'
 ], function($, _, Backbone, userListTemplate, UserModel, DoSmthWithUserView, DoSmthWithOwnerView){
     var ConfirmRequestView = Backbone.View.extend({
         el: $("#content"),

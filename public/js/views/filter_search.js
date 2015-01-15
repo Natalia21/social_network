@@ -5,7 +5,7 @@ define([
     'text!/templates/users_list.html',
     '../models/user_model',
     '../collections/users_collection',
-    './actions_with_owner'
+    './requests_owner'
 ], function($, _, Backbone, userListTemplate, UserModel, UsersCollection, DoSmthWithOwnerView){
     var FilterSearchView = Backbone.View.extend({
         el: $("#content"),

@@ -4,8 +4,8 @@ define([
     'backbone',
     'text!/templates/one_dialogue.html',
     '../models/user_model',
-    './actions_with_user',
-    './actions_with_owner'
+    './requests_user',
+    './requests_owner'
 ], function($, _, Backbone, DialogueTemplate, UserModel, DoSmthWithUserView, DoSmthWithOwnerView){
     var OneDialogueView = Backbone.View.extend({
         el:  $('#content'),

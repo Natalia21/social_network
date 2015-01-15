@@ -5,31 +5,17 @@ define([
     'socketio',
     'text!/templates/write_msg.html',
     'text!/templates/one_dialogue.html',
+    'text!/templates/alerts.html',
     '../models/user_model',
-    './actions_with_user',
-    './actions_with_owner'
-], function($, _, Backbone, io, writeMsgTemplate, DialogueTemplate, UserModel, DoSmthWithUserView, DoSmthWithOwnerView){
+    './requests_user'
+], function($, _, Backbone, io, writeMsgTemplate, DialogueTemplate, AlertsTemplate, UserModel, DoSmthWithUserView){
     var WriteMsgView = Backbone.View.extend({
         el: $("#content"),
         initialize: function(socket_is_ready_obj){
-            var that = this;
-           // this.getSocket();
             this.socket_is_ready_obj = socket_is_ready_obj;
             this.catchEvent();
-          //  this.sign_out_object = {};
-           // this.socket_is_ready_obj = {};
             this.user_obj = {};
-       //     _.extend(this.sign_out_object, Backbone.Events);
-          //  _.extend(this.socket_is_ready_obj, Backbone.Events);
             _.extend(this.user_obj, Backbone.Events);
-
-       /*     this.sign_out_object.on("sign_out", function(){
-                console.log('emit disconnect');
-                that.socket.disconnect();
-               // that.socket.emit('disconnecting');
-           //     that.socket = null;
-           //     that.catchEvent();
-            });*/
         },
         events: {
             "click .write_msg": 'writeMsg',
@@ -42,48 +28,64 @@ define([
             },
         catchEvent: function(){
             var that = this;
-            this.socket_is_ready_obj.once('socket_is_ready', function(socket, owner){
+            this.socket_is_ready_obj.on('socket_is_ready', function(socket, owner){
                 that.socket = socket;
-                console.log('socket_is_ready');
                 socket.on('message_to_me', function (message) {
-                    console.log('i got msg to me');
+                    console.log('message_to_me');
                     that.buildView(owner, message);
                 });
                 socket.on('message_to_user', function (message) {
-                    console.log('i got msg to user');
+                    console.log('message_to_user');
                     that.buildView(owner, message);
                 });
             });
-            /* this.object = {};
-             _.extend(this.object, Backbone.Events);
-             var that = this;
-             this.object.once("getSocket", function() {
-                 that.getSocket();
-             });*/
         },
-/*        getSocket: function(){
-            var that = this;
-            this.owner_action = new DoSmthWithOwnerView();
-            var a = this.owner_action.getOwner();
-            this.owner_action.object.once('owner_is_fetched', function(owner) {
-                if(that.socket){
-                    that.socket.off('message');
-                    that.socket = null;
+        closeAlert: function(e){
+            for(var i = 0; i < this.elems.length; i++){
+                if(this.elems[i].id == e.target.id){
+                    for(var k = i + 1; k < this.elems.length; k++){
+                        var current_top = $(this.elems[k]).css('top').split('px')[0];
+                        $(this.elems[k]).css('top', parseInt(current_top) - parseInt($('.alert').css('height').split('px')[0]) + 'px');
+                    }
+                    break;
                 }
-                that.socket = io.connect('http://localhost:8888', {query: 'ID=' + owner.get("id"), 'forceNew':true});
-                that.socket_is_ready_obj.trigger('socket_is_ready');
-                that.socket.on('message_to_me', function (message) {
-                    console.log('i got msg to me');
-                    that.buildView(owner, message);
-                });
-                that.socket.on('message_to_user', function (message) {
-                    console.log('i got msg to user');
-                    that.buildView(owner, message);
+            }
+        },
+        createAlert: function(message){
+            var that = this;
+            var compiledTemplateAlert = _.template(AlertsTemplate);
+            this.user_action = new DoSmthWithUserView();
+            this.user_action.getUser(message.from);
+            this.user_action.object.once('user_is_fetched', function (user) {
+                var user_name = user.get("first_name") + ' ' + user.get("last_name");
+                var top = $('#header').css('height').split('px')[0];
+                var shift = $('.alert').css('height') ? $('.alert').length * $('.alert').css('height').split('px')[0] : 0;
+                that.$el = $('#content');
+                that.$el.append(compiledTemplateAlert({id: message.from, name: user_name, msg: message.text, time: message.time}));
+                that.elems = $(".alert");
+                $.when(
+                    $(that.elems[that.elems.length - 1])
+                        .css('top', $('#header').css('height'))
+                        .css('display', 'block')
+                        .animate({opacity: 1, top: parseInt(top) + parseInt(shift) + 'px'}, 200)).then(function(){
+                        if(that.elems.length > 5){
+                            that.elems[0].remove();
+                            for(var i = 0; i < that.elems.length; i++){
+                                var current_top = $(that.elems[i]).css('top').split('px')[0];
+                                $(that.elems[i]).css('top', parseInt(current_top) - parseInt($('.alert').css('height').split('px')[0]) + 'px')
+                            }
+                        }
+                    });
+                $(that.elems[that.elems.length - 1]).on('closed.bs.alert', function (e) {
+                    that.closeAlert(e);
                 });
             });
-        },*/
+        },
         buildView: function(owner, message){
             var that = this;
+            if(message.to == owner.get("id")){
+                this.createAlert(message);
+            }
             if(document.URL.indexOf('messages') != -1) {
                 this.$el = $('#for_name_and_msg');
                 var current_height = $('#for_name_and_msg').css('height');
@@ -94,28 +96,28 @@ define([
                 this.user_action.object.once('user_is_fetched', function (user) {
                     if (message.from == owner.get("id")) {
                         name = owner.get("first_name") + ' ' + owner.get("last_name");
-                        that.$el = $('#for_name_and_msg');
-                        that.$el.append(compiledTemplate({id: message.from, name: name, msg: message.text}));
                     }
-                    else {
+                    if (message.from == user.get("id")) {
                         name = user.get("first_name") + ' ' + user.get("last_name");
+                    }
+                    if(name){
                         that.$el = $('#for_name_and_msg');
                         that.$el.append(compiledTemplate({id: message.from, name: name, msg: message.text}));
+                        that.$el = $('#for_data');
+                        var compiledTemplate2 = _.template('<li class = "data_time"><%= time %></li>');
+                        that.$el.append(compiledTemplate2({
+                            time: message.time
+                        }));
+                        var new_height = 450 - current_height.split('px')[0];
+                        $('#div_for_name_and_msg').css('padding-top', new_height + 'px');
+                        $('#div_for_data').css('padding-top', new_height + 'px');
+                        var children_name_and_msg = $('#for_name_and_msg').children();
+                        var children_date = $('#for_data').children();
+                        for (var i = 1; i < children_date.length; i++) {
+                            children_date[i].setAttribute('style', 'padding-top: ' + children_name_and_msg[i * 2 - 1].offsetHeight + 'px');
+                        }
+                        $('#msg_box').animate({"scrollTop": $('#for_name_and_msg').css("height")});
                     }
-                    that.$el = $('#for_data');
-                    var compiledTemplate2 = _.template('<li class = "data_time"><%= time %></li>');
-                    that.$el.append(compiledTemplate2({
-                        time: message.time
-                    }));
-                    var new_height = 450 - current_height.split('px')[0];
-                    $('#div_for_name_and_msg').css('padding-top', new_height + 'px');
-                    $('#div_for_data').css('padding-top', new_height + 'px');
-                    var children_name_and_msg = $('#for_name_and_msg').children();
-                    var children_date = $('#for_data').children();
-                    for (var i = 1; i < children_date.length; i++) {
-                        children_date[i].setAttribute('style', 'padding-top: ' + children_name_and_msg[i * 2 - 1].offsetHeight + 'px');
-                    }
-                    $('#msg_box').animate({"scrollTop": $('#for_name_and_msg').css("height")});
                 });
             }
 
@@ -140,30 +142,15 @@ define([
             } , 500)
         },
         sendMsgInDialogue: function(){
-            /*if(!this.socket){
-                this.object.trigger("getSocket");
-            }*/
             var that = this;
             var text = $("#text").val();
             if (text.length <= 0){
                 return;
             }
-       /*     if(!this.socket) {
-                this.socket_is_ready_obj.once('socket_is_ready', function (){
-                    that.socket.emit("message_to_server", {
-                        message: text,
-                        to: document.URL.split('/')[document.URL.split('/').length - 1]
-                    });
-                });
-            }
-
-            else{*/
-            console.log(this.socket);
             this.socket.emit("message_to_server", {
                 message: text,
                 to: document.URL.split('/')[document.URL.split('/').length - 1]
             });
-          //  }
            $("#text").val('');
         },
         writeMsg: function(e){
@@ -173,9 +160,6 @@ define([
                 that.user = user;
                 that.user_obj.trigger('user_is_ready', user);
             });
-           /* if(!this.socket) {
-                this.object.trigger("getSocket");
-            }*/
             var that = this;
             this.user_obj.once('user_is_ready', function(user){
                 that.render({name: user.get("first_name") + " " + user.get("last_name")});

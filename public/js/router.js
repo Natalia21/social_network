@@ -60,71 +60,65 @@ define([
         new ConfirmRequestView();
         new AddFriendView();
 
-        var check = function(It, it, params){
-            if(it){
-                console.log('ROUTE LOGIN IF')
-                it.initialize(params);
-            }
-            else{
-                console.log('ROUTE LOGIN ELSE')
-                it = new It(params)
-                console.log(it);
-            }
+        var buildView = function(){
+            navbar = new NavbarView();
+            viewHeader = new HeaderView();
         };
 
+        var buildFriendView = function(id){
+            navbar = new NavbarView();
+            viewHeaderFriends = new HeaderViewFriends(id);
+        };
         app_router.on('route:defaultAction', function(actions){
             console.log('No route:', actions);
         });
 
         app_router.on('route:showLogin', function(){
-            console.log('ROUTE LOGIN')
-            check(LoginView, login, socket_is_ready_obj);
+            if(!login){
+                login = new LoginView(socket_is_ready_obj)
+            }
+            else{
+                login.initialize(socket_is_ready_obj);
+            }
         });
 
         app_router.on('route:showProfile', function(id){
             new ProfileView(id);
-            check(NavbarView, navbar);
-            check(HeaderView, viewHeader);
+            buildView();
         });
 
         app_router.on('route:showMyFriends', function(id){
-            check(NavbarView, navbar);
-            check(HeaderViewFriends, viewHeaderFriends, id);
+            buildFriendView(id);
             new MyFriendsView2(id);
         });
 
         app_router.on('route:showRefReq', function(id){
-            check(NavbarView, navbar);
-            check(HeaderViewFriends, viewHeaderFriends, id);
+            buildFriendView(id);
             new MyFriendsView2(id);
 
         });
 
         app_router.on('route:showOneDialogue', function(id){
-            check(NavbarView, navbar);
-            check(HeaderView, viewHeader);
+            buildView();
             new OneDialogueView(id);
         });
 
         app_router.on('route:showNewReq', function(id){
-            check(NavbarView, navbar);
-            check(HeaderViewFriends, viewHeaderFriends, id);
+            buildFriendView(id);
             new MyFriendsView2(id);
         });
 
         app_router.on('route:showDialogues', function(){
-            check(NavbarView, navbar);
-            check(HeaderView, viewHeader);
+            buildView();
             new DialoguesView();
         });
 
         app_router.on('route:showRegistering', function(){
-            check(RegisteringView);
+            new RegisteringView();
         });
 
         app_router.on('route:showUsersList', function(){
-            check(NavbarView, navbar);
-            check(HeaderView, viewHeader);
+            buildView();
             getUsersView =  new GetUsersView();
             object_for_filtred_data.trigger("getUsersView", getUsersView);
         });

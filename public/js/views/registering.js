@@ -5,7 +5,7 @@ define([
     'socketio',
     'text!/templates/registering.html',
     '../models/user_model',
-    './actions_with_user'
+    './requests_user'
 ], function($, _, Backbone, io, RegisteringTemplate, UserModel, DoSmthWithUserView){
     var RegisteringView = Backbone.View.extend({
         el: $('#container'),

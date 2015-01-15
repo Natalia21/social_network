@@ -4,7 +4,7 @@ define([
     'backbone',
     'text!/templates/my_friends.html',
     '../models/user_model',
-    './actions_with_user'
+    './requests_user'
 ], function($, _, Backbone, myFriendsTemplate, UserModel, DoSmthWithUserView){
     var MyFriendsView = Backbone.View.extend({
         el:  $('#content'),
