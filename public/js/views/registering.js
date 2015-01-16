@@ -10,6 +10,8 @@ define([
     var RegisteringView = Backbone.View.extend({
         el: $('#container'),
         initialize: function(){
+        },
+        init: function(){
             this.render();
             this.form = this.$('form');
             this.first_name = this.form.find('#first_name');

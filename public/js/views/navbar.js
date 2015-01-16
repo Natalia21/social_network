@@ -12,6 +12,8 @@ define([
         el: $('#navbar'),
         id: '',
         initialize: function(){
+        },
+        init: function(){
             $('#navbar').show();
             var that = this;
             this.owner_action = new DoSmthWithOwnerView();

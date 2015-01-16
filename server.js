@@ -18,6 +18,7 @@ mongoose.connect("mongodb://localhost/test", function (err) {
 
 
 var User = require('./public/js/server/user_scheme');
+var Friends = require('./public/js/server/friends_scheme');
 
 
 app.configure(function(){
@@ -35,7 +36,7 @@ app.configure(function(){
 module.exports.app = app;
 module.exports.io = io;
 module.exports.User = User;
-
+module.exports.Friends = Friends;
 
 
 require('./public/js/server/socket_msgs');
@@ -47,6 +48,8 @@ require('./public/js/server/sign_out');
 require('./public/js/server/update_user_friends');
 require('./public/js/server/get_all_users');
 require('./public/js/server/search');
+require('./public/js/server/add_friend');
+require('./public/js/server/get_friends');
 
 server.listen(8888);
 

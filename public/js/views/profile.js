@@ -7,7 +7,9 @@ define([
 ], function($, _, Backbone, ProfileTemplate, DoSmthWithUserView){
     var ProfileView = Backbone.View.extend({
         el:  $('#content'),
-        initialize: function(id){
+        initialize: function(){
+        },
+        init: function(id){
             var that = this;
             $('#content').show();
             this.user_action = new DoSmthWithUserView();

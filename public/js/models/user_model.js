@@ -23,8 +23,7 @@ define([
             first_name: "",
             last_name: "",
             email: "",
-            password: "",
-            friends: []
+            password: ""
         }
     });
     function syncMyModel(method, model, options){

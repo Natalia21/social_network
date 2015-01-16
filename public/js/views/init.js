@@ -28,7 +28,8 @@ define([
                 $('#navbar').hide();
                 $('#content').hide();
                 $('#row').removeClass('full');
-                Backbone.history.navigate('login', true);
+                var url = document.URL.split('#');
+                url[1] == 'registering' ? Backbone.history.navigate('registering', true) :  Backbone.history.navigate('login', true);
             });
             this.socket_is_ready_obj.on('get_socket', function(owner){
                 socket = io.connect('http://localhost:8888', {query: 'ID=' + owner[0].get("id"), 'forceNew':true});

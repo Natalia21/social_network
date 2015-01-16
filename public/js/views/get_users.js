@@ -5,8 +5,9 @@ define([
     'text!/templates/users_list.html',
     '../models/user_model',
     '../collections/users_collection',
-    './requests_owner'
-], function($, _, Backbone, userListTemplate, UserModel, UsersCollection, DoSmthWithOwnerView){
+    './requests_owner',
+    './requests_friends'
+], function($, _, Backbone, userListTemplate, UserModel, UsersCollection, DoSmthWithOwnerView, FriendsRequest){
     var GetUsersView = Backbone.View.extend({
         initialize: function(){
             var that = this;
@@ -18,9 +19,6 @@ define([
             this.owner_action.object.once('owner_is_fetched', function(owner){
                 that.getUsers(owner);
             });
-        },
-        events: {
-            "click .write_msg": 'writeMsg'
         },
         getUsers: function(owner){
             var that = this;
@@ -55,21 +53,41 @@ define([
             this.$el = $('#list');
             var that = this;
             var user_is_friend;
-            App.Collections.users.models.forEach(function(index){
-                var compiledTemplate = _.template(userListTemplate);
-                that.$el.append(compiledTemplate(index.attributes));
-                index.attributes.friends.forEach(function(element){
-                    if(element.id == owner.get("id") && element.confirm != false){
-                        user_is_friend = true;
+            this.friend_request = new FriendsRequest();
+            this.friend_request.getFriends({from: owner.id, to: owner.id, confirm: false});
+
+            this.friend_request.object.on('friends_are_absent', function(){
+                App.Collections.users.models.forEach(function(index){
+                    var compiledTemplate = _.template(userListTemplate);
+                    that.$el.append(compiledTemplate(index.attributes));
+                    $("#" + index.attributes.id + "kill_friend").hide();
+                });
+            });
+
+            this.friend_request.object.on('friends_are_got', function(friends_collection){
+                var my_friends = [];
+                friends_collection.models.forEach(function(index){
+                    if(index.get("from") != owner.id){
+                        my_friends.push(index.get("from"));
+                    }
+                    else{
+                        my_friends.push(index.get("to"));
                     }
                 });
-                if(!user_is_friend){
-                    $("#" + index.attributes.id + "kill_friend").hide();
-                }
-                else{
-                    $("#" + index.attributes.id + "friend").hide();
-                }
-                user_is_friend = false;
+                App.Collections.users.models.forEach(function(index){
+                    var compiledTemplate = _.template(userListTemplate);
+                    that.$el.append(compiledTemplate(index.attributes));
+                    if(my_friends.indexOf(index.get("id")) != -1){
+                        user_is_friend = true;
+                    }
+                    if(!user_is_friend){
+                        $("#" + index.attributes.id + "kill_friend").hide();
+                    }
+                    else{
+                        $("#" + index.attributes.id + "friend").hide();
+                    }
+                    user_is_friend = false;
+                });
             });
             return this;
         }

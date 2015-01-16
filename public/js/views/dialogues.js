@@ -9,26 +9,17 @@ define([
 ], function($, _, Backbone, DialogueTemplate, UserModel, DoSmthWithUserView, DoSmthWithOwnerView){
     var DialoguesView = Backbone.View.extend({
         el:  $('#content'),
-        initialize: function(/*socket_is_ready_obj*/){
+        initialize: function(){
+        },
+        init: function(){
+            this.$el = $('#content');
             var that = this;
-            /*this.socket_is_ready_obj = socket_is_ready_obj;
-            this.catchEvent();*/
             this.owner_action = new DoSmthWithOwnerView();
             this.owner_action.getOwner();
             this.owner_action.object.once('owner_is_fetched', function(owner) {
                 that.render(owner);
             });
         },
-     /*   catchEvent: function(){
-            var that = this;
-            this.socket_is_ready_obj.on('socket_is_ready', function(socket, owner){
-                that.socket = socket;
-                socket.on('message_to_me', function (message) {
-                    console.log('message_to_me');
-                });
-            });
-        },*/
-
         render: function(owner){
             var that = this;
             if(owner.get("messages").length == 0){

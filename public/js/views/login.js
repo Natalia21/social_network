@@ -12,14 +12,16 @@ define([
             this.socket_is_ready_obj = socket_is_ready_obj;
             this.object = {};
             _.extend(this.object, Backbone.Events);
-            this.render();
-            this.form = this.$('form');
-            this.email = this.form.find('#email');
-            this.password = this.form.find('#password');
         },
         events: {
             "click #signIn": 'submitSignIn',
             "click #register_in_login": 'submitRegistering'
+        },
+        init: function(){
+             this.render();
+             this.form = this.$('form');
+             this.email = this.form.find('#email');
+             this.password = this.form.find('#password');
         },
         submitSignIn: function() {
             var that = this;

@@ -4,75 +4,61 @@ define([
     'backbone',
     'text!/templates/my_friends.html',
     '../models/user_model',
-    './requests_user'
-], function($, _, Backbone, myFriendsTemplate, UserModel, DoSmthWithUserView){
+    './requests_user',
+    './requests_friends'
+], function($, _, Backbone, myFriendsTemplate, UserModel, DoSmthWithUserView, FriendsRequest){
     var MyFriendsView = Backbone.View.extend({
         el:  $('#content'),
         my_friends: [],
-        initialize: function(id){
+        initialize: function(){
+        },
+        init: function(id){
+            this.$el = $('#content');
             this.my_friends = [];
             if(document.URL.indexOf('my_friends') != -1){
-                this.char_to_check = ['confirm', true];
+                this.char_to_check = {confirm: true, from: id, to: id};
                 this.text = 'У вас пока нет друзей';
                 this.var_to_hide = '.confirm_friend';
             }
             if(document.URL.indexOf('reference_requests') != -1){
-                this.char_to_check = ['confirm', false];
+                this.char_to_check = {confirm: false, from: id, to: null};
                 this.text = 'У вас нет неподтвержденных заявок';
                 this.var_to_hide = '.confirm_friend';
             }
             if(document.URL.indexOf('new_requests') != -1){
-                this.char_to_check = ['_new', true];
+                this.char_to_check = {confirm: false, to: id, from: null};
                 this.text = 'У вас нет новых заявок';
                 this.var_to_hide = '.kill_friend';
             }
             this.getMyFriends(id);
-        },
-        pushUser: function(){
-            var that = this;
-            this.user_action.object.once('user_is_fetched', function(myFriend) {
-                if(that.my_friends[that.my_friends.length - 1] != myFriend){
-                    that.count++;
-                    that.my_friends.push(myFriend);
-                    if(that.count ==  that.num_of_friends){
-                        that.render();
-                    }
-                }
-                else{
-                    that.pushUser();
-                }
-            });
+
         },
         getMyFriends: function(id){
             var that = this;
-            this.user_action = new DoSmthWithUserView();
-            this.user_action.getUser(id);
-            this.user_action.object.once('user_is_fetched', function(user){
-                var friends = user.get("friends");
-                that.num_of_friends = 0;
-                that.count = 0;
-                friends.forEach(function(index){
-                    if(index[that.char_to_check[0]] == that.char_to_check[1]){
-                        that.num_of_friends++;
-                        that.user_action.getUser(index.id);
-                        that.pushUser();
-                    }
-                });
-                if(that.num_of_friends == 0){
-                    var compiledTemplate = _.template('<h2>' + that.text + '</h2>');
-                    that.$el.html(compiledTemplate);
-                }
+            this.friend_request = new FriendsRequest();
+            this.friend_request.getFriends(this.char_to_check);
+            this.friend_request.object.on('friends_are_got', function(friends_collection){
+                that.render(friends_collection, id);
             });
-            return this;
+            this.friend_request.object.on('friends_are_absent', function(){
+                var compiledTemplate = _.template('<h2>' + that.text + '</h2>');
+                that.$el.html(compiledTemplate);
+            });
         },
-        render: function(){
+        render: function(friends_collection, id){
+            var that = this;
             var compiledTemplate = _.template('<ul class = "nav users_list" id = "my_friends_list"></ul>');
             this.$el.html(compiledTemplate());
             this.$el = $('#my_friends_list');
-            var that = this;
-            this.my_friends.forEach(function(index){
-                var compiledTemplate = _.template(myFriendsTemplate);
-                that.$el.append(compiledTemplate(index.attributes));
+            friends_collection.models.forEach(function(index){
+                that.user_action = new DoSmthWithUserView();
+                var user_id;
+                index.get("from") == id ? user_id = index.get("to") : user_id = index.get("from");
+                that.user_action.getUser(user_id);
+                that.user_action.object.once('user_is_fetched', function(user) {
+                    var compiledTemplate = _.template(myFriendsTemplate);
+                    that.$el.append(compiledTemplate(user.attributes));
+                });
             });
             $(this.var_to_hide).hide();
         }

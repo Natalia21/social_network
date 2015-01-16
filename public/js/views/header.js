@@ -8,6 +8,8 @@ define([
     var HeaderView = Backbone.View.extend({
         el:  $('#header'),
         initialize: function(){
+        },
+        init: function(){
             $('#header').show();
             this.render();
         },
