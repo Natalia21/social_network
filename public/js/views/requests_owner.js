@@ -14,7 +14,6 @@ define([
             var ownerModel = new UserModel();
             ownerModel.fetch({
                 success: function (model, response) {
-                    console.log(response);
                     if (response[0]) {
                         model.set({
                             id: response[0]._id,
@@ -24,12 +23,9 @@ define([
                             friends: response[0].friends,
                             messages: response[0].messages
                         });
-                        console.log('in get owner is fetched');
                         that.object.trigger('owner_is_fetched', ownerModel);
-
                     }
                     else{
-                        console.log('in get owner is absent');
                         that.object.trigger('owner_is_absent');
                     }
                 },

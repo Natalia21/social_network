@@ -5,8 +5,9 @@ define([
     'text!/templates/dialogue.html',
     '../models/user_model',
     './requests_user',
-    './requests_owner'
-], function($, _, Backbone, DialogueTemplate, UserModel, DoSmthWithUserView, DoSmthWithOwnerView){
+    './requests_owner',
+    './requests_msgs'
+], function($, _, Backbone, DialogueTemplate, UserModel, DoSmthWithUserView, DoSmthWithOwnerView, RequestsMsgs){
     var DialoguesView = Backbone.View.extend({
         el:  $('#content'),
         initialize: function(){
@@ -17,16 +18,29 @@ define([
             this.owner_action = new DoSmthWithOwnerView();
             this.owner_action.getOwner();
             this.owner_action.object.once('owner_is_fetched', function(owner) {
-                that.render(owner);
+                that.msg_action = new RequestsMsgs();
+                that.msg_action.getMsgs(owner.get("id"));
+                that.msg_action.object.once('msgs_is_fetched', function(msgs) {
+                    console.log('in fetched ' + msgs);
+                    that.render(owner, msgs);
+                });
+                that.msg_action.object.once('msgs_is_absent', function() {
+                    console.log('in absent')
+                    that.msgsAreAbsent();
+                });
             });
         },
-        render: function(owner){
+        msgsAreAbsent: function(){
+            var compiledTemplate = _.template('<h2>У вас пока нет сообщений</h2>');
+            this.$el.html(compiledTemplate);
+        },
+        render: function(owner, msgs){
             var that = this;
-            if(owner.get("messages").length == 0){
+/*            if(owner.get("messages").length == 0){
                 var compiledTemplate = _.template('<h2>У вас пока нет сообщений</h2>');
                 this.$el.html(compiledTemplate);
             }
-            else{
+            else{*/
                 var compiledTemplate = _.template('<ul class = "nav users_list" id = "my_msgs"></ul>');
                 this.$el.html(compiledTemplate);
                 var dialoguesHasBeenInList = [];
@@ -54,7 +68,7 @@ define([
                         });
                     }
                 });
-            }
+         //   }
             return this;
         }
     });

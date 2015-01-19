@@ -1,6 +1,8 @@
 var Server = require('../../../server');
 var io = Server.io;
 var User = Server.User;
+var Message = Server.Message;
+var client = Server.client;
 
 var sockets = [];
 
@@ -15,12 +17,20 @@ io.sockets.on('connection', function (socket) {
             time: (new Date).toLocaleTimeString()
         };
         try {
-            User.update({_id: ID}, {$push:{messages: message}}, function(err, data){
+            var msg = new Message(message);
+            msg.save(function(err){
                 if(err) throw err;
             });
-            User.update({_id: message.to}, {$push:{messages: message}}, function(err, data){
+            console.log(typeof message.time);
+            client.hset(message.from, message.to, message);
+            client.hset(message.to, message.from, message);
+
+           /* User.update({_id: ID}, {$push:{messages: message}}, function(err){
                 if(err) throw err;
             });
+            User.update({_id: message.to}, {$push:{messages: message}}, function(err){
+                if(err) throw err;
+            });*/
             socket.emit('message_to_me', message);
 
             for(var i = 0; i < sockets.length; i++){

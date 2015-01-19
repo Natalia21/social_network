@@ -55,7 +55,6 @@ define([
                 that.num_of_friends = 0;
                 that.count = 0;
                 friends.forEach(function(index){
-                    console.log('in if')
                     if(index[that.char_to_check[0]] == that.char_to_check[1]){
                         that.num_of_friends++;
                         that.user_action.getUser(index.id);
@@ -63,7 +62,6 @@ define([
                     }
                 });
                 if(that.num_of_friends == 0){
-                    console.log('in else')
                     that.$el = $('#content');
                     var compiledTemplate = _.template('<h2>' + that.text + '</h2>');
                     that.$el.html(compiledTemplate);

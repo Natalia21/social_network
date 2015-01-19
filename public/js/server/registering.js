@@ -21,7 +21,7 @@ app.post("/user", function(req, res) {
     req.session.email = req.body.email;
     new_user.save(function(err){
         if(err) throw err;
-        User.find({email: req.body.email}, {password: 0}, function(err, data){
+        User.find({email: req.body.email}, {password: 0, messages: 0}, function(err, data){
             if(err) throw err;
             res.send(data);
         });

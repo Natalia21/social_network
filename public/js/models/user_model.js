@@ -24,11 +24,18 @@ define([
             last_name: "",
             email: "",
             password: "",
-            friends: []
+            friends: [],
+            messages: []
         }
     });
     function syncMyModel(method, model, options){
         options.url = model.url;
+        if(method=='read'){
+            options.url = '/owner'
+        }
+        if(method=='read' && this.coef != undefined){
+            options.url = '/get_msgs/' + this.coef;
+        }
         if(method=='read' && model.get("email") && model.get("password")){
             options.url = model.url + '/' + model.get('email') + '/' + model.get('password');
         }

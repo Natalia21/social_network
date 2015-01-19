@@ -5,8 +5,9 @@ define([
     'text!/templates/one_dialogue.html',
     '../models/user_model',
     './requests_user',
-    './requests_owner'
-], function($, _, Backbone, DialogueTemplate, UserModel, DoSmthWithUserView, DoSmthWithOwnerView){
+    './requests_owner',
+    './requests_msgs'
+], function($, _, Backbone, DialogueTemplate, UserModel, DoSmthWithUserView, DoSmthWithOwnerView, RequestsMsgs){
     var OneDialogueView = Backbone.View.extend({
         el:  $('#content'),
         initialize: function(socket_is_ready_obj){
@@ -14,6 +15,7 @@ define([
             this.catchEvent();
         },
         init: function(id){
+            this.coef = 0;
             this.$el = $('#content');
             this.id = id;
             var that = this;
@@ -22,24 +24,24 @@ define([
             this.owner_action.object.once('owner_is_fetched', function(owner){
                 that.user_action = new DoSmthWithUserView();
                 that.user_action.getUser(id);
-                that.user_action.object.once('user_is_fetched', function(user) {
-                    that.user = user;
-                    that.render(owner, user);
+                that.user_action.object.once('user_is_fetched', function (user) {
+                    that.msg_action = new RequestsMsgs();
+                    that.msg_action.getMsgs(owner.get("id"), user.get("id"), that.coef);
+                    that.msg_action.object.once('msgs_is_fetched', function(msgs) {
+                        that.user = user;
+                        that.render(owner, user, msgs);
+                    });
                 });
             });
         },
         catchEvent: function(){
-            console.log('catch event one dialogue');
             var that = this;
             this.socket_is_ready_obj.on('socket_is_ready', function(socket, owner){
-                console.log('catch event socket is ready');
                 that.socket = socket;
                 socket.on('message_to_me', function (message) {
-                    console.log('message_to_me one dialogue');
                     that.buildView(owner, message);
                 });
                 socket.on('message_to_user', function (message) {
-                    console.log('message_to_user one dialogue');
                     that.buildView(owner, message);
                 });
             });
@@ -75,17 +77,21 @@ define([
                 $('#msg_box').animate({"scrollTop": $('#for_name_and_msg').css("height")});
             }
         },
-        updateMsgHistory: function(){
+        updateMsgHistory: function(owner, user){
+            var that = this;
             $('#msg_box').on('scroll', function(){
-                console.log($('#msg_box').scrollTop());
+                if($('#msg_box').scrollTop() == 0){
+                    that.coef++;
+                    that.msg_action.getMsgs(owner.get("id"), user.get("id"), that.coef);
+                    that.msg_action.object.once('msgs_is_fetched', function(msgs){
+                        that.pushMsgs(owner, user, msgs);
+                    });
+                }
             })
         },
-        render: function(owner, user){
+        pushMsgs: function(owner, user, msgs){
             var that = this;
-            var compiledTemplate = _.template('<div  id = "msg_box"><div id = "div_for_name_and_msg"><ul id = "for_name_and_msg"></ul></div><div id = "div_for_data"><ul id = "for_data"></ul></div></div>');
-            this.$el.html(compiledTemplate);
-            owner.get("messages").forEach(function(index){
-                if(index.to == that.id || index.from == that.id){
+            msgs.models.forEach(function(index){
                     that.$el = $('#for_name_and_msg');
                     var current_height = $('#for_name_and_msg').css('height');
                     var compiledTemplate = _.template(DialogueTemplate);
@@ -115,12 +121,17 @@ define([
                         children_date[i].setAttribute('style', 'padding-top: ' + children_name_and_msg[i * 2 - 1].offsetHeight + 'px');
                     }
                     $('#msg_box').animate({"scrollTop":$('#for_name_and_msg').css("height")}, 1);
-                }
             });
+        },
+        render: function(owner, user, msgs){
+            var that = this;
+            var compiledTemplate = _.template('<div  id = "msg_box"><div id = "div_for_name_and_msg"><ul id = "for_name_and_msg"></ul></div><div id = "div_for_data"><ul id = "for_data"></ul></div></div>');
+            this.$el.html(compiledTemplate);
+            this.pushMsgs(owner, user, msgs);
             this.$el = $('#content');
             var compiledTemplate = _.template('<div id = "div_with_textarea"><center><textarea id = "text"></textarea><button type="submit" class="btn btn-primary" id = "submit_msg_in_dialogue">  Отправить  </button></center></div>');
             this.$el.append(compiledTemplate);
-            this.updateMsgHistory();
+            this.updateMsgHistory(owner, user);
             return this;
         }
     });

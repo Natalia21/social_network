@@ -13,6 +13,7 @@
     "grunt-contrib-watch": "^0.6.1",
     "mongoose": "*",
     "socket.io": "latest",
-    "express-session": "latest"
+    "express-session": "latest",
+    "redis": "latest"
   }
 }

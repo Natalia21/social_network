@@ -32,7 +32,7 @@ define([
                     that.object.trigger('user_is_logined', [userModel, response]);
                 },
                 error: function (model, response) {
-                    console.log(response.statusCode());
+                    console.log(response);
                 }
             })
         },
