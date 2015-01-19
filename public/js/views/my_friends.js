@@ -4,12 +4,15 @@ define([
     'backbone',
     'text!/templates/my_friends.html',
     '../models/user_model',
-    './actions_with_user'
+    './requests_user'
 ], function($, _, Backbone, myFriendsTemplate, UserModel, DoSmthWithUserView){
     var MyFriendsView = Backbone.View.extend({
         el:  $('#content'),
         my_friends: [],
-        initialize: function(id){
+        initialize: function(){
+
+        },
+        init: function(id){
             this.my_friends = [];
             if(document.URL.indexOf('my_friends') != -1){
                 this.char_to_check = ['confirm', true];
@@ -52,6 +55,7 @@ define([
                 that.num_of_friends = 0;
                 that.count = 0;
                 friends.forEach(function(index){
+                    console.log('in if')
                     if(index[that.char_to_check[0]] == that.char_to_check[1]){
                         that.num_of_friends++;
                         that.user_action.getUser(index.id);
@@ -59,6 +63,8 @@ define([
                     }
                 });
                 if(that.num_of_friends == 0){
+                    console.log('in else')
+                    that.$el = $('#content');
                     var compiledTemplate = _.template('<h2>' + that.text + '</h2>');
                     that.$el.html(compiledTemplate);
                 }
@@ -66,6 +72,7 @@ define([
             return this;
         },
         render: function(){
+            this.$el = $('#content');
             var compiledTemplate = _.template('<ul class = "nav users_list" id = "my_friends_list"></ul>');
             this.$el.html(compiledTemplate());
             this.$el = $('#my_friends_list');

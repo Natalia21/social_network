@@ -5,8 +5,8 @@ define([
     'text!/templates/users_list.html',
     '../models/user_model',
     '../collections/users_collection',
-    './actions_with_user',
-    './actions_with_owner'
+    './requests_user',
+    './requests_owner'
 ], function($, _, Backbone, userListTemplate, UserModel, UsersCollection, DoSmthWithUserView, DoSmthWithOwnerView){
     var KillFriendView = Backbone.View.extend({
         el: $("#content"),

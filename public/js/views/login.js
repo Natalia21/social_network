@@ -3,24 +3,25 @@ define([
     'underscore',
     'backbone',
     'text!/templates/login.html',
-    './actions_with_user'
+    './requests_user'
 ], function($, _, Backbone, loginTemplate, DoSmthWithUserView){
 
     var LoginView = Backbone.View.extend({
         el: $('#container'),
         initialize: function(socket_is_ready_obj){
-            console.log('in sign in init');
             this.socket_is_ready_obj = socket_is_ready_obj;
             this.object = {};
             _.extend(this.object, Backbone.Events);
-            this.render();
-            this.form = this.$('form');
-            this.email = this.form.find('#email');
-            this.password = this.form.find('#password');
         },
         events: {
             "click #signIn": 'submitSignIn',
             "click #register_in_login": 'submitRegistering'
+        },
+        init: function(){
+            this.render();
+            this.form = this.$('form');
+            this.email = this.form.find('#email');
+            this.password = this.form.find('#password');
         },
         submitSignIn: function() {
             var that = this;
@@ -35,7 +36,6 @@ define([
                 else{
                     $("#loginForm").remove();
                     that.socket_is_ready_obj.trigger('get_socket', [model, 'login']);
-                   // Backbone.history.navigate('profile/' + model.get("id"), true);
                 }
             });
         },

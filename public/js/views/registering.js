@@ -5,11 +5,14 @@ define([
     'socketio',
     'text!/templates/registering.html',
     '../models/user_model',
-    './actions_with_user'
+    './requests_user'
 ], function($, _, Backbone, io, RegisteringTemplate, UserModel, DoSmthWithUserView){
     var RegisteringView = Backbone.View.extend({
         el: $('#container'),
-        initialize: function(){
+        initialize: function(socket_is_ready_obj){
+            this.socket_is_ready_obj = socket_is_ready_obj;
+        },
+        init: function(){
             this.render();
             this.form = this.$('form');
             this.first_name = this.form.find('#first_name');
@@ -21,6 +24,7 @@ define([
             "click #register": 'submitRegistering'
         },
         submitRegistering: function() {
+            var that = this;
             this.user_action = new DoSmthWithUserView();
             this.user_action.newUser({
                 first_name: this.first_name.val(),
@@ -30,7 +34,7 @@ define([
             });
             this.user_action.object.once('user_is_new', function(user){
                 $("#registeringForm").remove();
-                Backbone.history.navigate('profile/' + user.get("id"), true);
+                that.socket_is_ready_obj.trigger('get_socket', [user, 'reg']);
             });
         },
 

@@ -5,13 +5,15 @@ define([
     'text!/templates/navbar.html',
     './profile',
     '../models/user_model',
-    './actions_with_owner'
+    './requests_owner'
 ], function($, _, Backbone, pageTemplate, ProfileView, UserModel, DoSmthWithOwnerView){
 
     var NavbarView = Backbone.View.extend({
         el: $('#navbar'),
         id: '',
         initialize: function(){
+        },
+        init: function(){
             $('#navbar').show();
             var that = this;
             this.owner_action = new DoSmthWithOwnerView();

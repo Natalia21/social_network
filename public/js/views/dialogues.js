@@ -4,12 +4,15 @@ define([
     'backbone',
     'text!/templates/dialogue.html',
     '../models/user_model',
-    './actions_with_user',
-    './actions_with_owner'
+    './requests_user',
+    './requests_owner'
 ], function($, _, Backbone, DialogueTemplate, UserModel, DoSmthWithUserView, DoSmthWithOwnerView){
     var DialoguesView = Backbone.View.extend({
         el:  $('#content'),
         initialize: function(){
+        },
+        init: function(){
+            this.$el = $('#content');
             var that = this;
             this.owner_action = new DoSmthWithOwnerView();
             this.owner_action.getOwner();
@@ -57,18 +60,3 @@ define([
     });
     return DialoguesView;
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -8,7 +8,9 @@ define([
     var HeaderFriendsView = Backbone.View.extend({
         id: '',
         el:  $('#header'),
-        initialize: function(id){
+        initialize: function(){
+        },
+        init: function(id){
             $('#header').show();
             this.id = id;
             this.render();
@@ -22,7 +24,6 @@ define([
     });
     return HeaderFriendsView;
 });
-
 
 
 

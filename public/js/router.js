@@ -17,13 +17,13 @@ define([
     'views/write_msg',
     'views/dialogues',
     'views/one_dialogue',
-    'views/buttons_events',
+    'views/header_buttons',
     'views/my_friends',
-    'views/init'
-], function($, _, Backbone, io, LoginView, RegisteringView, NavbarView, GetUsersView, HeaderView, ProfileView, HeaderViewFriends, KillFriendView, ConfirmRequestView, AddFriendView, FilterSearchView, WriteMsgView, DialoguesView, OneDialogueView, ButtonsEvents, MyFriendsView2, InitView){
+    'views/init',
+    'views/message_alerts'
+], function($, _, Backbone, io, LoginView, RegisteringView, NavbarView, GetUsersView, HeaderView, ProfileView, HeaderViewFriends, KillFriendView, ConfirmRequestView, AddFriendView, FilterSearchView, WriteMsgView, DialoguesView, OneDialogueView, ButtonsEvents, MyFriendsView, InitView, MsgAlertsView){
     var AppRouter = Backbone.Router.extend({
         routes: {
-            //'': 'showProfile',
             'login': 'showLogin',
             'registering': 'showRegistering',
             'profile/:id': 'showProfile',
@@ -37,15 +37,11 @@ define([
         }
     });
 
-
     var initialize = function(){
         var init = new InitView();
         var socket_is_ready_obj = init.socket_is_ready_obj;
-        var viewHeader = null;
-        var viewHeaderFriends = null;
-        var navbar = null;
+        var sign_out_object = init.sign_out_object;
         var getUsersView = null;
-        var login = null;
         var app_router = new AppRouter;
         var object_for_filtred_data = {};
         _.extend(object_for_filtred_data, Backbone.Events);
@@ -53,73 +49,74 @@ define([
         object_for_filtred_data.once("getUsersView", function(getUsersView) {
             filtered_data.initialize(getUsersView);
         });
-        var write_msg = new WriteMsgView(socket_is_ready_obj);
-        var sign_out_object = init.sign_out_object;
+        var registering = new RegisteringView(socket_is_ready_obj);
+        var profile = new ProfileView();
+        var navbar = new NavbarView();
+        var viewHeader = new HeaderView();
+        var viewHeaderFriends = new HeaderViewFriends();
+        var login = new LoginView(socket_is_ready_obj);
+        var my_friends = new MyFriendsView();
+        var one_dialogue = new OneDialogueView(socket_is_ready_obj);
+        var dialogues = new DialoguesView();
+        new MsgAlertsView(socket_is_ready_obj);
+        new WriteMsgView(socket_is_ready_obj);
         new ButtonsEvents(sign_out_object);
         new KillFriendView();
         new ConfirmRequestView();
         new AddFriendView();
 
-        var buildView = function(){
-            navbar = new NavbarView();
-            viewHeader = new HeaderView();
-        };
 
-        var buildFriendView = function(id){
-            navbar = new NavbarView();
-            viewHeaderFriends = new HeaderViewFriends(id);
-        };
         app_router.on('route:defaultAction', function(actions){
             console.log('No route:', actions);
         });
 
         app_router.on('route:showLogin', function(){
-            console.log('ROUTE LOGIN');
-            if(!login){
-                login = new LoginView(socket_is_ready_obj)
-            }
-            else{
-                login.initialize(socket_is_ready_obj);
-            }
+            login.init();
         });
 
         app_router.on('route:showProfile', function(id){
-            new ProfileView(id);
-            buildView();
+            profile.init(id);
+            navbar.init();
+            viewHeader.init();
         });
 
         app_router.on('route:showMyFriends', function(id){
-            buildFriendView(id);
-            new MyFriendsView2(id);
+            navbar.init();
+            viewHeaderFriends.init(id);
+            my_friends.init(id);
         });
 
         app_router.on('route:showRefReq', function(id){
-            buildFriendView(id);
-            new MyFriendsView2(id);
-
+            viewHeaderFriends.init(id);
+            navbar.init();
+            my_friends.init(id);
         });
 
         app_router.on('route:showOneDialogue', function(id){
-            buildView();
-            new OneDialogueView(id);
+            viewHeader.init();
+            navbar.init();
+            one_dialogue.init(id);
         });
 
         app_router.on('route:showNewReq', function(id){
-            buildFriendView(id);
-            new MyFriendsView2(id);
+            viewHeaderFriends.init(id);
+            navbar.init();
+            my_friends.init(id);
         });
 
         app_router.on('route:showDialogues', function(){
-            buildView();
-            new DialoguesView();
+            viewHeader.init();
+            navbar.init();
+            dialogues.init();
         });
 
         app_router.on('route:showRegistering', function(){
-            new RegisteringView();
+            registering.init();
         });
 
         app_router.on('route:showUsersList', function(){
-            buildView();
+            viewHeader.init();
+            navbar.init();
             getUsersView =  new GetUsersView();
             object_for_filtred_data.trigger("getUsersView", getUsersView);
         });
