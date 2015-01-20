@@ -21,7 +21,7 @@ define([
                 $('#row').removeClass('full');
                 this.sign_out_object.trigger('sign_out');
                 var sign_out_model = new UserModel;
-                sign_out_model.save({}).then(function(){
+                sign_out_model.sign_out().then(function(){
                     Backbone.history.navigate('login', true);
                 });
             }

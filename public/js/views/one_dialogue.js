@@ -84,50 +84,86 @@ define([
                     that.coef++;
                     that.msg_action.getMsgs(owner.get("id"), user.get("id"), that.coef);
                     that.msg_action.object.once('msgs_is_fetched', function(msgs){
-                        that.pushMsgs(owner, user, msgs);
+                        that.pushMoreMsgs(owner, user, msgs);
                     });
                 }
             })
         },
-        pushMsgs: function(owner, user, msgs){
+        pushMoreMsgs: function(owner, user, msgs){
             var that = this;
+            var current_height;
             msgs.models.forEach(function(index){
-                    that.$el = $('#for_name_and_msg');
-                    var current_height = $('#for_name_and_msg').css('height');
-                    var compiledTemplate = _.template(DialogueTemplate);
-                    var name = '';
-                    if(index.from == owner.get("id")){
-                        name = owner.get("first_name") + ' ' + owner.get("last_name");
-                    }
-                    else{
-                        name = user.get("first_name") + ' ' + user.get("last_name");
-                    }
-                    that.$el.append(compiledTemplate({
-                        id: index.from,
-                        name: name,
-                        msg: index.text
-                    }));
-                    that.$el = $('#for_data');
-                    var compiledTemplate = _.template('<li class = "data_time"><%= time %></li>');
-                    that.$el.append(compiledTemplate({
-                        time: index.time
-                    }));
-                    var new_height = 450 - current_height.split('px')[0];
-                    $('#div_for_name_and_msg').css('padding-top', new_height + 'px');
-                    $('#div_for_data').css('padding-top', new_height + 'px');
-                    var children_name_and_msg = $('#for_name_and_msg').children();
-                    var children_date = $('#for_data').children();
-                    for(var i = 1; i < children_date.length; i++){
-                        children_date[i].setAttribute('style', 'padding-top: ' + children_name_and_msg[i * 2 - 1].offsetHeight + 'px');
-                    }
-                    $('#msg_box').animate({"scrollTop":$('#for_name_and_msg').css("height")}, 1);
+                that.$el = $('#for_name_and_msg');
+                current_height = $('#for_name_and_msg').css('height').split('px')[0];
+                var compiledTemplate = _.template(DialogueTemplate);
+                var name = '';
+                if(index.get("from") == owner.get("id")){
+                    name = owner.get("first_name") + ' ' + owner.get("last_name");
+                }
+                else{
+                    name = user.get("first_name") + ' ' + user.get("last_name");
+                }
+                that.$el.prepend(compiledTemplate({
+                    id: index.get("from"),
+                    name: name,
+                    msg: index.get("text")
+                }));
+                that.$el = $('#for_data');
+                var compiledTemplate = _.template('<li class = "data_time"><%= time %></li>');
+                that.$el.prepend(compiledTemplate({
+                    time: index.get("time")
+                }));
+                var new_height = 450 - current_height;
+                $('#div_for_name_and_msg').css('padding-top', new_height + 'px');
+                $('#div_for_data').css('padding-top', new_height + 'px');
+                var children_name_and_msg = $('#for_name_and_msg').children();
+                var children_date = $('#for_data').children();
+                for(var i = 1; i < children_date.length; i++){
+                    children_date[i].setAttribute('style', 'padding-top: ' + children_name_and_msg[i * 2 - 1].offsetHeight + 'px');
+                }
             });
+            $('#msg_box').animate({"scrollTop": current_height - that.initial_height.split('px')[0] + 'px'}, 1);
+            this.initial_height = current_height;
+        },
+        pushLastMsgs: function(owner, user, msgs){
+            var that = this;
+            msgs.models.reverse().forEach(function(index){
+                that.$el = $('#for_name_and_msg');
+                var current_height = $('#for_name_and_msg').css('height');
+                var compiledTemplate = _.template(DialogueTemplate);
+                var name = '';
+                if(index.get("from") == owner.get("id")){
+                    name = owner.get("first_name") + ' ' + owner.get("last_name");
+                }
+                else{
+                    name = user.get("first_name") + ' ' + user.get("last_name");
+                }
+                that.$el.append(compiledTemplate({
+                    id: index.get("from"),
+                    name: name,
+                    msg: index.get("text")
+                }));
+                that.$el = $('#for_data');
+                var compiledTemplate = _.template('<li class = "data_time"><%= time %></li>');
+                that.$el.append(compiledTemplate({
+                    time: index.get("time")
+                }));
+                var new_height = 450 - current_height.split('px')[0];
+                $('#div_for_name_and_msg').css('padding-top', new_height + 'px');
+                $('#div_for_data').css('padding-top', new_height + 'px');
+                var children_name_and_msg = $('#for_name_and_msg').children();
+                var children_date = $('#for_data').children();
+                for(var i = 1; i < children_date.length; i++){
+                    children_date[i].setAttribute('style', 'padding-top: ' + children_name_and_msg[i * 2 - 1].offsetHeight + 'px');
+                }
+                $('#msg_box').animate({"scrollTop":$('#for_name_and_msg').css("height")}, 1);
+            });
+            this.initial_height = $('#for_name_and_msg').css("height");
         },
         render: function(owner, user, msgs){
-            var that = this;
             var compiledTemplate = _.template('<div  id = "msg_box"><div id = "div_for_name_and_msg"><ul id = "for_name_and_msg"></ul></div><div id = "div_for_data"><ul id = "for_data"></ul></div></div>');
             this.$el.html(compiledTemplate);
-            this.pushMsgs(owner, user, msgs);
+            this.pushLastMsgs(owner, user, msgs);
             this.$el = $('#content');
             var compiledTemplate = _.template('<div id = "div_with_textarea"><center><textarea id = "text"></textarea><button type="submit" class="btn btn-primary" id = "submit_msg_in_dialogue">  Отправить  </button></center></div>');
             this.$el.append(compiledTemplate);

@@ -4,15 +4,15 @@ var app = Server.app;
 
 
 app.put("/user", function(req, res, next) {
-    if(req.body.friends.confirm == true){
+    if(req.body.friends.confirm == true){//confirm friend
         User.update({_id: req.body.id}, {$pull: {friends: {id: req.body.friends.id}}}, function(err, data){
             if(err) throw err;
         });
     }
-    if(req.body.friends.confirm == undefined && req.body.friends._new == undefined){
+    if(req.body.friends.confirm == undefined && req.body.friends._new == undefined){//kill friend
         next();
     }
-    else{
+    else{//add friend
         User.update({_id: req.body.id}, {$push: {friends: req.body.friends}}, function(err, data){
             if(err) throw err;
         });

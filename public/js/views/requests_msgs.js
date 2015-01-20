@@ -17,23 +17,27 @@ define([
             App.Collections.messages.id2 = id2;
             App.Collections.messages.fetch({
                 success: function (model, response) {
-                    console.log('success')
-                    console.log(response);
-                    console.log(model);
-                     /*  model.set({
-                            id: response[0]._id,
-                            email: response[0].email,
-                            first_name: response[0].first_name,
-                            last_name: response[0].last_name,
-                            friends: response[0].friends,
-                            messages: response[0].messages
-                        });*/
-                  that.object.trigger('msgs_is_fetched', model);
+                    if(response.length){
+                        var objs = [];
+                        if(typeof response[0] == 'string'){
+                            response.forEach(function(index){
+                                objs.push(JSON.parse(index));
+                            });
+                            model.set(objs);
+                        }
+                        else{
+                            model.set(response);
+                        }
+                        that.object.trigger('msgs_is_fetched', model);
+                    }
+                    else{
+                        that.object.trigger('msgs_is_absent');
+                    }
 
                 },
                 error: function (model, response) {
+                    console.log('error');
                     console.log(response);
-                    that.object.trigger('msgs_is_absent');
                 }
             })
         }

@@ -12,6 +12,7 @@ define([
         getOwner: function(){
             var that = this;
             var ownerModel = new UserModel();
+            App.Models.current_user = ownerModel;
             ownerModel.fetch({
                 success: function (model, response) {
                     if (response[0]) {

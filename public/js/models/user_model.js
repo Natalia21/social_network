@@ -1,23 +1,38 @@
 define([
     'jquery',
     'underscore',
-    'backbone'
-],function($, _, Backbone){
+    'backbone',
+    '../views/validation'
+],function($, _, Backbone, ValidationView){
     var UserModel = Backbone.Model.extend({
        urlRoot: '/user',
        url: '/user',
         "sync": syncMyModel,
         idAttribute : "id",
-/*        validate: function( attributes ){
-            if(!attributes.first_name || !attributes.last_name || !attributes.email || !attributes.password){
-                alert("Please, fill all fields!");
-                return "Please, fill all fields!";
+        validate: function( attributes ){
+            console.log(this.isNew());
+            if(this.isNew()){
+                var errors = [];
+                if(!attributes.first_name){
+                    errors.push({attr: 'first_name', msg: "Please, fill this fields!"});
+                }
+                if(!attributes.last_name){
+                    errors.push({attr: 'last_name', msg: "Please, fill this fields!"});
+                }
+                if(!attributes.email){
+                    errors.push({attr: 'email', msg: "Please, fill this fields!"});
+                }
+                if(!attributes.password){
+                    errors.push({attr: 'password', msg: "Please, fill this fields!"});
+                }
+                if(attributes.password.length < 6){
+                    errors.push({attr: 'password', msg: "Your password must have more then 5 symbols"});
+                }
+                if(!_.isEmpty(errors)){
+                    return errors;
+                }
             }
-            if(attributes.password.length < 6){
-                alert("Your password must have more then 5 symbols");
-                return "Your password must have more then 5 symbols";
-            }
-        },*/
+        },
         defaults : {
             id: null,
             first_name: "",
@@ -26,8 +41,21 @@ define([
             password: "",
             friends: [],
             messages: []
+        },
+        initialize: function(){
+           var valid = new ValidationView();
+           this.on("invalid", function(model, error){
+                valid.handleError(model, error)
+           });
+        },
+        sign_out: function () {
+            return $.ajax({
+                url: "sign_out",
+                method: "POST"
+            });
         }
     });
+
     function syncMyModel(method, model, options){
         options.url = model.url;
         if(method=='read'){
@@ -42,10 +70,11 @@ define([
         if(method=='read' && model.get("id")){
             options.url = model.url + '/' + model.get('id');
         }
-        if(method=='create' && !model.get("first_name") && !model.get("last_name") && !model.get("email") && !model.get("password")){
+      /*  if(method=='create' && !model.get("first_name") && !model.get("last_name") && !model.get("email") && !model.get("password")){
             options.url = '/sign_out';
-        }
+        }*/
         return Backbone.sync(method, model, options);
     }
+
     return UserModel;
 });

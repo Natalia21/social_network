@@ -20,8 +20,9 @@ define([
     'views/header_buttons',
     'views/my_friends',
     'views/init',
-    'views/message_alerts'
-], function($, _, Backbone, io, LoginView, RegisteringView, NavbarView, GetUsersView, HeaderView, ProfileView, HeaderViewFriends, KillFriendView, ConfirmRequestView, AddFriendView, FilterSearchView, WriteMsgView, DialoguesView, OneDialogueView, ButtonsEvents, MyFriendsView, InitView, MsgAlertsView){
+    'views/message_alerts',
+    'views/validation'
+], function($, _, Backbone, io, LoginView, RegisteringView, NavbarView, GetUsersView, HeaderView, ProfileView, HeaderViewFriends, KillFriendView, ConfirmRequestView, AddFriendView, FilterSearchView, WriteMsgView, DialoguesView, OneDialogueView, ButtonsEvents, MyFriendsView, InitView, MsgAlertsView, ValidationView){
     var AppRouter = Backbone.Router.extend({
         routes: {
             'login': 'showLogin',

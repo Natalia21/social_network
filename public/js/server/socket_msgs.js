@@ -21,16 +21,10 @@ io.sockets.on('connection', function (socket) {
             msg.save(function(err){
                 if(err) throw err;
             });
-            console.log(typeof message.time);
-            client.hset(message.from, message.to, message);
-            client.hset(message.to, message.from, message);
 
-           /* User.update({_id: ID}, {$push:{messages: message}}, function(err){
-                if(err) throw err;
-            });
-            User.update({_id: message.to}, {$push:{messages: message}}, function(err){
-                if(err) throw err;
-            });*/
+            client.hset(message.from, message.to, '{"from": "' + message.from + '", "to": "' + message.to + '", "text": "' + message.text + '", "time": "' + message.time + '"}');
+            client.hset(message.to, message.from, '{"from": "' + message.from + '", "to": "' + message.to + '", "text": "' + message.text + '", "time": "' + message.time + '"}');
+
             socket.emit('message_to_me', message);
 
             for(var i = 0; i < sockets.length; i++){

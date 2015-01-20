@@ -21,11 +21,9 @@ define([
                 that.msg_action = new RequestsMsgs();
                 that.msg_action.getMsgs(owner.get("id"));
                 that.msg_action.object.once('msgs_is_fetched', function(msgs) {
-                    console.log('in fetched ' + msgs);
                     that.render(owner, msgs);
                 });
                 that.msg_action.object.once('msgs_is_absent', function() {
-                    console.log('in absent')
                     that.msgsAreAbsent();
                 });
             });
@@ -36,39 +34,31 @@ define([
         },
         render: function(owner, msgs){
             var that = this;
-/*            if(owner.get("messages").length == 0){
-                var compiledTemplate = _.template('<h2>У вас пока нет сообщений</h2>');
-                this.$el.html(compiledTemplate);
-            }
-            else{*/
-                var compiledTemplate = _.template('<ul class = "nav users_list" id = "my_msgs"></ul>');
-                this.$el.html(compiledTemplate);
-                var dialoguesHasBeenInList = [];
-                owner.get("messages").reverse().forEach(function(index){
-                    var foreign_id = null;
-                    if(index.to != owner.get("id")){
-                        foreign_id = index.to;
-                    }
-                    else{
-                        foreign_id = index.from;
-                    }
-                    if(dialoguesHasBeenInList.indexOf(foreign_id) == -1) {
-                        dialoguesHasBeenInList.push(foreign_id);
-                        that.user_action = new DoSmthWithUserView();
-                        that.user_action.getUser(foreign_id);
-                        that.user_action.object.once('user_is_fetched', function(user){
-                            that.$el = $('#my_msgs');
-                            var compiledTemplate = _.template(DialogueTemplate);
-                            that.$el.append(compiledTemplate({
-                                id: user.get("id"),
-                                name: user.get("first_name") + ' ' + user.get("last_name"),
-                                msg: index.text,
-                                time: index.time
-                            }));
-                        });
-                    }
+            var compiledTemplate = _.template('<ul class = "nav users_list" id = "my_msgs"></ul>');
+            this.$el.html(compiledTemplate);
+            var dialoguesHasBeenInList = [];
+            msgs.models.forEach(function(index){
+                var foreign_id = null;
+                if(index.get("to") != owner.get("id")){
+                    foreign_id = index.get("to");
+                }
+                else{
+                    foreign_id = index.get("from");
+                }
+                dialoguesHasBeenInList.push(foreign_id);
+                that.user_action = new DoSmthWithUserView();
+                that.user_action.getUser(foreign_id);
+                that.user_action.object.once('user_is_fetched', function(user){
+                    that.$el = $('#my_msgs');
+                    var compiledTemplate = _.template(DialogueTemplate);
+                    that.$el.append(compiledTemplate({
+                        id: user.get("id"),
+                        name: user.get("first_name") + ' ' + user.get("last_name"),
+                        msg: index.get("text"),
+                        time: index.get("time")
+                    }));
                 });
-         //   }
+            });
             return this;
         }
     });
