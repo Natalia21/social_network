@@ -1,4 +1,4 @@
-var Server = require('../../../server');
+var Server = require('../../../../server');
 var app = Server.app;
 
 app.post("/sign_out", function(req, res) {

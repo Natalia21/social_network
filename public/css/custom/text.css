@@ -1,0 +1,5 @@
+.validation_error{
+    font-style: italic;
+    color: crimson;
+    position: fixed;
+}

@@ -8,32 +8,24 @@ define([
     var AddFriendView = Backbone.View.extend({
         el: $("#container"),
         initialize: function () {
-
+            $('input').focus(function(e){
+                $('#' + e.target.id).removeClass('error');
+                $('#' + e.target.id + '_error').remove();
+            });
         },
         handleError: function(model, error){
-            console.log(error);
-
-            $('form').css('height');
-            console.log($('form').css('height'));
-            this.$el.append(_.template('<div class="validation_error" id = "list"></div>'));
-            $('.validation_error').css('height', $('form').css('height'));
-            $('.validation_error').css('width', $('form').css('width'));
-
+            var that = this;
+            var width = $('form').css('width').split('px')[0];
+            var left = $("#" + error[0].attr).offset().left;
             error.forEach(function(index){
-                console.log(index.attr);
-                console.log($("#" + index.attr));
-                console.log($("#" + index.attr).css('border'));
-                $("#" + index.attr).css('border', 1 + 'px solid red');
-                console.log($("#" + index.attr).css('border'));
-                console.log($("#" + index.attr).css('top'));
-                console.log($("#" + index.attr).css('left'));
-                $('.validation_error').css('margin-bottom', $('form').css('width'));
+                $("#" + index.attr).addClass('error');
+                var top = $("#" + index.attr).offset().top;
+                var template = '<p class = "validation_error"  id = {{id}}>' + index.msg + '</p>';
+                var output = template.replace("{{id}}", index.attr + '_error');
+                $(that.el).append(output);
+                var elems = $('.validation_error');
+                $(elems[elems.length - 1]).offset({top: top, left: left + parseInt(width) + 10});
             });
-
-
-            this.$el = $('.validation_error');
-
-
         }
     });
     return AddFriendView;

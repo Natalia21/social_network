@@ -10,4 +10,6 @@
 @import "custom/button/sign_out.css";
 @import "custom/button/header.css";
 @import "custom/inputs/login.css";
+@import "custom/inputs/errors.css";
 @import "custom/alerts/msgs.css";
+@import "custom/text.css"

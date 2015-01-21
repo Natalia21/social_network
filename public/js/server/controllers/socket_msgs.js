@@ -1,4 +1,4 @@
-var Server = require('../../../server');
+var Server = require('../../../../server');
 var io = Server.io;
 var User = Server.User;
 var Message = Server.Message;

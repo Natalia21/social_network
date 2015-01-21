@@ -1,5 +1,4 @@
 var express = require('express'),
-    mongoose = require('mongoose'),
     http = require('http'),
     path = require('path'),
     session = require('express-session'),
@@ -7,20 +6,13 @@ var express = require('express'),
     client = redis.createClient(),
     app = express(),
     server = http.createServer(app),
-    io = require('socket.io').listen(server);
+    io = require('socket.io').listen(server),
+    fs = require('fs');
 
 
-mongoose.connect("mongodb://localhost/test", function (err) {
-    if (err) {
-        console.log("error in conecting with database")
-    } else {
-        console.log("successfully connected to the database");
-    }
-});
-
-
-var User = require('./public/js/server/user_scheme');
-var Message = require('./public/js/server/msg_scheme');
+require('./public/js/server/mongodb');
+var User = require('./public/js/server/models/user');
+var Message = require('./public/js/server/models/msg');
 
 app.configure(function(){
     app.use(express.bodyParser());
@@ -46,16 +38,13 @@ module.exports.User = User;
 module.exports.Message = Message;
 module.exports.client = client;
 
-require('./public/js/server/get_msgs');
-require('./public/js/server/socket_msgs');
-require('./public/js/server/login');
-require('./public/js/server/get_user_by_id');
-require('./public/js/server/get_owner');
-require('./public/js/server/registering');
-require('./public/js/server/sign_out');
-require('./public/js/server/update_user_friends');
-require('./public/js/server/get_all_users');
-require('./public/js/server/search');
+
+fs.readdirSync('./public/js/server/controllers').forEach(function (file) {
+    if (file.substr(-3) == '.js') {
+        require('./public/js/server/controllers/' + file);
+    }
+});
+
 
 server.listen(8888);
 

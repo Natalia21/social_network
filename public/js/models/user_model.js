@@ -10,7 +10,6 @@ define([
         "sync": syncMyModel,
         idAttribute : "id",
         validate: function( attributes ){
-            console.log(this.isNew());
             if(this.isNew()){
                 var errors = [];
                 if(!attributes.first_name){
@@ -21,9 +20,6 @@ define([
                 }
                 if(!attributes.email){
                     errors.push({attr: 'email', msg: "Please, fill this fields!"});
-                }
-                if(!attributes.password){
-                    errors.push({attr: 'password', msg: "Please, fill this fields!"});
                 }
                 if(attributes.password.length < 6){
                     errors.push({attr: 'password', msg: "Your password must have more then 5 symbols"});
@@ -70,9 +66,6 @@ define([
         if(method=='read' && model.get("id")){
             options.url = model.url + '/' + model.get('id');
         }
-      /*  if(method=='create' && !model.get("first_name") && !model.get("last_name") && !model.get("email") && !model.get("password")){
-            options.url = '/sign_out';
-        }*/
         return Backbone.sync(method, model, options);
     }
 
