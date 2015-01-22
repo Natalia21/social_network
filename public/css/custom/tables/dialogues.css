@@ -1,0 +1,21 @@
+#time{
+    width: 10%;
+    text-align: center;
+}
+#name_of_user{
+    padding-left: 10px;
+    width: 40%;
+    border-right: 1px solid #D0D0D0;
+}
+#dialogues_text{
+    word-wrap:break-word;
+    width: 50%;
+    padding-left: 10px;
+    height: 90px;
+    border-right: 1px solid #D0D0D0;
+}
+table{
+    table-layout: fixed;
+    width: 100%;
+    border-top: 1px solid #D0D0D0;
+}

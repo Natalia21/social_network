@@ -1,15 +1,29 @@
 @import "custom/form/my_form_style.css";
-@import "custom/main.css";
-@import "custom/msg.css";
+@import "custom/images/close.css";
+@import "custom/lists/dialogues.css";
+@import "custom/lists/header_friends.css";
+@import "custom/lists/users.css";
+@import "custom/references/dialogues.css";
+@import "custom/tables/dialogues.css";
+@import "custom/text/dialogues.css";
+@import "custom/text/msg.css";
+@import "custom/text/user_name.css";
+@import "custom/text/validation.css";
+/*
 @import "custom/dialogues.css";
-@import "custom/content/content.css";
-@import "custom/navbar/navbar.css";
-@import "custom/header/header.css";
+*/
+@import "custom/divs/content.css";
+@import "custom/divs/navbar.css";
+@import "custom/divs/container.css";
+@import "custom/divs/header.css";
+@import "custom/divs/dialogues.css";
+@import "custom/divs/msg.css";
 @import "custom/button/search.css";
 @import "custom/button/friend.css";
 @import "custom/button/sign_out.css";
-@import "custom/button/header.css";
+@import "custom/button/form.css";
+@import "custom/button/dialogues.css";
 @import "custom/inputs/login.css";
 @import "custom/inputs/errors.css";
 @import "custom/alerts/msgs.css";
-@import "custom/text.css"
+

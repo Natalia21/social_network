@@ -10,7 +10,8 @@
     "backbone": "latest",
     "bootstrap": "3",
     "requirejs": "latest",
-    "requirejs-text": "latest"
+    "requirejs-text": "latest",
+    "jasmine": "latest"
   }
 
 }

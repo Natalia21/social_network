@@ -1,0 +1,19 @@
+li{
+    list-style-type: none;
+}
+
+.dialogue_in_dialogues{
+    border-bottom: 1px solid #D0D0D0;
+}
+
+#for_name_and_msg{
+    display: inline-block;
+}
+
+#for_data{
+    display: inline-block;
+}
+
+.data_time{
+    margin-left: -50px;
+}
