@@ -6,14 +6,14 @@ define([
     '../models/user_model',
     '../collections/users_collection',
     './requests_owner'
-], function($, _, Backbone, userListTemplate, UserModel, UsersCollection, DoSmthWithOwnerView){
+], function($, _, Backbone, userListTemplate, UserModel, UsersCollection, RequestsOwner){
     var GetUsersView = Backbone.View.extend({
         initialize: function(){
             var that = this;
             this.$el = $('#content');
             this.$el.html(_.template('<br/> <input type="text" class="form-control" placeholder="Начните вводить имя пользователя…" id = "user_name"> <br/> <div id = "forUL"></div>'));
             App.Collections.users = new UsersCollection();
-            this.owner_action = new DoSmthWithOwnerView();
+            this.owner_action = new RequestsOwner();
             this.owner_action.getOwner();
             this.owner_action.object.once('owner_is_fetched', function(owner){
                 that.getUsers(owner);
@@ -27,7 +27,6 @@ define([
             App.Collections.users.fetch({
                 success: function(model, response){
                     var id_to_remove;
-                    var index_to_remove;
                     response.forEach(function(index, index2){
                             if (index._id != owner.id) {
                                 model.models[index2].set({
@@ -39,7 +38,6 @@ define([
                             }
                             else {
                                 id_to_remove = model.models[index2].cid;
-                                index_to_remove = index2;
                             }
                     });
                     if(id_to_remove){

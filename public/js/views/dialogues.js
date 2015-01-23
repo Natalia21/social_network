@@ -3,11 +3,10 @@ define([
     'underscore',
     'backbone',
     'text!/templates/dialogue.html',
-    '../models/user_model',
     './requests_user',
     './requests_owner',
     './requests_msgs'
-], function($, _, Backbone, DialogueTemplate, UserModel, DoSmthWithUserView, DoSmthWithOwnerView, RequestsMsgs){
+], function($, _, Backbone, DialogueTemplate, RequestsUser, RequestsOwner, RequestsMsgs){
     var DialoguesView = Backbone.View.extend({
         el:  $('#content'),
         initialize: function(){
@@ -15,7 +14,7 @@ define([
         init: function(){
             this.$el = $('#content');
             var that = this;
-            this.owner_action = new DoSmthWithOwnerView();
+            this.owner_action = new RequestsOwner();
             this.owner_action.getOwner();
             this.owner_action.object.once('owner_is_fetched', function(owner) {
                 that.msg_action = new RequestsMsgs();
@@ -46,7 +45,7 @@ define([
                     foreign_id = index.get("from");
                 }
                 dialoguesHasBeenInList.push(foreign_id);
-                that.user_action = new DoSmthWithUserView();
+                that.user_action = new RequestsUser();
                 that.user_action.getUser(foreign_id);
                 that.user_action.object.once('user_is_fetched', function(user){
                     that.$el = $('#my_msgs');

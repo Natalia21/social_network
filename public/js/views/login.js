@@ -4,7 +4,7 @@ define([
     'backbone',
     'text!/templates/login.html',
     './requests_user'
-], function($, _, Backbone, loginTemplate, DoSmthWithUserView){
+], function($, _, Backbone, loginTemplate, RequestsUser){
 
     var LoginView = Backbone.View.extend({
         el: $('#container'),
@@ -25,7 +25,7 @@ define([
         },
         submitSignIn: function() {
             var that = this;
-            this.user_action = new DoSmthWithUserView();
+            this.user_action = new RequestsUser();
             this.user_action.loginUser(this.email.val(), this.password.val());
             this.user_action.object.once('user_is_logined', function(params) {
                 var model = params[0];

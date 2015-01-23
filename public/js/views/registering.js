@@ -4,9 +4,8 @@ define([
     'backbone',
     'socketio',
     'text!/templates/registering.html',
-    '../models/user_model',
     './requests_user'
-], function($, _, Backbone, io, RegisteringTemplate, UserModel, DoSmthWithUserView){
+], function($, _, Backbone, io, RegisteringTemplate, RequestsUser){
     var RegisteringView = Backbone.View.extend({
         el: $('#container'),
         initialize: function(socket_is_ready_obj){
@@ -25,7 +24,7 @@ define([
         },
         submitRegistering: function() {
             var that = this;
-            this.user_action = new DoSmthWithUserView();
+            this.user_action = new RequestsUser();
             this.user_action.newUser({
                 first_name: this.first_name.val(),
                 last_name: this.last_name.val(),

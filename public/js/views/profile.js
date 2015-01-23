@@ -4,7 +4,7 @@ define([
     'backbone',
     'text!/templates/profile.html',
     './requests_user'
-], function($, _, Backbone, ProfileTemplate, DoSmthWithUserView){
+], function($, _, Backbone, ProfileTemplate, RequestsUser){
     var ProfileView = Backbone.View.extend({
         el:  $('#content'),
         initialize: function(){
@@ -12,7 +12,7 @@ define([
         init: function(id){
             var that = this;
             $('#content').show();
-            this.user_action = new DoSmthWithUserView();
+            this.user_action = new RequestsUser();
             this.user_action.getUser(id);
             this.user_action.object.once('user_is_fetched', function(user){
                 that.render(user);

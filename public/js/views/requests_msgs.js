@@ -33,7 +33,6 @@ define([
                     else{
                         that.object.trigger('msgs_is_absent');
                     }
-
                 },
                 error: function (model, response) {
                     console.log('error');

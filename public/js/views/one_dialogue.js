@@ -3,11 +3,10 @@ define([
     'underscore',
     'backbone',
     'text!/templates/one_dialogue.html',
-    '../models/user_model',
     './requests_user',
     './requests_owner',
     './requests_msgs'
-], function($, _, Backbone, DialogueTemplate, UserModel, DoSmthWithUserView, DoSmthWithOwnerView, RequestsMsgs){
+], function($, _, Backbone, DialogueTemplate, RequestsUser, RequestsOwner, RequestsMsgs){
     var OneDialogueView = Backbone.View.extend({
         el:  $('#content'),
         initialize: function(socket_is_ready_obj){
@@ -19,10 +18,10 @@ define([
             this.$el = $('#content');
             this.id = id;
             var that = this;
-            this.owner_action = new DoSmthWithOwnerView();
+            this.owner_action = new RequestsOwner();
             this.owner_action.getOwner();
             this.owner_action.object.once('owner_is_fetched', function(owner){
-                that.user_action = new DoSmthWithUserView();
+                that.user_action = new RequestsUser();
                 that.user_action.getUser(id);
                 that.user_action.object.once('user_is_fetched', function (user) {
                     that.msg_action = new RequestsMsgs();
@@ -51,7 +50,7 @@ define([
             var current_height = $('#for_name_and_msg').css('height');
             var compiledTemplate = _.template(DialogueTemplate);
             var name = '';
-            this.user_action = new DoSmthWithUserView();
+            this.user_action = new RequestsUser();
             if (message.from == owner.get("id")) {
                 name = owner.get("first_name") + ' ' + owner.get("last_name");
             }

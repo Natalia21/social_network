@@ -2,9 +2,8 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'text!/templates/header_friends.html',
-    '../models/user_model'
-], function($, _, Backbone, HeaderTemplate, UserModel){
+    'text!/templates/header_friends.html'
+], function($, _, Backbone, HeaderTemplate){
     var HeaderFriendsView = Backbone.View.extend({
         id: '',
         el:  $('#header'),
@@ -18,7 +17,7 @@ define([
         render: function(){
             var compiledTemplate = _.template(HeaderTemplate);
             this.$el.html(compiledTemplate({id: this.id}));
-            $('.add_style').css('margin-left', $('#navbar').css('width'));
+            $('.friends_action').css('margin-left', $('#navbar').css('width'));
             return this;
         }
     });

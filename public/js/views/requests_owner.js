@@ -4,7 +4,7 @@ define([
     'backbone',
     '../models/user_model'
 ], function($, _, Backbone, UserModel){
-    var DoSmthWithOwnerView = Backbone.View.extend({
+    var RequestsOwner = Backbone.View.extend({
         initialize: function(){
             this.object = {};
             _.extend(this.object, Backbone.Events);
@@ -58,7 +58,7 @@ define([
             });
         }
     });
-    return DoSmthWithOwnerView;
+    return RequestsOwner;
 });
 
 

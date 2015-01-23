@@ -4,11 +4,8 @@ define([
     'backbone',
     'socketio',
     'text!/templates/write_msg.html',
-    'text!/templates/one_dialogue.html',
-    'text!/templates/alerts.html',
-    '../models/user_model',
     './requests_user'
-], function($, _, Backbone, io, writeMsgTemplate, DialogueTemplate, AlertsTemplate, UserModel, DoSmthWithUserView){
+], function($, _, Backbone, io, writeMsgTemplate, RequestsUser){
     var WriteMsgView = Backbone.View.extend({
         el: $("#content"),
         initialize: function(socket_is_ready_obj){
@@ -64,7 +61,7 @@ define([
             $("#text").val('');
         },
         writeMsg: function(e){
-            this.user_action = new DoSmthWithUserView();
+            this.user_action = new RequestsUser();
             this.user_action.getUser(e.target.id.split('msg')[0]);
             this.user_action.object.once('user_is_fetched', function(user) {
                 that.user = user;

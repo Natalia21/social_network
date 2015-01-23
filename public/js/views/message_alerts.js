@@ -4,9 +4,8 @@ define([
     'backbone',
     'socketio',
     'text!/templates/alerts.html',
-    '../models/user_model',
     './requests_user'
-], function($, _, Backbone, io, AlertsTemplate, UserModel, DoSmthWithUserView){
+], function($, _, Backbone, io, AlertsTemplate, RequestsUser){
     var MsgAlertsView = Backbone.View.extend({
         el: $("#content"),
         initialize: function(socket_is_ready_obj){
@@ -38,7 +37,7 @@ define([
         createAlert: function(message){
             var that = this;
             var compiledTemplateAlert = _.template(AlertsTemplate);
-            this.user_action = new DoSmthWithUserView();
+            this.user_action = new RequestsUser();
             this.user_action.getUser(message.from);
             this.user_action.object.once('user_is_fetched', function (user) {
                 var user_name = user.get("first_name") + ' ' + user.get("last_name");

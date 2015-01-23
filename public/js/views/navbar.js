@@ -3,10 +3,8 @@ define([
     'underscore',
     'backbone',
     'text!/templates/navbar.html',
-    './profile',
-    '../models/user_model',
     './requests_owner'
-], function($, _, Backbone, pageTemplate, ProfileView, UserModel, DoSmthWithOwnerView){
+], function($, _, Backbone, pageTemplate, RequestsOwner){
 
     var NavbarView = Backbone.View.extend({
         el: $('#navbar'),
@@ -16,7 +14,7 @@ define([
         init: function(){
             $('#navbar').show();
             var that = this;
-            this.owner_action = new DoSmthWithOwnerView();
+            this.owner_action = new RequestsOwner();
             this.owner_action.getOwner();
             this.owner_action.object.once('owner_is_fetched', function(owner){
                 that.render(owner);

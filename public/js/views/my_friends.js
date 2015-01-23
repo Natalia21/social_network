@@ -3,9 +3,8 @@ define([
     'underscore',
     'backbone',
     'text!/templates/my_friends.html',
-    '../models/user_model',
     './requests_user'
-], function($, _, Backbone, myFriendsTemplate, UserModel, DoSmthWithUserView){
+], function($, _, Backbone, myFriendsTemplate, RequestsUser){
     var MyFriendsView = Backbone.View.extend({
         el:  $('#content'),
         my_friends: [],
@@ -48,7 +47,7 @@ define([
         },
         getMyFriends: function(id){
             var that = this;
-            this.user_action = new DoSmthWithUserView();
+            this.user_action = new RequestsUser();
             this.user_action.getUser(id);
             this.user_action.object.once('user_is_fetched', function(user){
                 var friends = user.get("friends");

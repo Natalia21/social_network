@@ -4,9 +4,8 @@ define([
     'backbone',
     'socketio',
     'text!/templates/profile.html',
-    './requests_user',
     './requests_owner'
-], function($, _, Backbone, io, ProfileTemplate, DoSmthWithUserView, DoSmthWithOwnerView){
+], function($, _, Backbone, io, ProfileTemplate, RequestsOwner){
     var InitView = Backbone.View.extend({
         el:  $('#content'),
         initialize: function(){
@@ -18,7 +17,7 @@ define([
             _.extend(this.friends_are_ready_obj, Backbone.Events);
             var that = this;
             var socket = null;
-            this.owner_action = new DoSmthWithOwnerView();
+            this.owner_action = new RequestsOwner();
             this.owner_action.getOwner();
 
             this.owner_action.object.once('owner_is_fetched', function(owner){
@@ -43,7 +42,12 @@ define([
             this.sign_out_object.on("sign_out", function(){
                 socket.disconnect();
             });
+
+            window.onresize = function(){
+                $('.friends_action').css('margin-left', $('#navbar').css('width'));
+            }
         }
+
     });
     return InitView;
 });

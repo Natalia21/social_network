@@ -4,7 +4,7 @@ define([
     'backbone',
     '../models/user_model'
 ], function($, _, Backbone, UserModel){
-    var DoSmthWithUserView = Backbone.View.extend({
+    var RequestsUser = Backbone.View.extend({
         initialize: function(){
             this.object = {};
             _.extend(this.object, Backbone.Events);
@@ -16,7 +16,6 @@ define([
                 email: email,
                 password: password
             });
-            App.Models.current_user = userModel;
             userModel.fetch({
                 success: function (model, response) {
                     if (response[0]) {
@@ -42,7 +41,6 @@ define([
             var userModel = new UserModel({
                 id: id
             });
-            App.Models.current_user = userModel;
             userModel.fetch({
                 success: function(model, response){
                     if(response[0]){
@@ -66,7 +64,6 @@ define([
         newUser: function(params){
             var that = this;
             var userModel = new UserModel(params);
-            App.Models.current_user = userModel;
             userModel.save({contentType: "application/json"}, {
                 success: function (model, response) {
                     if (response[0]) {
@@ -85,7 +82,6 @@ define([
             var userModel = new UserModel({
                 id: id
             });
-            App.Models.current_user = userModel;
             userModel.save(params, {
                 success: function (model, response) {
                     if (response[0]) {
@@ -107,7 +103,7 @@ define([
             });
         }
     });
-    return DoSmthWithUserView;
+    return RequestsUser;
 });
 
 
