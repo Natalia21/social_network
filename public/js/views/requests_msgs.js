@@ -9,12 +9,11 @@ define([
             this.object = {};
             _.extend(this.object, Backbone.Events);
         },
-        getMsgs: function(id1, id2, coef){
+        getMsgs: function(id, coef){
             var that = this;
             App.Collections.messages = new MsgCollection();
             App.Collections.messages.coef = coef;
-            App.Collections.messages.id1 = id1;
-            App.Collections.messages.id2 = id2;
+            App.Collections.messages.id = id;
             App.Collections.messages.fetch({
                 success: function (model, response) {
                     if(response.length){

@@ -22,11 +22,11 @@ define([
             this.owner_action = new RequestsOwner();
             this.owner_action.getOwner();
             this.owner_action.object.once('owner_is_fetched', function(owner){
-                that.owner_action.saveOwner(owner, {friends: {id: e.target.id.split('friend')[0], confirm: false, _new: false}});
-                that.owner_action.object.once('owner_is_saved', function(params){
-                    var owner = params[0];
+                that.owner_action.addFriend(owner, {friends: {id: e.target.id.split('friend')[0], confirm: false, _new: false}});
+                that.owner_action.object.once('owner_is_saved', function(owner){
+                    console.log('here')
                     that.user_action = new RequestsUser();
-                    that.user_action.saveUser(e.target.id.split('friend')[0], {friends: {id: owner.get("id"), confirm: null, _new: true}});
+                    that.user_action.addFriend(e.target.id.split('friend')[0], {friends: {id: owner.get("id"), confirm: null, _new: true}});
                     that.user_action.object.once('user_is_saved', function(user){
                         that.render(user, e);
                     });

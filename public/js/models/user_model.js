@@ -29,15 +29,6 @@ define([
                 }
             }
         },
-        defaults : {
-            id: null,
-            first_name: "",
-            last_name: "",
-            email: "",
-            password: "",
-            friends: [],
-            messages: []
-        },
         initialize: function(){
            var valid = new ValidationView();
            this.on("invalid", function(model, error){
@@ -49,11 +40,19 @@ define([
                 url: "sign_out",
                 method: "POST"
             });
+        },
+        login: function (data) {
+            return $.ajax({
+                url: "login",
+                method: "POST",
+                data: data
+            });
         }
     });
 
     function syncMyModel(method, model, options){
-        options.url = model.url;
+        console.log(method);
+        console.log(options);
         if(method=='read'){
             options.url = '/owner'
         }

@@ -5,13 +5,7 @@ define([
 ],function($, _, Backbone){
     var MessageModel = Backbone.Model.extend({
         urlRoot: '/message',
-        url: '/message',
-        defaults : {
-            from: "",
-            to: "",
-            text: "",
-            time: ""
-        }
+        url: '/message'
     });
     return MessageModel;
 });

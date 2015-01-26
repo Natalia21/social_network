@@ -1,4 +1,4 @@
-var Server = require('../../../../server');
+var Server = require('../../server');
 var User = Server.User;
 var app = Server.app;
 

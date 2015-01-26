@@ -1,4 +1,4 @@
-var Server = require('../../../../server');
+var Server = require('../../server');
 var io = Server.io;
 var User = Server.User;
 var Message = Server.Message;
@@ -22,8 +22,8 @@ io.sockets.on('connection', function (socket) {
                 if(err) throw err;
             });
 
-            client.hset(message.from, message.to, '{"from": "' + message.from + '", "to": "' + message.to + '", "text": "' + message.text + '", "time": "' + message.time + '"}');
-            client.hset(message.to, message.from, '{"from": "' + message.from + '", "to": "' + message.to + '", "text": "' + message.text + '", "time": "' + message.time + '"}');
+            client.hset(message.from, message.to, JSON.stringify(message));
+            client.hset(message.to, message.from, JSON.stringify(message));
 
             socket.emit('message_to_me', message);
 

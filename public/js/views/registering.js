@@ -32,8 +32,7 @@ define([
                 password: this.password.val()
             });
             this.user_action.object.once('user_is_new', function(user){
-                $("#registeringForm").remove();
-                that.socket_is_ready_obj.trigger('get_socket', [user, 'reg']);
+                that.socket_is_ready_obj.trigger('get_socket', user);
             });
         },
 

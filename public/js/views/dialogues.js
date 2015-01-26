@@ -18,7 +18,7 @@ define([
             this.owner_action.getOwner();
             this.owner_action.object.once('owner_is_fetched', function(owner) {
                 that.msg_action = new RequestsMsgs();
-                that.msg_action.getMsgs(owner.get("id"));
+                that.msg_action.getMsgs();
                 that.msg_action.object.once('msgs_is_fetched', function(msgs) {
                     that.render(owner, msgs);
                 });

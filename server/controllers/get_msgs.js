@@ -1,11 +1,13 @@
-var Server = require('../../../../server');
+var Server = require('../../server');
 var User = Server.User;
 var Message = Server.Message;
 var app = Server.app;
 var client = Server.client;
 
-app.get("/messages/:id1/:id2/:coef", function(req, res){
-    var cursor = Message.find({$or:[{from: req.params.id1, to: req.params.id2}, {from: req.params.id2, to: req.params.id1}]}).sort({time: -1}).limit(30).skip(30 * req.params.coef).exec(
+app.get("/messages/:id/:coef", function(req, res){
+    var obj1 = {from: req.params.id, to: req.user._id};
+    var obj2 = {from: req.user._id, to: req.params.id};
+    Message.find({$or:[obj1, obj2]}).sort({time: -1}).limit(30).skip(30 * req.params.coef).exec(
         function(err, data){
             if(err) throw err;
             res.send(data);
@@ -13,9 +15,9 @@ app.get("/messages/:id1/:id2/:coef", function(req, res){
     )
 });
 
-app.get("/messages/:id", function(req, res){
+app.get("/messages", function(req, res){
     var for_send = [];
-    client.hgetall(req.params.id, function(err, data){
+    client.hgetall(req.user._id, function(err, data){
         if(err) throw err;
         if(data) {
             Object.keys(data).forEach(function (key) {

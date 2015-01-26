@@ -31,7 +31,7 @@ define([
             this.owner_action = new RequestsOwner();
             this.owner_action.getOwner();
             this.owner_action.object.once('owner_is_fetched', function(owner){
-                that.owner_action.saveOwner(owner, {friends: {id: e.target.id.split('kill')[0]}});
+                that.owner_action.killFriend(owner, {friends: {id: e.target.id.split('kill')[0]}});
                 that.owner_action.object.once('owner_is_saved', function(param){
                     that.render(param, e);
                 });

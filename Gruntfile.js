@@ -1,5 +1,38 @@
 module.exports = function(grunt) {
     grunt.initConfig({
+        concurrent: {
+            dev: {
+                tasks: ['nodemon', 'watch'],
+                options: {
+                    logConcurrentOutput: true
+                }
+            }
+        },
+        nodemon: {
+            dev: {
+                script: 'server.js',
+                options: {
+                    watch: ['server'],
+                    delay: 1000,
+                    callback: function (nodemon) {
+                        nodemon.on('start', function (event) {
+                            console.log('start');
+                        });
+                        nodemon.on('restart', function (event) {
+                            console.log('restart');
+                        });
+                    }
+                }
+            }
+        },
+        watch: {
+            server: {
+                files: ['./server'],
+                options: {
+                    livereload: true
+                }
+            }
+        },
         copy: {
             jquery: {
                 expand: true,
@@ -52,8 +85,10 @@ module.exports = function(grunt) {
         }
 });
     grunt.loadNpmTasks("grunt-contrib-copy");
-
-    grunt.registerTask("build", ["copy"]);
+    grunt.loadNpmTasks("grunt-concurrent");
+    grunt.loadNpmTasks("grunt-contrib-watch");
+    grunt.loadNpmTasks('grunt-nodemon');
+    grunt.registerTask("build", ["copy", "concurrent"]);
     grunt.registerTask("default", "build");
 
 };

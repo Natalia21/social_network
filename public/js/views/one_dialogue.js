@@ -25,7 +25,7 @@ define([
                 that.user_action.getUser(id);
                 that.user_action.object.once('user_is_fetched', function (user) {
                     that.msg_action = new RequestsMsgs();
-                    that.msg_action.getMsgs(owner.get("id"), user.get("id"), that.coef);
+                    that.msg_action.getMsgs(user.get("id"), that.coef);
                     that.msg_action.object.once('msgs_is_fetched', function(msgs) {
                         that.user = user;
                         that.render(owner, user, msgs);
@@ -81,7 +81,7 @@ define([
             $('#msg_box').on('scroll', function(){
                 if($('#msg_box').scrollTop() == 0){
                     that.coef++;
-                    that.msg_action.getMsgs(owner.get("id"), user.get("id"), that.coef);
+                    that.msg_action.getMsgs(user.get("id"), that.coef);
                     that.msg_action.object.once('msgs_is_fetched', function(msgs){
                         that.pushMoreMsgs(owner, user, msgs);
                     });

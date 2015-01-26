@@ -7,12 +7,14 @@ var express = require('express'),
     app = express(),
     server = http.createServer(app),
     io = require('socket.io').listen(server),
-    fs = require('fs');
+    fs = require('fs'),
+    passport = require('passport'),
+    LocalStrategy  = require('passport-local').Strategy;
 
 
-require('./public/js/server/mongodb');
-var User = require('./public/js/server/models/user');
-var Message = require('./public/js/server/models/msg');
+require('./server/setup/mongodb');
+var User = require('./server/models/user');
+var Message = require('./server/models/msg');
 
 app.configure(function(){
     app.use(express.bodyParser());
@@ -21,9 +23,12 @@ app.configure(function(){
         secret: 'secret',
         resave: false,
         saveUninitialized: true
-    } ));
+    }));
+    app.use(passport.initialize());
+    app.use(passport.session());
     app.use(express.static(path.join(__dirname, 'public')));
 });
+
 
 
 // отлавливаем ошибки
@@ -39,9 +44,9 @@ module.exports.Message = Message;
 module.exports.client = client;
 
 
-fs.readdirSync('./public/js/server/controllers').forEach(function (file) {
+fs.readdirSync('./server/controllers').forEach(function (file) {
     if (file.substr(-3) == '.js') {
-        require('./public/js/server/controllers/' + file);
+        require('./server/controllers/' + file);
     }
 });
 

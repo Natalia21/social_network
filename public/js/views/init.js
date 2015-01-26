@@ -21,7 +21,7 @@ define([
             this.owner_action.getOwner();
 
             this.owner_action.object.once('owner_is_fetched', function(owner){
-                that.socket_is_ready_obj.trigger('get_socket', [owner, 'init']);
+                that.socket_is_ready_obj.trigger('get_socket', owner);
             });
             this.owner_action.object.once('owner_is_absent', function(){
                 that.owner_action.object.off('owner_is_fetched');
@@ -33,10 +33,12 @@ define([
                 url[1] == 'registering' ? Backbone.history.navigate('registering', true) :  Backbone.history.navigate('login', true);
             });
             this.socket_is_ready_obj.on('get_socket', function(owner){
-                socket = io.connect('http://localhost:8888', {query: 'ID=' + owner[0].get("id"), 'forceNew':true});
-                that.socket_is_ready_obj.trigger('socket_is_ready', socket, owner[0]);
+                socket = io.connect('http://localhost:8888', {query: 'ID=' + owner.get("id"), 'forceNew':true});
+                that.socket_is_ready_obj.trigger('socket_is_ready', socket, owner);
                 var url = document.URL.split('#');
-                url[1] && url[1] != 'login' && url[1] != 'registering'? Backbone.history.navigate(url[1], true) : Backbone.history.navigate('profile/' + owner[0].get("id"), true);
+                $("#registeringForm").remove();
+                $("#loginForm").remove();
+                url[1] && url[1] != 'login' && url[1] != 'registering'? Backbone.history.navigate(url[1], true) : Backbone.history.navigate('profile/' + owner.get("id"), true);
             });
 
             this.sign_out_object.on("sign_out", function(){

@@ -27,15 +27,12 @@ define([
             var that = this;
             this.user_action = new RequestsUser();
             this.user_action.loginUser(this.email.val(), this.password.val());
-            this.user_action.object.once('user_is_logined', function(params) {
-                var model = params[0];
-                var response = params[1];
-                if(response.text){
+            this.user_action.object.once('user_is_logined', function(model) {
+                if(model.text){
                     alert('Email or password is incorrect!');
                 }
                 else{
-                    $("#loginForm").remove();
-                    that.socket_is_ready_obj.trigger('get_socket', [model, 'login']);
+                    that.socket_is_ready_obj.trigger('get_socket', model);
                 }
             });
         },
