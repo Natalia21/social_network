@@ -10,6 +10,6 @@ mongodb
 
 ##Start
 ```
-node install
+npm install
 grunt
 ```
