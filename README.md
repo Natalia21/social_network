@@ -1,9 +1,15 @@
 # social_network
 
 ##Run
-redis-server
+
+```
+redis-server 
 mongodb
+```
+
 
 ##Start
+```
 node install
 grunt
+```
