@@ -69,7 +69,7 @@ define([
         newUser: function(params){
             var that = this;
             var userModel = new UserModel(params);
-            userModel.save({contentType: "application/json"}, {
+            userModel.save({contentType: 'application/json'}, {
                 success: function (model, response) {
                     if (response.length) {
                         model.set({id: response[0]._id, password: ''});

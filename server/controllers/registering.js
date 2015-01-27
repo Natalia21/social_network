@@ -3,7 +3,7 @@ var User = Server.User;
 var app = Server.app;
 
 
-app.post("/user", function(req, res, next) {
+app.post('/user', function(req, res, next) {
     var new_user = new User({first_name: req.body.first_name, last_name: req.body.last_name, email: req.body.email, password: req.body.password});
     new_user.save(function(err) {
         return err ? next(err) :

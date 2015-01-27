@@ -1,7 +1,7 @@
-describe("MongoDB", function() {
-    it("is there a server running", function(next) {
+describe('MongoDB', function() {
+    it('is there a server running', function(next) {
         var mongoose = require('mongoose');
-        mongoose.connect("mongodb://localhost/test", function(err) {
+        mongoose.connect('mongodb://localhost/test', function(err) {
             expect(err).toBeFalsy();
             next();
         });

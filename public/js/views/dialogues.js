@@ -5,8 +5,10 @@ define([
     'text!/templates/dialogue.html',
     './requests_user',
     './requests_owner',
-    './requests_msgs'
-], function($, _, Backbone, DialogueTemplate, RequestsUser, RequestsOwner, RequestsMsgs){
+    './requests_msgs',
+    'text!/templates/it_is_empty.html',
+    'text!/templates/msg_list.html'
+], function($, _, Backbone, DialogueTemplate, RequestsUser, RequestsOwner, RequestsMsgs, itIsEmptyTemplate, MsgListTemplate){
     var DialoguesView = Backbone.View.extend({
         el:  $('#content'),
         initialize: function(){
@@ -28,21 +30,21 @@ define([
             });
         },
         msgsAreAbsent: function(){
-            var compiledTemplate = _.template('<h2>У вас пока нет сообщений</h2>');
-            this.$el.html(compiledTemplate);
+            var compiledTemplate = _.template(itIsEmptyTemplate);
+            this.$el.html(compiledTemplate({msg: 'У вас пока нет сообщений'}));
         },
         render: function(owner, msgs){
             var that = this;
-            var compiledTemplate = _.template('<ul class = "nav users_list" id = "my_msgs"></ul>');
+            var compiledTemplate = _.template(MsgListTemplate);
             this.$el.html(compiledTemplate);
             var dialoguesHasBeenInList = [];
             msgs.models.forEach(function(index){
                 var foreign_id = null;
-                if(index.get("to") != owner.get("id")){
-                    foreign_id = index.get("to");
+                if(index.get('to') != owner.get('id')){
+                    foreign_id = index.get('to');
                 }
                 else{
-                    foreign_id = index.get("from");
+                    foreign_id = index.get('from');
                 }
                 dialoguesHasBeenInList.push(foreign_id);
                 that.user_action = new RequestsUser();
@@ -51,10 +53,10 @@ define([
                     that.$el = $('#my_msgs');
                     var compiledTemplate = _.template(DialogueTemplate);
                     that.$el.append(compiledTemplate({
-                        id: user.get("id"),
-                        name: user.get("first_name") + ' ' + user.get("last_name"),
-                        msg: index.get("text"),
-                        time: index.get("time")
+                        id: user.get('id'),
+                        name: user.get('first_name') + ' ' + user.get('last_name'),
+                        msg: index.get('text'),
+                        time: index.get('time')
                     }));
                 });
             });

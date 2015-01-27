@@ -7,7 +7,7 @@ define([
     './requests_user'
 ], function($, _, Backbone, io, AlertsTemplate, RequestsUser){
     var MsgAlertsView = Backbone.View.extend({
-        el: $("#content"),
+        el: $('#content'),
         initialize: function(socket_is_ready_obj){
             this.socket_is_ready_obj = socket_is_ready_obj;
             this.catchEvent();
@@ -17,7 +17,7 @@ define([
             this.socket_is_ready_obj.on('socket_is_ready', function(socket, owner){
                 that.socket = socket;
                 socket.on('message_to_user', function (message) {
-                    if(message.to == owner.get("id")){
+                    if(message.to == owner.get('id')){
                         that.createAlert(message);
                     }
                 });
@@ -40,12 +40,12 @@ define([
             this.user_action = new RequestsUser();
             this.user_action.getUser(message.from);
             this.user_action.object.once('user_is_fetched', function (user) {
-                var user_name = user.get("first_name") + ' ' + user.get("last_name");
+                var user_name = user.get('first_name') + ' ' + user.get('last_name');
                 var top = $('#header').css('height').split('px')[0];
                 var shift = $('.alert').css('height') ? $('.alert').length * $('.alert').css('height').split('px')[0] : 0;
                 that.$el = $('#content');
                 that.$el.append(compiledTemplateAlert({id: message.from, name: user_name, msg: message.text, time: message.time}));
-                that.elems = $(".alert");
+                that.elems = $('.alert');
                 $.when(
                     $(that.elems[that.elems.length - 1])
                         .css('top', $('#header').css('height'))

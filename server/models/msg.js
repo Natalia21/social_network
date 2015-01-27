@@ -6,6 +6,6 @@ var MsgSchema = new mongoose.Schema({
     text: String,
     time: String
 });
-var Message = mongoose.model("Message", MsgSchema);
+var Message = mongoose.model('Message', MsgSchema);
 
 module.exports = Message;

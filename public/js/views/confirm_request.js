@@ -3,21 +3,22 @@ define([
     'underscore',
     'backbone',
     './requests_user',
-    './requests_owner'
-], function($, _, Backbone, RequestsUser, RequestsOwner){
+    './requests_owner',
+    'text!/templates/it_is_empty.html'
+], function($, _, Backbone, RequestsUser, RequestsOwner, itIsEmptyTemplate){
     var ConfirmRequestView = Backbone.View.extend({
-        el: $("#content"),
+        el: $('#content'),
         initialize: function(){
         },
         events:{
             'click .confirm_friend': 'confirmFriend'
         },
         render: function(e){
-            $("#" + e.target.id.split('friend')[0]).remove();
-            if($("#my_friends_list")[0].children.length == 0){
-                var compiledTemplate = _.template('<h2>У вас нет новых заявок</h2>');
-                this.$el = $("#content");
-                this.$el.html(compiledTemplate);
+            $('#' + e.target.id.split('friend')[0]).remove();
+            if($('#my_friends_list')[0].children.length == 0){
+                var compiledTemplate = _.template(itIsEmptyTemplate);
+                this.$el = $('#content');
+                this.$el.html(compiledTemplate({msg: 'У вас нет новых заявок'}));
             }
         },
         confirmFriend: function(e){

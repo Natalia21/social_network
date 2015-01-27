@@ -7,22 +7,22 @@ define([
     var UserModel = Backbone.Model.extend({
        urlRoot: '/user',
        url: '/user',
-        "sync": syncMyModel,
-        idAttribute : "id",
+        'sync': syncMyModel,
+        idAttribute : 'id',
         validate: function( attributes ){
             if(this.isNew()){
                 var errors = [];
                 if(!attributes.first_name){
-                    errors.push({attr: 'first_name', msg: "Please, fill this fields!"});
+                    errors.push({attr: 'first_name', msg: 'Please, fill this fields!'});
                 }
                 if(!attributes.last_name){
-                    errors.push({attr: 'last_name', msg: "Please, fill this fields!"});
+                    errors.push({attr: 'last_name', msg: 'Please, fill this fields!'});
                 }
                 if(!attributes.email){
-                    errors.push({attr: 'email', msg: "Please, fill this fields!"});
+                    errors.push({attr: 'email', msg: 'Please, fill this fields!'});
                 }
                 if(attributes.password.length < 6){
-                    errors.push({attr: 'password', msg: "Your password must have more then 5 symbols"});
+                    errors.push({attr: 'password', msg: 'Your password must have more then 5 symbols'});
                 }
                 if(!_.isEmpty(errors)){
                     return errors;
@@ -31,38 +31,36 @@ define([
         },
         initialize: function(){
            var valid = new ValidationView();
-           this.on("invalid", function(model, error){
+           this.on('invalid', function(model, error){
                 valid.handleError(model, error)
            });
         },
         sign_out: function () {
             return $.ajax({
-                url: "sign_out",
-                method: "POST"
+                url: 'sign_out',
+                method: 'POST'
             });
         },
         login: function (data) {
             return $.ajax({
-                url: "login",
-                method: "POST",
+                url: 'login',
+                method: 'POST',
                 data: data
             });
         }
     });
 
     function syncMyModel(method, model, options){
-        console.log(method);
-        console.log(options);
         if(method=='read'){
             options.url = '/owner'
         }
         if(method=='read' && this.coef != undefined){
             options.url = '/get_msgs/' + this.coef;
         }
-        if(method=='read' && model.get("email") && model.get("password")){
+        if(method=='read' && model.get('email') && model.get('password')){
             options.url = model.url + '/' + model.get('email') + '/' + model.get('password');
         }
-        if(method=='read' && model.get("id")){
+        if(method=='read' && model.get('id')){
             options.url = model.url + '/' + model.get('id');
         }
         return Backbone.sync(method, model, options);

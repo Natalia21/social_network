@@ -4,7 +4,7 @@ var app = Server.app;
 var passport = require('passport');
 require('../setup/passport');
 
-app.post("/login", function(req, res, next){
+app.post('/login', function(req, res, next){
     passport.authenticate('login', function(err, user){
         return err ? next(err) :
                user ? req.logIn(user, function(err) {

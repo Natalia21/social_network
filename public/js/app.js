@@ -2,9 +2,8 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'router',
-    'collections/users_collection'
-], function($, _, Backbone, Router, UsersCollection){
+    'router'
+], function($, _, Backbone, Router){
     var initialize = function(){
         window.App = {
             Models: {},

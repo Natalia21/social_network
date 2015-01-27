@@ -22,7 +22,7 @@ define([
         },
         render: function(owner){
             var compiledTemplate = _.template(pageTemplate);
-            this.$el.html(compiledTemplate({id: owner.get("id")}));
+            this.$el.html(compiledTemplate({id: owner.get('id')}));
             this.addClasses();
             return this;
         },

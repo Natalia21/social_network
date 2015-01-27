@@ -11,10 +11,10 @@ define([
             this.sign_out_object = sign_out_object;
         },
         events: {
-            "click #search": function(){
+            'click #search': function(){
                 Backbone.history.navigate('search', true);
             },
-            "click #signOut": function(){
+            'click #signOut': function(){
                 $('#header').hide();
                 $('#navbar').hide();
                 $('#content').hide();

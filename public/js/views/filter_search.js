@@ -7,17 +7,17 @@ define([
     './requests_owner'
 ], function($, _, Backbone, userListTemplate, UsersCollection, RequestsOwner){
     var FilterSearchView = Backbone.View.extend({
-        el: $("#content"),
+        el: $('#content'),
         initialize: function(getUsersView){
             this.getUsersView = getUsersView;
         },
         events: {
-            "keyup #user_name": 'Filter'
+            'keyup #user_name': 'Filter'
         },
         Filter: function(e){
             var that = this;
             App.Collections.users = new UsersCollection();
-            App.Collections.users.filtered_data = e.target.value.toLowerCase();
+            App.Collections.users.filtered_data = e.target.value;
             this.owner_action = new RequestsOwner();
             this.owner_action.getOwner();
             this.owner_action.object.once('owner_is_fetched', function(owner){

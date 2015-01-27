@@ -20,7 +20,7 @@ define([
             this.password = this.form.find('#password');
         },
         events: {
-            "click #register": 'submitRegistering'
+            'click #register': 'submitRegistering'
         },
         submitRegistering: function() {
             var that = this;

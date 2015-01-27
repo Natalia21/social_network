@@ -3,8 +3,10 @@ define([
     'underscore',
     'backbone',
     'text!/templates/my_friends.html',
-    './requests_user'
-], function($, _, Backbone, myFriendsTemplate, RequestsUser){
+    './requests_user',
+    'text!/templates/it_is_empty.html',
+    'text!/templates/container_for_friends.html'
+], function($, _, Backbone, myFriendsTemplate, RequestsUser, itIsEmptyTemplate, containerForFriends){
     var MyFriendsView = Backbone.View.extend({
         el:  $('#content'),
         my_friends: [],
@@ -50,7 +52,7 @@ define([
             this.user_action = new RequestsUser();
             this.user_action.getUser(id);
             this.user_action.object.once('user_is_fetched', function(user){
-                var friends = user.get("friends");
+                var friends = user.get('friends');
                 that.num_of_friends = 0;
                 that.count = 0;
                 friends.forEach(function(index){
@@ -62,16 +64,16 @@ define([
                 });
                 if(that.num_of_friends == 0){
                     that.$el = $('#content');
-                    var compiledTemplate = _.template('<h2>' + that.text + '</h2>');
-                    that.$el.html(compiledTemplate);
+                    var compiledTemplate = _.template(itIsEmptyTemplate);
+                    that.$el.html(compiledTemplate({msg: that.text}));
                 }
             });
             return this;
         },
         render: function(){
             this.$el = $('#content');
-            var compiledTemplate = _.template('<ul class = "nav users_list" id = "my_friends_list"></ul>');
-            this.$el.html(compiledTemplate());
+            var compiledTemplate = _.template(containerForFriends);
+            this.$el.html(compiledTemplate);
             this.$el = $('#my_friends_list');
             var that = this;
             this.my_friends.forEach(function(index){

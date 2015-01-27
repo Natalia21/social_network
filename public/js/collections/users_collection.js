@@ -7,7 +7,7 @@ define([
     var UsersCollection = Backbone.Collection.extend({
         model: UserModel,
         url: '/users',
-        "sync": syncMyCollection
+        'sync': syncMyCollection
     });
     function syncMyCollection(method, model, options){
         options.url = model.url;

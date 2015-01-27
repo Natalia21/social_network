@@ -5,8 +5,11 @@ define([
     'text!/templates/one_dialogue.html',
     './requests_user',
     './requests_owner',
-    './requests_msgs'
-], function($, _, Backbone, DialogueTemplate, RequestsUser, RequestsOwner, RequestsMsgs){
+    './requests_msgs',
+    'text!/templates/time.html',
+    'text!/templates/msg_box.html',
+    'text!/templates/textarea_for_msg.html'
+], function($, _, Backbone, DialogueTemplate, RequestsUser, RequestsOwner, RequestsMsgs, TimeTemplate, MsgBoxTemplate, TextareaForMsgTemp){
     var OneDialogueView = Backbone.View.extend({
         el:  $('#content'),
         initialize: function(socket_is_ready_obj){
@@ -25,7 +28,7 @@ define([
                 that.user_action.getUser(id);
                 that.user_action.object.once('user_is_fetched', function (user) {
                     that.msg_action = new RequestsMsgs();
-                    that.msg_action.getMsgs(user.get("id"), that.coef);
+                    that.msg_action.getMsgs(user.get('id'), that.coef);
                     that.msg_action.object.once('msgs_is_fetched', function(msgs) {
                         that.user = user;
                         that.render(owner, user, msgs);
@@ -47,25 +50,29 @@ define([
         },
         buildView: function(owner, message){
             this.$el = $('#for_name_and_msg');
-            var current_height = $('#for_name_and_msg').css('height');
+            var current_height = $('#for_name_and_msg').css('height').split('px')[0];
             var compiledTemplate = _.template(DialogueTemplate);
             var name = '';
             this.user_action = new RequestsUser();
-            if (message.from == owner.get("id")) {
-                name = owner.get("first_name") + ' ' + owner.get("last_name");
+            if (message.from == owner.get('id')) {
+                name = owner.get('first_name') + ' ' + owner.get('last_name');
             }
-            if (message.from == this.user.get("id")) {
-                name = this.user.get("first_name") + ' ' + this.user.get("last_name");
+            if (message.from == this.user.get('id')) {
+                name = this.user.get('first_name') + ' ' + this.user.get('last_name');
             }
             if(name){
                 this.$el = $('#for_name_and_msg');
-                this.$el.append(compiledTemplate({id: message.from, name: name, msg: message.text}));
+                this.$el.append(compiledTemplate({
+                    id: message.from,
+                    name: name,
+                    msg: message.text
+                }));
                 this.$el = $('#for_data');
-                var compiledTemplate2 = _.template('<li class = "data_time"><%= time %></li>');
+                var compiledTemplate2 = _.template(TimeTemplate);
                 this.$el.append(compiledTemplate2({
                     time: message.time
                 }));
-                var new_height = 450 - current_height.split('px')[0];
+                var new_height = 450 - current_height;
                 $('#div_for_name_and_msg').css('padding-top', new_height + 'px');
                 $('#div_for_data').css('padding-top', new_height + 'px');
                 var children_name_and_msg = $('#for_name_and_msg').children();
@@ -73,7 +80,7 @@ define([
                 for (var i = 1; i < children_date.length; i++) {
                     children_date[i].setAttribute('style', 'padding-top: ' + children_name_and_msg[i * 2 - 1].offsetHeight + 'px');
                 }
-                $('#msg_box').animate({"scrollTop": $('#for_name_and_msg').css("height")});
+                $('#msg_box').animate({'scrollTop': $('#for_name_and_msg').css('height')});
             }
         },
         updateMsgHistory: function(owner, user){
@@ -81,7 +88,7 @@ define([
             $('#msg_box').on('scroll', function(){
                 if($('#msg_box').scrollTop() == 0){
                     that.coef++;
-                    that.msg_action.getMsgs(user.get("id"), that.coef);
+                    that.msg_action.getMsgs(user.get('id'), that.coef);
                     that.msg_action.object.once('msgs_is_fetched', function(msgs){
                         that.pushMoreMsgs(owner, user, msgs);
                     });
@@ -96,21 +103,21 @@ define([
                 current_height = $('#for_name_and_msg').css('height').split('px')[0];
                 var compiledTemplate = _.template(DialogueTemplate);
                 var name = '';
-                if(index.get("from") == owner.get("id")){
-                    name = owner.get("first_name") + ' ' + owner.get("last_name");
+                if(index.get('from') == owner.get('id')){
+                    name = owner.get('first_name') + ' ' + owner.get('last_name');
                 }
                 else{
-                    name = user.get("first_name") + ' ' + user.get("last_name");
+                    name = user.get('first_name') + ' ' + user.get('last_name');
                 }
                 that.$el.prepend(compiledTemplate({
-                    id: index.get("from"),
+                    id: index.get('from'),
                     name: name,
-                    msg: index.get("text")
+                    msg: index.get('text')
                 }));
                 that.$el = $('#for_data');
-                var compiledTemplate = _.template('<li class = "data_time"><%= time %></li>');
+                var compiledTemplate = _.template(TimeTemplate);
                 that.$el.prepend(compiledTemplate({
-                    time: index.get("time")
+                    time: index.get('time')
                 }));
                 var new_height = 450 - current_height;
                 $('#div_for_name_and_msg').css('padding-top', new_height + 'px');
@@ -121,50 +128,22 @@ define([
                     children_date[i].setAttribute('style', 'padding-top: ' + children_name_and_msg[i * 2 - 1].offsetHeight + 'px');
                 }
             });
-            $('#msg_box').animate({"scrollTop": current_height - that.initial_height.split('px')[0] + 'px'}, 1);
+            $('#msg_box').animate({'scrollTop': current_height - that.initial_height.split('px')[0] + 'px'}, 1);
             this.initial_height = current_height;
         },
         pushLastMsgs: function(owner, user, msgs){
             var that = this;
-            msgs.models.reverse().forEach(function(index){
-                that.$el = $('#for_name_and_msg');
-                var current_height = $('#for_name_and_msg').css('height');
-                var compiledTemplate = _.template(DialogueTemplate);
-                var name = '';
-                if(index.get("from") == owner.get("id")){
-                    name = owner.get("first_name") + ' ' + owner.get("last_name");
-                }
-                else{
-                    name = user.get("first_name") + ' ' + user.get("last_name");
-                }
-                that.$el.append(compiledTemplate({
-                    id: index.get("from"),
-                    name: name,
-                    msg: index.get("text")
-                }));
-                that.$el = $('#for_data');
-                var compiledTemplate = _.template('<li class = "data_time"><%= time %></li>');
-                that.$el.append(compiledTemplate({
-                    time: index.get("time")
-                }));
-                var new_height = 450 - current_height.split('px')[0];
-                $('#div_for_name_and_msg').css('padding-top', new_height + 'px');
-                $('#div_for_data').css('padding-top', new_height + 'px');
-                var children_name_and_msg = $('#for_name_and_msg').children();
-                var children_date = $('#for_data').children();
-                for(var i = 1; i < children_date.length; i++){
-                    children_date[i].setAttribute('style', 'padding-top: ' + children_name_and_msg[i * 2 - 1].offsetHeight + 'px');
-                }
-                $('#msg_box').animate({"scrollTop":$('#for_name_and_msg').css("height")}, 1);
+            msgs.models.reverse().forEach(function(message){
+                that.buildView(owner, message.attributes);
             });
-            this.initial_height = $('#for_name_and_msg').css("height");
+            this.initial_height = $('#for_name_and_msg').css('height');
         },
         render: function(owner, user, msgs){
-            var compiledTemplate = _.template('<div  id = "msg_box"><div id = "div_for_name_and_msg"><ul id = "for_name_and_msg"></ul></div><div id = "div_for_data"><ul id = "for_data"></ul></div></div>');
+            var compiledTemplate = _.template(MsgBoxTemplate);
             this.$el.html(compiledTemplate);
             this.pushLastMsgs(owner, user, msgs);
             this.$el = $('#content');
-            var compiledTemplate = _.template('<div id = "div_with_textarea"><center><textarea id = "text"></textarea><button type="submit" class="btn btn-primary" id = "submit_msg_in_dialogue">  Отправить  </button></center></div>');
+            var compiledTemplate = _.template(TextareaForMsgTemp);
             this.$el.append(compiledTemplate);
             this.updateMsgHistory(owner, user);
             return this;

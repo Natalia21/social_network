@@ -1,7 +1,7 @@
 var request = require('request');
-describe("GetAllUserCtrl", function() {
-    it("should respond", function (done) {
-        request("http://localhost:8888/users", function (error, response, body) {
+describe('GetAllUserCtrl', function() {
+    it('should respond', function (done) {
+        request('http://localhost:8888/users', function (error, response, body) {
             expect(body).toNotBe(null);
             JSON.parse(body).forEach(function(index){
              //   expect(index._id).toBeDefined();

@@ -7,7 +7,7 @@ define([
     var MessagesCollection = Backbone.Collection.extend({
         model: MessageModel,
         url: '/messages',
-        "sync": syncMyCollection
+        'sync': syncMyCollection
     });
     function syncMyCollection(method, model, options){
         options.url = model.url;

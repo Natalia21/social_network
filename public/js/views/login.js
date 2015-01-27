@@ -14,8 +14,8 @@ define([
             _.extend(this.object, Backbone.Events);
         },
         events: {
-            "click #signIn": 'submitSignIn',
-            "click #register_in_login": 'submitRegistering'
+            'click #signIn': 'submitSignIn',
+            'click #register_in_login': 'submitRegistering'
         },
         init: function(){
             this.render();
@@ -37,7 +37,7 @@ define([
             });
         },
         submitRegistering: function(){
-            $("#loginForm").remove();
+            $('#loginForm').remove();
             Backbone.history.navigate('registering', true);
         },
         render: function(){
