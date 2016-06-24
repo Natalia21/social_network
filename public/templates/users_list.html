@@ -1,10 +1,10 @@
-<li class = "user_in_list">
-    <a href = '#profile/<%= id %>' class = "user_name" style = "display: inline-block;">
+<li class="user_in_list" data-id="<%= _id %>">
+    <a href="#profile/<%= _id %>" class="user_name" style="display: inline-block;">
         <h3>
             <%= first_name %> <%= last_name %>
         </h3>
     </a>
-    <button type="submit" class="btn btn-primary add_friend" id = "<%= id %>friend">Добавить в друзья</button>
-    <button type="submit" class="btn btn-primary kill_friend" id = "<%= id %>kill_friend">Удалить из друзей</button>
-    <button type="submit" class="btn btn-primary write_msg" id = "<%= id %>msg">Написать сообщение</button>
+    <button type="submit" class="btn btn-primary add_friend">Добавить в друзья</button>
+    <button type="submit" class="btn btn-primary kill_friend">Удалить из друзей</button>
+    <button type="submit" class="btn btn-primary write_msg">Написать сообщение</button>
 </li>

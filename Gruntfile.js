@@ -44,6 +44,12 @@ module.exports = function(grunt) {
                 src: ["bootstrap.css", "bootstrap.css.map"],
                 dest: 'public/css/libs/bootstrap'
             },
+            jscookie: {
+                expand: true,
+                cwd: "bower_components/js-cookie/src",
+                src: ["js.cookie.js"],
+                dest: 'public/js/libs/js.cookie'
+            },
             socketio: {
                 expand: true,
                 cwd: "node_modules/socket.io/node_modules/socket.io-client",
@@ -57,30 +63,3 @@ module.exports = function(grunt) {
     grunt.registerTask("build", ["copy"]);
     grunt.registerTask("default", "build");
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -3,53 +3,40 @@ define([
     'underscore',
     'backbone',
     'text!/templates/profile.html',
-    './actions_with_user',
-    './actions_with_owner'
-], function($, _, Backbone, ProfileTemplate, DoSmthWithUserView, DoSmthWithOwnerView){
-    var ProfileView = Backbone.View.extend({
+    '../models/user_model',
+    './main'
+], function ($, _, Backbone, ProfileTmpl, UserModel, MainView) {
+    var ProfileView = App.Views.Main.extend({
+        template: _.template(ProfileTmpl),
         el:  $('#content'),
-        initialize: function(id){
+
+        initialize: function (id) {
+            this.user_id = id || App.session.getUser().get('_id');
+            this.render();
+        },
+
+        getUser: function () {
             var that = this;
-            $('#content').show();
-            this.user_action = new DoSmthWithUserView();
-            this.user_action.getUser(id);
-            this.user_action.object.once('user_is_fetched', function(user){
-                that.render(user);
+            var model = new UserModel({'_id': this.user_id});
+            model.fetch().success(function (data, aaa) {
+                that.renderUser(model);
             });
         },
-        render: function(user){
-            var compiledTemplate = _.template(ProfileTemplate);
-            this.$el.html(compiledTemplate(user.attributes));
+
+        renderUser: function (user) {
+            $(this.el).html(this.template(user.attributes));
+        },
+
+        render: function () {
+            var user = App.session.getUser();
+            if ( this.user_id == user.get('_id') ) {
+                $(this.el).html(this.template(user.attributes));
+            } else {
+                this.getUser();
+            }
             return this;
         }
     });
+
     return ProfileView;
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

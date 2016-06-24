@@ -11,12 +11,12 @@
 }
 #name_of_user{
     padding-left: 10px;
-    width: 40%;
+    width: 30%;
     border-right: 1px solid #D0D0D0;
 }
 #dialogues_text{
     word-wrap:break-word;
-    width: 50%;
+    width: 60%;
     padding-left: 10px;
     height: 90px;
     border-right: 1px solid #D0D0D0;
@@ -29,6 +29,7 @@ table{
     table-layout: fixed;
     width: 100%;
     border-top: 1px solid #D0D0D0;
+    overflow: hidden;
 }
 
 #msg_box{
@@ -79,9 +80,28 @@ li{
     border-bottom: 1px solid #D0D0D0;
 }
 
-#div_with_textarea{
+.dialogue_container {
+    position: relative;
+    height: 70%;
     width: 650px;
-    margin: auto;
+    margin-left: -15px;
+}
+
+.dialogue_container ul {
+    padding: 0;
+}
+
+.dialogue_container table tr {
+    height: 50px;
+}
+
+.dialogue_container table tr td:first-child {
+    padding-left: 15px;
+}
+
+.dialogue_container table tr td:last-child {
+    text-align: right;
+    padding-right: 15px;
 }
 
 #text{
@@ -90,4 +110,30 @@ li{
 
 #submit_msg_in_dialogue{
     width: 100%;
+}
+
+.alert {
+    padding-top: 5px !important;
+    padding-bottom: 20px !important;
+    background-color: rgb(239, 222, 222) !important;
+    border: 1px solid rgb(221, 206, 206) !important;
+    color: rgb(74, 74, 74) !important;
+    overflow: hidden;
+}
+
+.alert .title {
+    text-transform: capitalize;
+}
+
+.msgs_here {
+    overflow-y: scroll;
+    height: 100%;
+    padding-bottom: 160px;
+}
+
+#div_with_textarea {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    background-color: white;
 }

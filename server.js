@@ -3,77 +3,36 @@ var express = require('express'),
     http = require('http'),
     path = require('path'),
     session = require('express-session'),
-    app = express(),
-    server = http.createServer(app),
-    io = require('socket.io').listen(server);
+    connect_redis = require('connect-redis')(session),
+    config = require('./config'),
+    app = express();
 
-
-mongoose.connect("mongodb://localhost/test", function (err) {
-    if (err) {
+mongoose.connect(config.db, function (err) {
+    if ( err ) {
         console.log("error in conecting with database")
     } else {
         console.log("successfully connected to the database");
     }
 });
 
-
-var User = require('./public/js/server/user_scheme');
-var Socket = require('./public/js/server/socket_scheme');
-
-
-app.configure(function(){
+app.configure(function () {
     app.use(express.bodyParser());
     app.use(express.cookieParser());
     app.use(session({
+        store: new connect_redis(config.redis),
         secret: 'secret',
-        resave: false,
-        saveUninitialized: true
-    } ));
+        resave: true,
+        saveUninitialized: false
+    }));
     app.use(express.static(path.join(__dirname, 'public')));
 });
 
+var server = http.createServer(app),
+    io = require('socket.io').listen(server);
+
 module.exports.app = app;
 module.exports.io = io;
-module.exports.Socket = Socket;
-module.exports.User = User;
 
+require('./server/route.js');
 
-
-require('./public/js/server/socket_msgs');
-require('./public/js/server/login');
-require('./public/js/server/get_user_by_id');
-require('./public/js/server/get_owner');
-require('./public/js/server/registering');
-require('./public/js/server/sign_out');
-require('./public/js/server/update_user_friends');
-require('./public/js/server/get_all_users');
-require('./public/js/server/search');
-
-server.listen(8888);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+server.listen(config.port);

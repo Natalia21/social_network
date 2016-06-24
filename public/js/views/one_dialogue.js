@@ -3,82 +3,80 @@ define([
     'underscore',
     'backbone',
     'text!/templates/one_dialogue.html',
-    '../models/user_model',
-    './actions_with_user',
-    './actions_with_owner'
-], function($, _, Backbone, DialogueTemplate, UserModel, DoSmthWithUserView, DoSmthWithOwnerView){
-    var OneDialogueView = Backbone.View.extend({
+    'text!/templates/dialogue_container.html',
+    'text!/templates/new_msg.html',
+    './main'
+], function ($, _, Backbone, DialogueTmpl, DialogueContainerTmpl, NewMsgTmpl, MainView) {
+    var OneDialogueView = App.Views.Main.extend({
+        dialogue_tmpl: _.template(DialogueTmpl),
+        dialogue_container_tmpl: _.template(DialogueContainerTmpl),
+        new_msg_tpml: _.template(NewMsgTmpl),
+
         el:  $('#content'),
-        initialize: function(id){
-            this.id = id;
-            var that = this;
-            this.owner_action = new DoSmthWithOwnerView();
-            this.owner_action.getOwner();
-            this.owner_action.object.once('owner_is_fetched', function(owner){
-                that.user_action = new DoSmthWithUserView();
-                that.user_action.getUser(id);
-                that.user_action.object.once('user_is_fetched', function(user) {
-                    that.render(owner, user);
-                });
-            });
+
+        events: {
+            'click #submit_msg_in_dialogue': 'sendMsg'
         },
-        render: function(owner, user){
+
+        initialize: function (id) {
+            this.current_user = App.session.getUser();
+            this.friend_id = null;
+            this.dialogue_id = id;
+            this.getDialogue();
+            this.render();
+        },
+
+        sendMsg: function () {
             var that = this;
-            var compiledTemplate = _.template('<div  id = "msg_box"><div id = "div_for_name_and_msg"><ul id = "for_name_and_msg"></ul></div><div id = "div_for_data"><ul id = "for_data"></ul></div></div>');
-            this.$el.html(compiledTemplate);
-            owner.get("messages").forEach(function(index){
-                if(index.to == that.id || index.from == that.id){
-                    that.$el = $('#for_name_and_msg');
-                    var current_height = $('#for_name_and_msg').css('height');
-                    var compiledTemplate = _.template(DialogueTemplate);
-                    var name = '';
-                    if(index.from == owner.get("id")){
-                        name = owner.get("first_name") + ' ' + owner.get("last_name");
-                    }
-                    else{
-                        name = user.get("first_name") + ' ' + user.get("last_name");
-                    }
-                    that.$el.append(compiledTemplate({
-                        id: index.from,
-                        name: name,
-                        msg: index.text
-                    }));
-                    that.$el = $('#for_data');
-                    var compiledTemplate = _.template('<li class = "data_time"><%= time %></li>');
-                    that.$el.append(compiledTemplate({
-                        time: index.time
-                    }));
-                    var new_height = 450 - current_height.split('px')[0];
-                    $('#div_for_name_and_msg').css('padding-top', new_height + 'px');
-                    $('#div_for_data').css('padding-top', new_height + 'px');
-                    var children_name_and_msg = $('#for_name_and_msg').children();
-                    var children_date = $('#for_data').children();
-                    for(var i = 1; i < children_date.length; i++){
-                        children_date[i].setAttribute('style', 'padding-top: ' + children_name_and_msg[i * 2 - 1].offsetHeight + 'px');
-                    }
-                    $('#msg_box').animate({"scrollTop":$('#for_name_and_msg').css("height")}, 1);
+            var $text = $('#text');
+            var msg = {};
+            msg.to = this.friend_id;
+            msg.text = $text.val();
+            msg.user_id = this.current_user.get('_id');
+            msg.user_name = this.current_user.get('first_name') + ' ' + this.current_user.get('last_name');
+            var now = new Date(); 
+            msg.time = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
+            App.socket.emit('send_msg', msg);
+            $text.val('');
+            this.renderDialogue(msg);
+        },
+
+        getDialogue: function () {
+            var that = this;
+            $.ajax({
+                method: 'GET',
+                url:    '/dialogue/' + this.dialogue_id,
+                success: function (res) {
+                    that.setFriendId(res.participants);
+                    that.prepareData(res.msgs);
                 }
             });
-            this.$el = $('#content');
-            var compiledTemplate = _.template('<div id = "div_with_textarea"><center><textarea id = "text"></textarea><button type="submit" class="btn btn-primary" id = "submit_msg_in_dialogue">  Отправить  </button></center></div>');
-            this.$el.append(compiledTemplate);
+        },
+
+        setFriendId: function (users) {
+            this.friend_id = users[0] == this.current_user.get('_id') ? users[1] : users[0];
+        },
+
+        prepareData: function (msgs) {
+            var that = this;
+            _.each(msgs, function (msg) {
+                msg.time = msg.time.split('T')[1].split('.')[0]; //get time from date
+                msg.user_name = msg.from.first_name + ' ' + msg.from.last_name;
+                msg.user_id = msg.from._id;
+                that.renderDialogue(msg);
+            });
+        },
+
+        renderDialogue: function (msg) {
+            $('.dialogue_container ul').append(this.dialogue_tmpl(msg));
+        },
+
+        render: function () {
+            this.$el.html(this.dialogue_container_tmpl());
+            $('.dialogue_container').append(this.new_msg_tpml());
             return this;
         }
     });
+
     return OneDialogueView;
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

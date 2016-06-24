@@ -5068,7 +5068,6 @@ module.exports = hasBinary;
  */
 
 function hasBinary(data) {
-
   function _hasBinary(obj) {
     if (!obj) return false;
 

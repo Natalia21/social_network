@@ -3,107 +3,122 @@ define([
     'underscore',
     'backbone',
     'text!/templates/my_friends.html',
-    '../models/user_model',
-    './actions_with_user'
-], function($, _, Backbone, myFriendsTemplate, UserModel, DoSmthWithUserView){
-    var MyFriendsView = Backbone.View.extend({
+    'text!/templates/info_msg.html',
+    'text!/templates/friends_container.html',
+    '../models/current_user_model',
+    './user_actions'
+], function ($, _, Backbone, MyFriendsTmpl, InfoMsgTmpl, FriendsContainerTmpl, CurrentUserModel, UserActions) {
+    var MyFriendsView = App.Views.UserActions.extend({
+
+        my_friends_tmpl: _.template(MyFriendsTmpl),
+        info_msg_tmpl: _.template(InfoMsgTmpl),
+        friends_container_tmpl: _.template(FriendsContainerTmpl),
+
         el:  $('#content'),
-        my_friends: [],
-        initialize: function(id){
-            this.my_friends = [];
-            if(document.URL.indexOf('my_friends') != -1){
-                this.char_to_check = ['confirm', true];
-                this.text = 'У вас пока нет друзей';
-                this.var_to_hide = '.confirm_friend';
-            }
-            if(document.URL.indexOf('reference_requests') != -1){
-                this.char_to_check = ['confirm', false];
-                this.text = 'У вас нет неподтвержденных заявок';
-                this.var_to_hide = '.confirm_friend';
-            }
-            if(document.URL.indexOf('new_requests') != -1){
-                this.char_to_check = ['_new', true];
-                this.text = 'У вас нет новых заявок';
-                this.var_to_hide = '.kill_friend';
-            }
-            this.getMyFriends(id);
+
+        events: {
+            'click .add_friend': 'addFriend',
+            'click .kill_friend': 'removeFriend',
+            'click .write_msg': 'showMsgModal'
         },
-        pushUser: function(){
+
+        initialize: function (status) {
+            this.status = status;
+            this.model = new CurrentUserModel();
+            this.getMyFriends();
+        },
+
+        getMyFriends: function () {
             var that = this;
-            this.user_action.object.once('user_is_fetched', function(myFriend) {
-                if(that.my_friends[that.my_friends.length - 1] != myFriend){
-                    that.count++;
-                    that.my_friends.push(myFriend);
-                    if(that.count ==  that.num_of_friends){
-                        that.render();
+            var data = [];
+
+            this.model.fetch({
+                success: function (model, response) {
+                    switch (that.status) {
+                        case '1':
+                            data = that.model.get('friends');
+                            break;
+                        case '2':
+                            data = that.model.get('subscriptions');
+                            break;
+                        case '3':
+                            data = that.model.get('followers');
+                            break;
                     }
-                }
-                else{
-                    that.pushUser();
+                    if ( ! data.length ) {
+                        return that.renderMsg();
+                    }
+                    that.render(data);
+                },
+                error: function (model, response) {
+                    console.log('error', response);
                 }
             });
         },
-        getMyFriends: function(id){
+
+        addFriend: function (e) {
             var that = this;
-            this.user_action = new DoSmthWithUserView();
-            this.user_action.getUser(id);
-            this.user_action.object.once('user_is_fetched', function(user){
-                var friends = user.get("friends");
-                that.num_of_friends = 0;
-                that.count = 0;
-                friends.forEach(function(index){
-                    if(index[that.char_to_check[0]] == that.char_to_check[1]){
-                        that.num_of_friends++;
-                        that.user_action.getUser(index.id);
-                        that.pushUser();
+            var $user_list = $('.user_list'),
+                $add_btn   = $(e.currentTarget),
+                $user_row  = $add_btn.parent();
+            var id   = $user_row.data('id'),
+                name = $.trim($user_row.find('h3').text());
+
+            this.postFriend(id)
+                .success(function (response) {
+                    alert("Вы и " + name + " теперь друзья.");
+                    $user_row.remove();
+                    if ( $user_list.empty() ) {
+                        that.renderMsg();
                     }
+                })
+                .error(function (error) {
+                    console.log('error', error);
                 });
-                if(that.num_of_friends == 0){
-                    var compiledTemplate = _.template('<h2>' + that.text + '</h2>');
-                    that.$el.html(compiledTemplate);
-                }
-            });
-            return this;
         },
-        render: function(){
-            var compiledTemplate = _.template('<ul class = "nav users_list" id = "my_friends_list"></ul>');
-            this.$el.html(compiledTemplate());
-            this.$el = $('#my_friends_list');
+
+        removeFriend: function (e) {
             var that = this;
-            this.my_friends.forEach(function(index){
-                var compiledTemplate = _.template(myFriendsTemplate);
-                that.$el.append(compiledTemplate(index.attributes));
+            var $user_list  = $('.user_list'),
+                $remove_btn = $(e.currentTarget),
+                $user_row   = $remove_btn.parent();
+            var id   = $user_row.data('id'),
+                name = $.trim($user_row.find('h3').text());
+
+            this.deleteFriend()
+                .success(function (response) {
+                    alert("Вы удалили " + name + " из друзей.");
+                    $user_row.remove();
+                    if ( $user_list.empty() ) {
+                        that.renderMsg();
+                    }
+                })
+                .error(function (error) {
+                    console.log('error', error);
+                });
+        },
+
+        renderMsg: function () {
+            this.$el.html(this.info_msg_tmpl({status: this.status}));
+        },
+
+        render: function (users) {
+            var that = this;
+            this.$el.html(this.friends_container_tmpl());
+
+            var friendsContainer = $('#my_friends_list');
+
+            _.each(users, function (user) {
+                friendsContainer.append(that.my_friends_tmpl(user));
             });
-            $(this.var_to_hide).hide();
+
+            if ( this.status.match(/^[1-2]$/) ) {
+                $('.add_friend').hide();
+            } else {
+                $('.kill_friend').hide();
+            }
         }
     });
+
     return MyFriendsView;
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

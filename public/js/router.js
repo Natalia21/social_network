@@ -1,131 +1,155 @@
 define([
     'jquery',
     'underscore',
-    'backbone',
-    'socketio',
-    'views/login',
-    'views/registering',
-    'views/navbar',
-    'views/get_users',
-    'views/header',
-    'views/profile',
-    'views/header_friends',
-    'views/kill_friend',
-    'views/confirm_request',
-    'views/add_friend',
-    'views/filter_search',
-    'views/write_msg',
-    'views/dialogues',
-    'views/one_dialogue',
-    'views/buttons_events',
-    'views/my_friends',
-    'views/init'
-], function($, _, Backbone, io, LoginView, RegisteringView, NavbarView, GetUsersView, HeaderView, ProfileView, HeaderViewFriends, KillFriendView, ConfirmRequestView, AddFriendView, FilterSearchView, WriteMsgView, DialoguesView, OneDialogueView, ButtonsEvents, MyFriendsView2, InitView){
+    'backbone'
+], function ($, _, Backbone) {
     var AppRouter = Backbone.Router.extend({
         routes: {
-            //'': 'showProfile',
-            'login': 'showLogin',
-            'registering': 'showRegistering',
-            'profile/:id': 'showProfile',
-            'friends/my_friends/:id': 'showMyFriends',
-            'friends/reference_requests/:id': 'showRefReq',
-            'friends/new_requests/:id': 'showNewReq',
-            'search': 'showUsersList',
-            'messages': 'showDialogues',
-            'messages/:id': 'showOneDialogue',
-            '*actions': 'defaultAction'
+            'login': 'login',
+            'signUp': 'signUp',
+            'profile/:id': 'profile',
+            'friends/:status': 'friends',
+            'search': 'usersSearchResult',
+            'messages': 'messages',
+            'messages/:id': 'dialogue',
+            '*actions': 'profile'
+        },
+
+        views: {
+            navbar: null,
+            current: null,
+            header: null
+        },
+
+        route: function (route, name, callback) {
+            if ( ! _.isRegExp(route) ) {
+                route = this._routeToRegExp(route);
+            }
+            if ( _.isFunction(name) ) {
+                callback = name;
+                name = '';
+            }
+            if ( ! callback ) {
+                callback = this[name];   
+            }
+
+            var router = this;
+
+            Backbone.history.route(route, function(fragment) {
+                var args = router._extractParameters(route, fragment);
+                var go_to_route = router.before.apply(router, arguments);
+                if ( arguments[0] === go_to_route ) {
+                    callback && callback.apply(router, args);
+                    router.trigger.apply(router, ['route:' + name].concat(args));
+                    router.trigger('route', name, args);
+                    Backbone.history.trigger('route', router, name, args);
+                }
+            });
+            return this;
+        },
+
+        login: function () {
+            var that = this;
+            require(['views/login'], function (LoginView) {
+                that.views.current = new LoginView();
+            });
+        },
+
+        signUp: function () {
+            var that = this;
+            require(['views/sign_up'], function (SignUpView) {
+                that.views.current = new SignUpView();
+            });
+        },
+
+        profile: function (id) {
+            var that = this;
+            require(['views/profile'], function (ProfileView) {
+                that.views.current = new ProfileView(id);
+                that.navbar();
+                that.header();
+            });
+        },
+
+        friends: function (status) {
+            if ( ! status.match(/^[1-3]$/)) {
+                this.navigate('profile', true);
+            }
+            var that = this;
+            require(['views/my_friends'], function (FriendsView) {
+                that.views.current = new FriendsView(status);
+                that.navbar();
+                that.header();
+            });
+        },
+
+        usersSearchResult: function () {
+            var that = this;
+            require(['views/users'], function (UsersView) {
+                that.views.current = new UsersView();
+                that.navbar();
+                that.header();
+            });
+        },
+
+        messages: function () {
+            var that = this;
+            require(['views/dialogues'], function (MessagesView) {
+                that.views.current = new MessagesView();
+                that.navbar();
+                that.header();
+            });
+        },
+
+        dialogue: function (id) {
+            var that = this;
+            require(['views/one_dialogue'], function (DialogueView) {
+                that.views.current = new DialogueView(id);
+                that.navbar();
+                that.header();
+            });
+        },
+
+        navbar: function () {
+            var that = this;
+            require(['views/navbar'], function (NavbarView) {
+                that.views.navbar = new NavbarView();
+            });
+        },
+
+        header: function () {
+            var that = this;
+            require(['views/header'], function (HeaderView) {
+                that.views.header = new HeaderView();
+            });
+        },
+
+        before: function (route, params) {
+            _.each([this.views.current, 
+                    this.views.navbar, 
+                    this.views.header], 
+                    App.close
+                );
+            if (Cookies.get('user') && ! App.session.isAuthenticated()) {
+                App.setSessionFromCookie();
+            }
+
+            if ( ! App.session.isAuthenticated() && route !== 'signUp') {
+                this.navigate('login', true);
+                return 'login';
+            }
+            return route;
         }
     });
 
-
-    var initialize = function(){
-        var init = new InitView();
-        var socket_is_ready_obj = init.socket_is_ready_obj;
-        var viewHeader = null;
-        var viewHeaderFriends = null;
-        var navbar = null;
-        var getUsersView = null;
-        var login = null;
-        var app_router = new AppRouter;
-        var object_for_filtred_data = {};
-        _.extend(object_for_filtred_data, Backbone.Events);
-        var filtered_data = new FilterSearchView(getUsersView);
-        object_for_filtred_data.once("getUsersView", function(getUsersView) {
-            filtered_data.initialize(getUsersView);
+    var initialize = function () {
+        require(['views/main'], function (MainView) {
+            new MainView();
         });
-        var write_msg = new WriteMsgView(socket_is_ready_obj);
-        var sign_out_object = init.sign_out_object;
-        new ButtonsEvents(sign_out_object);
-        new KillFriendView();
-        new ConfirmRequestView();
-        new AddFriendView();
-
-        var buildView = function(){
-            navbar = new NavbarView();
-            viewHeader = new HeaderView();
-        };
-
-        var buildFriendView = function(id){
-            navbar = new NavbarView();
-            viewHeaderFriends = new HeaderViewFriends(id);
-        };
-        app_router.on('route:defaultAction', function(actions){
-            console.log('No route:', actions);
-        });
-
-        app_router.on('route:showLogin', function(){
-            console.log('ROUTE LOGIN');
-            if(!login){
-                login = new LoginView(socket_is_ready_obj)
-            }
-            else{
-                login.initialize(socket_is_ready_obj);
-            }
-        });
-
-        app_router.on('route:showProfile', function(id){
-            new ProfileView(id);
-            buildView();
-        });
-
-        app_router.on('route:showMyFriends', function(id){
-            buildFriendView(id);
-            new MyFriendsView2(id);
-        });
-
-        app_router.on('route:showRefReq', function(id){
-            buildFriendView(id);
-            new MyFriendsView2(id);
-
-        });
-
-        app_router.on('route:showOneDialogue', function(id){
-            buildView();
-            new OneDialogueView(id);
-        });
-
-        app_router.on('route:showNewReq', function(id){
-            buildFriendView(id);
-            new MyFriendsView2(id);
-        });
-
-        app_router.on('route:showDialogues', function(){
-            buildView();
-            new DialoguesView();
-        });
-
-        app_router.on('route:showRegistering', function(){
-            new RegisteringView();
-        });
-
-        app_router.on('route:showUsersList', function(){
-            buildView();
-            getUsersView =  new GetUsersView();
-            object_for_filtred_data.trigger("getUsersView", getUsersView);
-        });
-
+        App.Router.Main = new AppRouter();
         Backbone.history.start();
     };
+
     return {
         initialize: initialize
     };

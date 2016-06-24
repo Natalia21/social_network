@@ -1,16 +1,21 @@
-<li class = "dialogue_in_dialogues">
-    <a href = '#messages/<%= id %>' id = 'big_ref'>
+<li class="dialogue_in_dialogues">
+    <a href="#messages/<%= id %>" id="big_ref">
         <table>
             <tr>
-                <td id = "name_of_user">
-                    <a href = '#profile/<%= id %>' style = "display: inline-block;">
+                <td id="name_of_user">
+                    <a href="#profile/<%= user_id %>" style="display: inline-block;">
                         <h3>
-                            <%= name %>
+                            <%= user_name %>
                         </h3>
                     </a>
                 </td>
-                <td id = "dialogues_text"><%= msg %></td>
-                <td id = "time"><%= time %></td>
+                <td id="dialogues_text">
+                    <span class="you"> Вы: </span>
+                    <%= msg %>
+                </td>
+                <td id="time">
+                    <%= time %>
+                </td>
             </tr>
         </table>
     </a>

@@ -1,5 +1,6 @@
 .full{
     height: 100vh;
+    overflow: hidden;
 }
 
 .users_list{
@@ -20,4 +21,21 @@
     font-size: larger;
     border-bottom: none;
     display: inline-block;
+}
+
+.main {
+	display: none;
+}
+
+.search_container {
+    margin-top: 20px;
+}
+
+#msg_modal h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+#msg_modal textarea {
+    height: 100px;
 }

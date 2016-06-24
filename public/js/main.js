@@ -13,6 +13,15 @@ require.config({
                 'jquery'
             ],
             exports: 'Backbone'
+        },
+        'bootstrap': {
+            exports: 'bootstrap'
+        },
+        'jscookie': {
+            exports: 'jscookie'
+        },
+        'toaster': {
+            exports: 'toaster'
         }
     },
     paths: {
@@ -20,7 +29,10 @@ require.config({
         underscore: 'libs/underscore/underscore',
         backbone: 'libs/backbone/backbone',
         "text" : "libs/requirejs-text/text",
-        socketio: 'libs/socketio/socket.io'
+        socketio: 'libs/socketio/socket.io',
+        jscookie: 'libs/js.cookie/js.cookie',
+        bootstrap: 'libs/bootstrap/bootstrap',
+        toaster:   'libs/jquery.toaster/jquery.toaster'
     }
 
 });

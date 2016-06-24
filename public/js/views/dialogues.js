@@ -4,71 +4,72 @@ define([
     'backbone',
     'text!/templates/dialogue.html',
     '../models/user_model',
-    './actions_with_user',
-    './actions_with_owner'
-], function($, _, Backbone, DialogueTemplate, UserModel, DoSmthWithUserView, DoSmthWithOwnerView){
-    var DialoguesView = Backbone.View.extend({
+    './main'
+], function ($, _, Backbone, DialogueTmpl, UserModel, MainView) {
+    var DialoguesView = App.Views.Main.extend({
+        template: _.template(DialogueTmpl),
         el:  $('#content'),
-        initialize: function(){
+
+        socket_events: {
+            'message_to_user': 'gotNewMsg'
+        },
+
+        initialize: function () {
+            this.current_user_id = App.session.getUser().get('_id');
+            this.bindSockets();
+            this.getDialogues();
+        },
+
+        gotNewMsg: function (msg) {
+            this.getDialogues();
+        },
+
+        getDialogues: function () {
             var that = this;
-            this.owner_action = new DoSmthWithOwnerView();
-            this.owner_action.getOwner();
-            this.owner_action.object.once('owner_is_fetched', function(owner) {
-                that.render(owner);
+            $.ajax({
+                method: 'GET',
+                url: '/dialogues',
+                success: function (data) {
+                    that.prepareData(data);
+                }
             });
         },
-        render: function(owner){
+
+        prepareData: function (dialogues) {
             var that = this;
-            if(owner.get("messages").length == 0){
-                var compiledTemplate = _.template('<h2>У вас пока нет сообщений</h2>');
-                this.$el.html(compiledTemplate);
+            this.$el.empty();
+            _.each(dialogues, function (dialogue) {
+                var msg = dialogue.msgs[0];
+                msg.dialogue_id = dialogue._id;
+                msg.time = msg.time.split('T')[1].split('.')[0]; //get time from date
+                if ( msg.from._id == that.current_user_id ) {
+                    msg.user_name = msg.to.first_name + ' ' + msg.to.last_name;
+                    msg.user_id = msg.to._id;
+                } else {
+                    msg.user_name = msg.from.first_name + ' ' + msg.from.last_name;
+                    msg.user_id = msg.from._id;
+                }
+                that.renderDialogue(msg);
+            });
+        },
+
+        renderDialogue: function (msg) {
+            this.$el.append(this.template({
+                                        'id':        msg.dialogue_id,
+                                        'user_name': msg.user_name,
+                                        'user_id':   msg.user_id,
+                                        'msg':       msg.text,
+                                        'time':      msg.time
+                                    }));
+
+            var $you = $('.dialogue_in_dialogues:last-child .you');
+            if ( msg.from._id ==  this.current_user_id ) {
+                $you.show();
+            } else {
+                $you.hide();
             }
-            else{
-                var compiledTemplate = _.template('<ul class = "nav users_list" id = "my_msgs"></ul>');
-                this.$el.html(compiledTemplate);
-                var dialoguesHasBeenInList = [];
-                owner.get("messages").reverse().forEach(function(index){
-                    var foreign_id = null;
-                    if(index.to != owner.get("id")){
-                        foreign_id = index.to;
-                    }
-                    else{
-                        foreign_id = index.from;
-                    }
-                    if(dialoguesHasBeenInList.indexOf(foreign_id) == -1) {
-                        dialoguesHasBeenInList.push(foreign_id);
-                        that.user_action = new DoSmthWithUserView();
-                        that.user_action.getUser(foreign_id);
-                        that.user_action.object.once('user_is_fetched', function(user){
-                            that.$el = $('#my_msgs');
-                            var compiledTemplate = _.template(DialogueTemplate);
-                            that.$el.append(compiledTemplate({
-                                id: user.get("id"),
-                                name: user.get("first_name") + ' ' + user.get("last_name"),
-                                msg: index.text,
-                                time: index.time
-                            }));
-                        });
-                    }
-                });
-            }
-            return this;
         }
     });
+
     return DialoguesView;
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

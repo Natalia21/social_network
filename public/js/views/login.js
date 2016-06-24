@@ -2,52 +2,64 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'jscookie',
     'text!/templates/login.html',
-    './actions_with_user'
-], function($, _, Backbone, loginTemplate, DoSmthWithUserView){
+    '../models/current_user_model',
+    './main'
+], function ($, _, Backbone, Jscookie, LoginTmpl, CurrentUserModel, MainView) {
+    var LoginView = App.Views.Main.extend({
+        template: _.template(LoginTmpl),
+        el: $('.login_container'),
 
-    var LoginView = Backbone.View.extend({
-        el: $('#container'),
-        initialize: function(socket_is_ready_obj){
-            console.log('in sign in init');
-            this.socket_is_ready_obj = socket_is_ready_obj;
-            this.object = {};
-            _.extend(this.object, Backbone.Events);
-            this.render();
-            this.form = this.$('form');
-            this.email = this.form.find('#email');
-            this.password = this.form.find('#password');
-        },
         events: {
-            "click #signIn": 'submitSignIn',
-            "click #register_in_login": 'submitRegistering'
+            'click #signIn': 'submitSignIn',
+            'click #register_in_login': 'goToSignUp'
         },
-        submitSignIn: function() {
-            var that = this;
-            this.user_action = new DoSmthWithUserView();
-            this.user_action.loginUser(this.email.val(), this.password.val());
-            this.user_action.object.once('user_is_logined', function(params) {
-                var model = params[0];
-                var response = params[1];
-                if(response.text){
-                    alert('Email or password is incorrect!');
-                }
-                else{
-                    $("#loginForm").remove();
-                    that.socket_is_ready_obj.trigger('get_socket', [model, 'login']);
-                   // Backbone.history.navigate('profile/' + model.get("id"), true);
+
+        initialize: function () {
+            this.render();
+        },
+
+        submitSignIn: function (e) {
+            e.preventDefault();
+            var form = $('form');
+            var email = form.find('#email').val();
+            var password = form.find('#password').val();
+
+            $.ajax({
+                method: 'GET',
+                url: '/login/' + email + '/' + password,
+                success: function (model, response) {
+                    var userModel = new CurrentUserModel(model);
+                    App.session
+                                .setAuthenticated(true)
+                                .setUser(userModel);
+                    Cookies.set('user', userModel);
+                    App.addUser();
+                    var user_id = userModel.get('_id');
+                    Backbone.history.navigate('profile/' + user_id, true);
+                },
+                error: function (model, response) {
+                    if (response.status == 500) {
+                        alert(response.responseJSON.msg);
+                    } else {
+                        alert('Something went wrong...');
+                    }
+                    form.find('input').val('');
                 }
             });
         },
-        submitRegistering: function(){
-            $("#loginForm").remove();
-            Backbone.history.navigate('registering', true);
+
+        goToSignUp: function () {
+            Backbone.history.navigate('signUp', true);
         },
-        render: function(){
-            var compiledTemplate = _.template(loginTemplate);
-            this.$el.append(compiledTemplate);
+
+        render: function () {
+            $(this.el).html(this.template);
+            $('.main').hide();
             return this;
         }
     });
+
     return LoginView;
 });

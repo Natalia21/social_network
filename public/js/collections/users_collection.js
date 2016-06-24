@@ -3,18 +3,25 @@ define([
     'underscore',
     'backbone',
     '../models/user_model'
-],function($, _, Backbone, UserModel){
+],function ($, _, Backbone, UserModel) {
     var UsersCollection = Backbone.Collection.extend({
         model: UserModel,
         url: '/users',
-        "sync": syncMyCollection
+        search: filter
     });
-    function syncMyCollection(method, model, options){
-        options.url = model.url;
-        if(method=='read' && this.filtered_data){
-            options.url = model.url + '/' + this.filtered_data;
+
+    function filter (letters) {
+        var i = 0;
+        if (letters === "") {
+            return this;
         }
-        return Backbone.sync(method, model, options);
+        return _(
+            this.filter(function(data) {
+                var name = data.get('first_name').toLowerCase() + ' ' + data.get('last_name').toLowerCase();
+                return name.indexOf(letters) !== -1;
+            })
+        );        
     }
+
     return UsersCollection;
 });
