@@ -1,3 +1,4 @@
+var url = require('url');
 var config = {};
 var redisURL = url.parse(process.env.REDISCLOUD_URL) || {host: 'localhost', port: 6379};
 
