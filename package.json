@@ -1,9 +1,6 @@
 {
     "name": "sochial-network",
     "version": "0.0.0",
-    "scripts": {
-        "postinstall": "bower install"
-    },
     "dependencies": {
         "async": "^2.0.0-rc.6",
         "connect-redis": "^3.0.2",
