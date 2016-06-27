@@ -21,7 +21,7 @@ app.configure(function () {
     app.use(express.bodyParser());
     app.use(express.cookieParser());
     app.use(session({
-        store: new connect_redis(config.redis, {no_ready_check: true}),
+        store: new connect_redis(config.redis),
         secret: 'secret',
         resave: true,
         saveUninitialized: false
