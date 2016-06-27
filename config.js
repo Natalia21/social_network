@@ -3,7 +3,7 @@ var config = {};
 
 if ( process.env.NODE_ENV == 'production') {
 	var redisURL = url.parse(process.env.REDISCLOUD_URL);
-	var redisAuth = redisUrl.auth.split(':');
+	var redisAuth = redisURL.auth.split(':');
 	config.redis = {
 		host: redisURL.hostname,
 		port: redisURL.port,
