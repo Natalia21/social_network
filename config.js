@@ -2,12 +2,12 @@ var url = require('url');
 var config = {};
 
 if ( process.env.NODE_ENV == 'production') {
-	var redisURL = url.parse(process.env.REDISTOGO_URL);
+	var redisURL = url.parse(process.env.REDISCLOUD_URL);
 	var redisAuth = redisURL.auth.split(':');
 	config.redis = {
 		host: redisURL.hostname,
 		port: redisURL.port,
-		db: redisAuth[0],
+		db: 0,
 		pass: redisAuth[1]
 	}
 	config.db = process.env.MONGODB_URI;
