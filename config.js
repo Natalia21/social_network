@@ -3,7 +3,7 @@ var config = {};
 
 if ( process.env.NODE_ENV == 'production') {
 	var redisURL = url.parse(process.env.REDISCLOUD_URL);
-	config.db = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL;
+	config.db = process.env.MONGODB_URI;
 	config.port = process.env.PORT;
 } else {
 	var redisURL = { hostname: 'localhost', port: 6379 };
