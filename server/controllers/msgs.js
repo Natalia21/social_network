@@ -2,12 +2,12 @@ var Server   = require('../../server'),
     io       = Server.io,
     async    = require('async'),
     moment   = require('moment'),
-    client   = require('redis').createClient(),
+    //client   = require('redis').createClient(),
     Msg      = require('../models/msg'),
     Dialogue = require('../models/dialogue')
     User     = require('../models/user');
 
-io.on('connection', function (socket) {
+/*io.on('connection', function (socket) {
     socket.on('add_user', function (data) {
         if ( data.id ) {
             socket.user_id = data.id;
@@ -85,7 +85,7 @@ io.on('connection', function (socket) {
         }
     });
 
-});
+});*/
 
 var populate_data  = 'msgs',
     populate_fields = {

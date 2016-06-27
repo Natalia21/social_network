@@ -18,12 +18,12 @@ mongoose.connect(config.db, function (err) {
 app.configure(function () {
     app.use(express.bodyParser());
     app.use(express.cookieParser());
-/*    app.use(session({
+    app.use(session({
         store: new connect_redis(config.redis),
         secret: 'secret',
         resave: true,
         saveUninitialized: false
-    }));*/
+    }));
     app.use(express.static(path.join(__dirname, 'public')));
 });
 
