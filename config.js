@@ -2,7 +2,7 @@ var url = require('url');
 var config = {};
 
 if ( process.env.NODE_ENV == 'production') {
-	var redisURL = url.parse(process.env.REDISCLOUD_URL);
+	var redisURL = url.parse(process.env.REDIS_URL);
 	var redisAuth = redisURL.auth.split(':');
 	config.redis = {
 		host: redisURL.hostname,
