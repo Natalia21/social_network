@@ -3,13 +3,12 @@ var Server   = require('../../server'),
     async    = require('async'),
     moment   = require('moment'),
     config   = require('../../config'),
-    //client   = require('redis').createClient(config.redis.port, config.redis.hostname, {no_ready_check: true}),
+    client   = require('redis').createClient(config.redis.port, config.redis.host, {no_ready_check: true}),
     Msg      = require('../models/msg'),
     Dialogue = require('../models/dialogue')
     User     = require('../models/user');
 
-console.log('AAAAAAAAAAAAAAAAAAAA', config.redis.port, config.redis.hostname);
-/*io.on('connection', function (socket) {
+io.on('connection', function (socket) {
     socket.on('add_user', function (data) {
         if ( data.id ) {
             socket.user_id = data.id;
@@ -87,7 +86,7 @@ console.log('AAAAAAAAAAAAAAAAAAAA', config.redis.port, config.redis.hostname);
         }
     });
 
-});*/
+});
 
 var populate_data  = 'msgs',
     populate_fields = {
