@@ -7,6 +7,7 @@ var express = require('express'),
     config = require('./config'),
     app = express();
 
+console.log(config.db);
 mongoose.connect(config.db, function (err) {
     if ( err ) {
         console.log("error in conecting with database", err)
