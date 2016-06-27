@@ -1,7 +1,6 @@
 var url = require('url');
 var config = {};
-console.log(process.env);
-var redisURL = process.env.REDISCLOUD_URL ? url.parse(process.env.REDISCLOUD_URL) : {hostname: 'localhost', port: 6379};
+var redisURL = process.env.REDIS_URL ? url.parse(process.env.REDISCLOUD_URL) : {hostname: 'localhost', port: 6379};
 
 config.port = 8888;
 config.db = 'mongodb://localhost/test';
