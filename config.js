@@ -3,18 +3,21 @@ var config = {};
 
 if ( process.env.NODE_ENV == 'production') {
 	var redisURL = url.parse(process.env.REDISCLOUD_URL);
+	var redisAuth = redisUrl.auth.split(‘:’);
+	config.redis = {
+		host: redisURL.hostname,
+		port: redisURL.port,
+		db: redisAuth[0],
+		pass: redisAuth[1]
+	}
 	config.db = process.env.MONGODB_URI;
 	config.port = process.env.PORT;
 } else {
-	var redisURL = { hostname: 'localhost', port: 6379 };
+	config.redis = { hostname: 'localhost',
+					 port: 6379,
+					 db: 2 };
 	config.db = 'mongodb://localhost/test';
 	config.port = 8888;
-}
-
-config.redis = {
-	host: redisURL.hostname,
-	port: redisURL.port,
-	db: 2
 }
 
 module.exports = config;
