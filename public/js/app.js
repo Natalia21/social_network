@@ -62,7 +62,7 @@ define([
                     view.stopListening();
                     _.each(view.socket_events, function (method, key) {
                         if ( ! _.isFunction(method) ) {
-                            method = that[method];
+                            method = view[method];
                         }
                         App.socket.removeListener(key, method);
                     });

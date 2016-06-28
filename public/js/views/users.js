@@ -23,6 +23,7 @@ define([
         },
 
         initialize: function () {
+            self = this;
             this.render();
             this.users_collection = new UsersCollection();
             this.current_user_model = new CurrentUserModel();
@@ -30,23 +31,20 @@ define([
         },
 
         filter: function (e) {
-            var that = this;
             var filtered_data = $(e.currentTarget).val().toLowerCase();
             var filtred_users = this.users_collection.search(filtered_data);
             this.renderUsers(filtred_users._wrapped || filtred_users.models);
         },
 
         getUsers: function () {
-            var that = this;
             this.users_collection.fetch({
                 success: function (response) {
-                    that.renderUsers(that.users_collection.models);
+                    self.renderUsers(self.users_collection.models);
                 }
             });
         },
 
         addFriend: function (e) {
-            var that = this;
             var $add_btn    = $(e.currentTarget),
                 $user_row   = $add_btn.parent(),
                 $remove_btn = $user_row.find('.kill_friend');
@@ -87,17 +85,16 @@ define([
         },
 
         renderUsers: function (users) {
-            var that = this;
             var users_container = $('#list').empty();
 
             _.each(users, function (user) {
-                users_container.append(that.user_list_tmpl(user.attributes));
+                users_container.append(self.user_list_tmpl(user.attributes));
 
                 var $current_row = users_container.find('li:last-child'),
                     $add_btn = $current_row.find('.add_friend'),
                     $remove_btn = $current_row.find('.kill_friend');
 
-                if ( that.isUserAFriend(user) ) {
+                if ( self.isUserAFriend(user) ) {
                     $add_btn.hide();
                 } else {
                     $remove_btn.hide();

@@ -15,41 +15,40 @@ define([
         },
 
         initialize: function () {
+            self = this;
             this.current_user_id = App.session.getUser().get('_id');
             this.bindSockets();
             this.getDialogues();
         },
 
         gotNewMsg: function (msg) {
-            this.getDialogues();
+            self.getDialogues();
         },
 
         getDialogues: function () {
-            var that = this;
             $.ajax({
                 method: 'GET',
                 url: '/dialogues',
                 success: function (data) {
-                    that.prepareData(data);
+                    self.prepareData(data);
                 }
             });
         },
 
         prepareData: function (dialogues) {
-            var that = this;
             this.$el.empty();
             _.each(dialogues, function (dialogue) {
                 var msg = dialogue.msgs[0];
                 msg.dialogue_id = dialogue._id;
                 msg.time = msg.time.split('T')[1].split('.')[0]; //get time from date
-                if ( msg.from._id == that.current_user_id ) {
+                if ( msg.from._id == self.current_user_id ) {
                     msg.user_name = msg.to.first_name + ' ' + msg.to.last_name;
                     msg.user_id = msg.to._id;
                 } else {
                     msg.user_name = msg.from.first_name + ' ' + msg.from.last_name;
                     msg.user_id = msg.from._id;
                 }
-                that.renderDialogue(msg);
+                self.renderDialogue(msg);
             });
         },
 

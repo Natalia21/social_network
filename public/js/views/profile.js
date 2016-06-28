@@ -11,15 +11,15 @@ define([
         el:  $('#content'),
 
         initialize: function (id) {
+            self = this;
             this.user_id = id || App.session.getUser().get('_id');
             this.render();
         },
 
         getUser: function () {
-            var that = this;
             var model = new UserModel({'_id': this.user_id});
             model.fetch().success(function (data, aaa) {
-                that.renderUser(model);
+                self.renderUser(model);
             });
         },
 

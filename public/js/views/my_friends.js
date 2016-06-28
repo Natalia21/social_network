@@ -23,32 +23,32 @@ define([
         },
 
         initialize: function (status) {
+            self = this;
             this.status = status;
             this.model = new CurrentUserModel();
             this.getMyFriends();
         },
 
         getMyFriends: function () {
-            var that = this;
             var data = [];
 
             this.model.fetch({
                 success: function (model, response) {
-                    switch (that.status) {
+                    switch (self.status) {
                         case '1':
-                            data = that.model.get('friends');
+                            data = self.model.get('friends');
                             break;
                         case '2':
-                            data = that.model.get('subscriptions');
+                            data = self.model.get('subscriptions');
                             break;
                         case '3':
-                            data = that.model.get('followers');
+                            data = self.model.get('followers');
                             break;
                     }
                     if ( ! data.length ) {
-                        return that.renderMsg();
+                        return self.renderMsg();
                     }
-                    that.render(data);
+                    self.render(data);
                 },
                 error: function (model, response) {
                     console.log('error', response);
@@ -57,7 +57,6 @@ define([
         },
 
         addFriend: function (e) {
-            var that = this;
             var $user_list = $('.user_list'),
                 $add_btn   = $(e.currentTarget),
                 $user_row  = $add_btn.parent();
@@ -69,7 +68,7 @@ define([
                     alert("Вы и " + name + " теперь друзья.");
                     $user_row.remove();
                     if ( $user_list.empty() ) {
-                        that.renderMsg();
+                        self.renderMsg();
                     }
                 })
                 .error(function (error) {
@@ -78,7 +77,6 @@ define([
         },
 
         removeFriend: function (e) {
-            var that = this;
             var $user_list  = $('.user_list'),
                 $remove_btn = $(e.currentTarget),
                 $user_row   = $remove_btn.parent();
@@ -90,7 +88,7 @@ define([
                     alert("Вы удалили " + name + " из друзей.");
                     $user_row.remove();
                     if ( $user_list.empty() ) {
-                        that.renderMsg();
+                        self.renderMsg();
                     }
                 })
                 .error(function (error) {
@@ -103,13 +101,12 @@ define([
         },
 
         render: function (users) {
-            var that = this;
             this.$el.html(this.friends_container_tmpl());
 
             var friendsContainer = $('#my_friends_list');
 
             _.each(users, function (user) {
-                friendsContainer.append(that.my_friends_tmpl(user));
+                friendsContainer.append(self.my_friends_tmpl(user));
             });
 
             if ( this.status.match(/^[1-2]$/) ) {

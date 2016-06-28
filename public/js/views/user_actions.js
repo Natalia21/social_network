@@ -10,9 +10,6 @@ define([
     App.Views.UserActions = App.Views.Main.extend({
     	modal_tmpl: _.template(ModalTmpl),
 
-        initialize: function () {
-        },
-
         postFriend: function (id) {
         	return $.ajax({
         	    method: 'POST',
@@ -30,7 +27,6 @@ define([
         },
 
         showMsgModal: function (e) {
-            var that = this;
             var $msg_btn   = $(e.currentTarget),
                 $user_row  = $msg_btn.parent(),
                 $send_msg  = null;
