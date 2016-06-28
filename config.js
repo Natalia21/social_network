@@ -8,7 +8,8 @@ if ( process.env.NODE_ENV == 'production') {
 		host: redisURL.hostname,
 		port: redisURL.port,
 		db: 0,
-		pass: redisAuth[1]
+		pass: redisAuth[1],
+		no_ready_check: true
 	}
 	config.db = process.env.MONGODB_URI;
 	config.port = process.env.PORT;
