@@ -39,7 +39,9 @@ define([
                 $send_msg = $('.send_msg');
             }
 
-            $send_msg.unbind('click');
+            if ( $send_msg ) {
+                $send_msg.unbind('click');
+            }
             $send_msg.click(function () {
                 var text = $modal.find('textarea').val();
                 var msg = {'to': id, 'text': text};
