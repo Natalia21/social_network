@@ -11,6 +11,6 @@ var DialogueSchema = new mongoose.Schema({
     }]
 });
 
-var Dialogue = mongoose.model("Dialogue", DialogueSchema);
+var Dialogue = mongoose.model('Dialogue', DialogueSchema);
 
 module.exports = Dialogue;

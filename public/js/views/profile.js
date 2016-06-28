@@ -18,7 +18,7 @@ define([
 
         getUser: function () {
             var model = new UserModel({'_id': this.user_id});
-            model.fetch().success(function (data, aaa) {
+            model.fetch().success(function () {
                 self.renderUser(model);
             });
         },

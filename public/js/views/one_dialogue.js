@@ -42,7 +42,7 @@ define([
                 'text': $text.val(),
                 'user_id': this.current_user.get('_id'),
                 'user_name': this.current_user.get('first_name') + ' ' + this.current_user.get('last_name'),
-                'time': now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds()
+                'time': now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds()
             };
 
             App.socket.emit('send_msg', msg);

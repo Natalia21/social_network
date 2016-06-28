@@ -11,8 +11,7 @@ define([
     });
 
     function filter (letters) {
-        var i = 0;
-        if (letters === "") {
+        if (letters === '') {
             return this;
         }
         return _(

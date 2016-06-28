@@ -28,7 +28,7 @@ require.config({
         jquery: 'libs/jquery/jquery',
         underscore: 'libs/underscore/underscore',
         backbone: 'libs/backbone/backbone',
-        "text" : "libs/requirejs-text/text",
+        text : 'libs/requirejs-text/text',
         socketio: 'libs/socketio/socket.io',
         jscookie: 'libs/js.cookie/js.cookie',
         bootstrap: 'libs/bootstrap/bootstrap',

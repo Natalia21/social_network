@@ -17,6 +17,6 @@ var MsgSchema = new mongoose.Schema({
     }
 });
 
-var Msg = mongoose.model("Msg", MsgSchema);
+var Msg = mongoose.model('Msg', MsgSchema);
 
 module.exports = Msg;

@@ -12,7 +12,7 @@ define([
         el: $('.login_container'),
 
         events: {
-            "click #register": 'submitSignUp'
+            'click #register': 'submitSignUp'
         },
 
         initialize: function () {
@@ -33,7 +33,7 @@ define([
                 password: password
             });
             userModel.save({}, {
-                success: function (model, response) {
+                success: function (model) {
                     App.session
                                 .setAuthenticated(true)
                                 .setUser(model);
@@ -42,9 +42,9 @@ define([
                     var user_id = userModel.get('_id');
                     Backbone.history.navigate('profile/' + user_id, true);
                 },
-                error: function (model, response, status) {
-                    if (response.status === 500) {
-                        alert(response.responseJSON.msg);
+                error: function (model, res) {
+                    if (res.status === 500) {
+                        alert(res.responseJSON.msg);
                     } else {
                         alert('Something went wrong...');
                     }

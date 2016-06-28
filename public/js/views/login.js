@@ -29,7 +29,7 @@ define([
             $.ajax({
                 method: 'GET',
                 url: '/login/' + email + '/' + password,
-                success: function (model, response) {
+                success: function (model) {
                     var userModel = new CurrentUserModel(model);
                     App.session
                                 .setAuthenticated(true)
@@ -39,9 +39,9 @@ define([
                     var user_id = userModel.get('_id');
                     Backbone.history.navigate('profile/' + user_id, true);
                 },
-                error: function (model, response) {
-                    if (response.status == 500) {
-                        alert(response.responseJSON.msg);
+                error: function (model, res) {
+                    if (res.status == 500) {
+                        alert(res.responseJSON.msg);
                     } else {
                         alert('Something went wrong...');
                     }

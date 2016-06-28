@@ -38,7 +38,7 @@ define([
 
         getUsers: function () {
             this.users_collection.fetch({
-                success: function (response) {
+                success: function () {
                     self.renderUsers(self.users_collection.models);
                 }
             });
@@ -52,8 +52,8 @@ define([
                 name = $.trim($user_row.find('h3').text());
 
             this.postFriend(id)
-                .success(function (response) {
-                    alert("Вы отправили заявку в друзья пользователю " + name);
+                .success(function () {
+                    alert('Вы отправили заявку в друзья пользователю ' + name);
                     $add_btn.hide();
                     $remove_btn.show();
                 })
@@ -69,9 +69,9 @@ define([
             var id   = $user_row.data('id'),
                 name = $.trim($user_row.find('h3').text());
 
-            this.deleteFriend()
-                .success(function (response) {
-                    alert("Вы удалили " + name + " из друзей.");
+            this.deleteFriend(id)
+                .success(function () {
+                    alert('Вы удалили ' + name + ' из друзей.');
                     $add_btn.show();
                     $remove_btn.hide();
                 })
@@ -105,7 +105,7 @@ define([
             return this;
         },
 
-        render: function (owner) {
+        render: function () {
             $(this.el).html(this.search_tmpl());
         }
     });

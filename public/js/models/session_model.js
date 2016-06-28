@@ -9,7 +9,7 @@ define([
             user: null
         },
 
-        initialize: function(options) {
+        initialize: function () {
 
         },
 

@@ -33,7 +33,7 @@ define([
             var data = [];
 
             this.model.fetch({
-                success: function (model, response) {
+                success: function () {
                     switch (self.status) {
                         case '1':
                             data = self.model.get('friends');
@@ -50,8 +50,8 @@ define([
                     }
                     self.render(data);
                 },
-                error: function (model, response) {
-                    console.log('error', response);
+                error: function (model, res) {
+                    console.log('error', res);
                 }
             });
         },
@@ -64,8 +64,8 @@ define([
                 name = $.trim($user_row.find('h3').text());
 
             this.postFriend(id)
-                .success(function (response) {
-                    alert("Вы и " + name + " теперь друзья.");
+                .success(function () {
+                    alert('Вы и ' + name + ' теперь друзья.');
                     $user_row.remove();
                     if ( $user_list.empty() ) {
                         self.renderMsg();
@@ -83,9 +83,9 @@ define([
             var id   = $user_row.data('id'),
                 name = $.trim($user_row.find('h3').text());
 
-            this.deleteFriend()
-                .success(function (response) {
-                    alert("Вы удалили " + name + " из друзей.");
+            this.deleteFriend(id)
+                .success(function () {
+                    alert('Вы удалили ' + name + ' из друзей.');
                     $user_row.remove();
                     if ( $user_list.empty() ) {
                         self.renderMsg();

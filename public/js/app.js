@@ -54,7 +54,6 @@ define([
             },
 
             close: function (view) {
-                var that = this;
                 if (view) {
                     view.$el.empty();
                     view.unbind();

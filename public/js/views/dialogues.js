@@ -3,9 +3,8 @@ define([
     'underscore',
     'backbone',
     'text!/templates/dialogue.html',
-    '../models/user_model',
     './main'
-], function ($, _, Backbone, DialogueTmpl, UserModel, MainView) {
+], function ($, _, Backbone, DialogueTmpl, MainView) {
     var DialoguesView = App.Views.Main.extend({
         template: _.template(DialogueTmpl),
         el:  $('#content'),
@@ -21,7 +20,7 @@ define([
             this.getDialogues();
         },
 
-        gotNewMsg: function (msg) {
+        gotNewMsg: function () {
             self.getDialogues();
         },
 

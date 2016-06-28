@@ -2,9 +2,8 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'socketio',
     'toaster'
-], function ( $, _, Backbone, io, Toaster) {
+], function ( $, _, Backbone, Toaster) {
     App.Views.Main = Backbone.View.extend({
         initialize: function () {
             self = this;

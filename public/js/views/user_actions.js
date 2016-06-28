@@ -29,7 +29,8 @@ define([
         showMsgModal: function (e) {
             var $msg_btn   = $(e.currentTarget),
                 $user_row  = $msg_btn.parent(),
-                $send_msg  = null;
+                $send_msg  = null,
+                $modal     = $('#msg_modal');
             var id   = $user_row.data('id'),
                 name = $.trim($user_row.find('h3').text());
 
@@ -52,7 +53,6 @@ define([
                 }, 1500);
             });
 
-            var $modal = $('#msg_modal');
             $modal.find('.reciever').html(name);
             $modal.modal('show');
         }

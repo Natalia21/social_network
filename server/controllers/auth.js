@@ -69,4 +69,4 @@ module.exports = {
         delete req.session.user_id;
         res.send({'text': 'OK'});
     }
-}
+};

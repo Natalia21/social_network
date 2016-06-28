@@ -1,11 +1,10 @@
 var Server   = require('../../server'),
     io       = Server.io,
-    async    = require('async'),
     moment   = require('moment'),
     config   = require('../../config'),
     client   = require('redis').createClient(config.redis),
     Msg      = require('../models/msg'),
-    Dialogue = require('../models/dialogue')
+    Dialogue = require('../models/dialogue'),
     User     = require('../models/user');
 
 io.on('connection', function (socket) {
@@ -33,7 +32,7 @@ io.on('connection', function (socket) {
                         'from': user,
                         'text': data.text,
                         'time': moment()
-                    }
+                    };
                     io.sockets.connected[to_socket_id].emit('message_to_user', msg);
                 });
             }
@@ -45,20 +44,19 @@ io.on('connection', function (socket) {
             'time': moment()
         });
 
-        msg.save(function (err, data) {
+        msg.save(function (err) {
             if ( err ) throw err;
 
             var msg_id = msg._id;
 
             var find_data   = {'participants': {'$all': [user_from, user_to]}},
-                update_data = {'$push': {'msgs': msg_id}},
-                conditions  = {'upsert': true};
+                update_data = {'$push': {'msgs': msg_id}};
 
             Dialogue.findOne(find_data, function (err, data) {
                 if ( err ) throw err;
                 if ( data ) {
                     find_data = {'_id': data._id};
-                    Dialogue.update(find_data, update_data, function (err, data) {
+                    Dialogue.update(find_data, update_data, function (err) {
                         if ( err ) throw err;
                     });
                 } else {
@@ -66,7 +64,7 @@ io.on('connection', function (socket) {
                         'participants': [user_from, user_to],
                         'msgs': [msg_id]
                     });
-                    dialogue.save(function (err, data) {
+                    dialogue.save(function (err) {
                         if ( err ) throw err;
                     });
                 }
@@ -128,4 +126,4 @@ module.exports = {
                     });
                  });
     }
-}
+};

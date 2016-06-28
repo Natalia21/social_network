@@ -9,9 +9,9 @@ var express = require('express'),
 
 mongoose.connect(config.db, function (err) {
     if ( err ) {
-        console.log("error in conecting with database", err)
+        console.log('error in conecting with database', err);
     } else {
-        console.log("successfully connected to the database");
+        console.log('successfully connected to the database');
     }
 });
 

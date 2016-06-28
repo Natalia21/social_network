@@ -10,7 +10,7 @@ if ( process.env.NODE_ENV == 'production') {
 		db: 0,
 		password: redisAuth[1],
 		no_ready_check: true
-	}
+	};
 	config.db = process.env.MONGODB_URI;
 	config.port = process.env.PORT;
 } else {

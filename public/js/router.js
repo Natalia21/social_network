@@ -39,7 +39,7 @@ define([
                 var args = router._extractParameters(route, fragment);
                 var go_to_route = router.before.apply(router, arguments);
                 if ( arguments[0] === go_to_route ) {
-                    callback && callback.apply(router, args);
+                    callback.apply(router, args);
                     router.trigger.apply(router, ['route:' + name].concat(args));
                     router.trigger('route', name, args);
                     Backbone.history.trigger('route', router, name, args);
@@ -124,7 +124,7 @@ define([
             });
         },
 
-        before: function (route, params) {
+        before: function (route) {
             _.each([this.views.current, 
                     this.views.navbar, 
                     this.views.header], 
