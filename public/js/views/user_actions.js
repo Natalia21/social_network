@@ -30,18 +30,18 @@ define([
             var $msg_btn   = $(e.currentTarget),
                 $user_row  = $msg_btn.parent(),
                 $send_msg  = null,
-                $modal     = $('#msg_modal');
+                $modal     = null;
             var id   = $user_row.data('id'),
                 name = $.trim($user_row.find('h3').text());
 
             if ( ! this.$el.find('#msg_modal').length ) {
                 this.$el.append(this.modal_tmpl());
+                $modal    = $('#msg_modal');
                 $send_msg = $('.send_msg');
             }
 
-            if ( $send_msg ) {
-                $send_msg.unbind('click');
-            }
+            $modal.modal('show');
+            $send_msg.unbind('click');
             $send_msg.click(function () {
                 var text = $modal.find('textarea').val();
                 var msg = {'to': id, 'text': text};
