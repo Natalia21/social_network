@@ -57,7 +57,7 @@ define([
         },
 
         addFriend: function (e) {
-            var $user_list = $('.user_list'),
+            var $users_list = $('.users_list'),
                 $add_btn   = $(e.currentTarget),
                 $user_row  = $add_btn.parent();
             var id   = $user_row.data('id'),
@@ -67,7 +67,7 @@ define([
                 .success(function () {
                     alert('Вы и ' + name + ' теперь друзья.');
                     $user_row.remove();
-                    if ( $user_list.empty() ) {
+                    if ( $users_list.find('li').length ) {
                         self.renderMsg();
                     }
                 })
@@ -77,7 +77,7 @@ define([
         },
 
         removeFriend: function (e) {
-            var $user_list  = $('.user_list'),
+            var $users_list  = $('.users_list'),
                 $remove_btn = $(e.currentTarget),
                 $user_row   = $remove_btn.parent();
             var id   = $user_row.data('id'),
@@ -87,7 +87,7 @@ define([
                 .success(function () {
                     alert('Вы удалили ' + name + ' из друзей.');
                     $user_row.remove();
-                    if ( $user_list.empty() ) {
+                    if ( ! $users_list.find('li').length ) {
                         self.renderMsg();
                     }
                 })
