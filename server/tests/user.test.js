@@ -19,7 +19,8 @@ describe('user', function () {
 			user = new User({
 				'first_name': 'User',
 				'last_name': 'Example',
-				'email': 'example@mail.com'
+				'email': 'example@mail.com',
+				'password': '12345'
 			}).save(function (err, data) {
 				if (err) throw err;
 				id = data._id;
@@ -41,7 +42,7 @@ describe('user', function () {
 				});
 		});
 
-		it('should return nothing', function (done) {
+		it('should return nothing if id is incorrect', function (done) {
 			var id = mongoose.Types.ObjectId();
 
 			agent.get('/user/' + id)
