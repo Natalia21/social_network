@@ -69,11 +69,27 @@ module.exports = function(grunt) {
             options: {
                 jshintrc: '.jshintrc'
             }
+        },
+        env: {
+            test: {
+                NODE_ENV: 'test'
+            }
+        },
+        mochaTest: {
+            test: {
+                src: ['server/tests/**/*.js'],
+                options: {
+                    reporter: 'spec'
+                }
+            }
         }
     });
 
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-mocha-test');
+    grunt.loadNpmTasks('grunt-env');
 
     grunt.registerTask('default', ['copy', 'jshint']);
+    grunt.registerTask('unit', ['env:test', 'mochaTest']);
 };

@@ -13,6 +13,12 @@ if ( process.env.NODE_ENV == 'production') {
 	};
 	config.db = process.env.MONGODB_URI;
 	config.port = process.env.PORT;
+} else if (process.env.NODE_ENV == 'test') {
+	config.redis = { hostname: 'localhost',
+					 port: 6379,
+					 db: 2 };
+	config.db = 'mongodb://localhost/unit';
+	config.port = 8888;	
 } else {
 	config.redis = { hostname: 'localhost',
 					 port: 6379,
