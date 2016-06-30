@@ -12,20 +12,24 @@ describe('user', function () {
 	var agent = request.agent(base_url);
 
 	describe('getUserById()', function () {
-		var user = null,
-			id   = null;
+		var user = {
+			first_name: 'User',
+			last_name: 'Example',
+			email: 'example@mail.com',
+			password: '12345'
+		},
+		id   = null;
 
 		beforeEach(function (done) {
-			user = new User({
-				'first_name': 'User',
-				'last_name': 'Example',
-				'email': 'example@mail.com',
-				'password': '12345'
-			}).save(function (err, data) {
-				if (err) throw err;
-				id = data._id;
-				done();
+			User.remove({}, function (err) {
+				if ( err ) throw err;
+				new User(user).save(function (err, data) {
+					if (err) throw err;
+					id = data._id;
+					done();
+				});
 			});
+
 		});
 
 		it('should return correct user data', function (done) {
@@ -50,13 +54,6 @@ describe('user', function () {
 					expect(res.body).to.be.empty;
 					done();
 				});
-		});
-
-		afterEach(function (done) {
-			User.remove({}, function (err) {
-				if ( err ) throw err;
-				done();
-			});
 		});
 
 	});
@@ -84,21 +81,26 @@ describe('user', function () {
 				'password': '12345'
 			}];
 
-			async.each(
-				users, 
-				function (user, cb) {
-					new User(user).save(function (err, data) {
-						cb(err);
-					});
-				},
-				function (err) {
-					if (err) throw err;
-					agent.get('/login/ivan@mail.com/12345')
-						 .end(function (err, res) {
-							if ( err ) throw err;
-							done();
+			User.remove({}, function (err) {
+				if ( err ) throw err;
+
+				async.each(
+					users, 
+					function (user, cb) {
+						new User(user).save(function (err, data) {
+							cb(err);
 						});
-				});
+					},
+					function (err) {
+						if (err) throw err;
+						agent.get('/login/ivan@mail.com/12345')
+							 .end(function (err, res) {
+								if ( err ) throw err;
+								done();
+							});
+					});
+			});
+
 
 		});
 
@@ -113,13 +115,6 @@ describe('user', function () {
 
 					done();
 				});
-		});
-
-		afterEach(function (done) {
-			User.remove({}, function (err) {
-				if ( err ) throw err;
-				done();
-			});
 		});
 	});
 });
