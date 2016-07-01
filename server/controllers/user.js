@@ -1,5 +1,5 @@
-var User  = require('../models/user'),
-    _     = require('lodash');
+var User  = require('../models/user');
+var _ = require('lodash');
 
 var conditions = {
     password: 0,
