@@ -8,13 +8,13 @@ var msgsCtrl    = require('./controllers/msgs'),
 
 /* ------------------------AUTH----------------------------*/
 
-app.get('/login/:email/:password', authCtrl.login);
+app.post('/login', authCtrl.login);
 
-app.post('/current_user', authCtrl.signUpValidation, authCtrl.signUp);
+app.post('/users/me', authCtrl.signUpValidation, authCtrl.signUp);
 
-app.get('/current_user', authCtrl.getCurrentUser);
+app.get('/users/me', authCtrl.getCurrentUser);
 
-app.post('/sign_out', authCtrl.signOut);
+app.get('/sign_out', authCtrl.signOut);
 
 /*-------------------------USER----------------------------*/
 
@@ -24,9 +24,9 @@ app.get('/user/:id', userCtrl.getUserById);
 
 /*------------------------FRIENDS---------------------------*/
 
-app.post('/add_friend', friendsCtrl.addFriend);
+app.post('/friends/:id', friendsCtrl.addFriend);
 
-app.post('/remove_friend', friendsCtrl.removeFriend);
+app.delete('/friends/:id', friendsCtrl.removeFriend);
 
 /*-------------------------MSGS-----------------------------*/
 

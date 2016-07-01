@@ -24,7 +24,7 @@ define([
 
         signOut: function () {
             $.ajax({
-                method: 'POST',
+                method: 'GET',
                 url: '/sign_out',
                 success: function () {
                     App.session.setAuthenticated(false).setUser({});

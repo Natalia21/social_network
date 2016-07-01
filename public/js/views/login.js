@@ -27,8 +27,12 @@ define([
             var password = form.find('#password').val();
 
             $.ajax({
-                method: 'GET',
-                url: '/login/' + email + '/' + password,
+                method: 'POST',
+                url: '/login',
+                data: {
+                    email: email,
+                    password: password
+                },
                 success: function (model) {
                     var userModel = new CurrentUserModel(model);
                     App.session

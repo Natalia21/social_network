@@ -46,7 +46,11 @@ describe('friends', function () {
 	describe('subscriptions', function () {
 
 		beforeEach(function (done) {
-			agent.get('/login/' + user_1.email + '/' + user_1.password)
+			agent.post('/login')
+				 .send({
+				 	email: user_1.email,
+				 	password: user_1.password
+				 })
 				 .end(function (err, res) {
 					if ( err ) throw err;
 					done();
@@ -54,12 +58,9 @@ describe('friends', function () {
 		});
 
 		it('should add new user to subscriptions', function (done) {
-			agent.post('/add_friend')
-				 .send({
-				 	friend_id: user_2.id
-				 })
+			agent.post('/friends/' + user_2.id)
 				 .end(function (err, res) {
-				 	agent.get('/current_user')
+				 	agent.get('/users/me')
 				 		.end(function (err, res) {
 				 			expect(res.body.followers).to.have.length(0);
 				 			expect(res.body.friends).to.have.length(0);
@@ -75,12 +76,9 @@ describe('friends', function () {
 		});
 
 		it('should remove user from subscriptions', function (done) {
-			agent.post('/remove_friend')
-				 .send({
-				 	friend_id: user_2.id
-				 })
+			agent.delete('/friends/' + user_2.id)
 				 .end(function (err, res) {
-				 	agent.get('/current_user')
+				 	agent.get('/users/me')
 				 		.end(function (err, res) {
 				 			expect(res.body.followers).to.have.length(0);
 				 			expect(res.body.friends).to.have.length(0);
@@ -94,7 +92,11 @@ describe('friends', function () {
 
 	describe('friends', function () {
 		beforeEach(function (done) {
-			agent.get('/login/' + user_2.email + '/' + user_2.password)
+			agent.post('/login')
+				 .send({
+				 	email: user_2.email,
+				 	password: user_2.password
+				 })
 				 .end(function (err, res) {
 					if ( err ) throw err;
 					done();
@@ -102,13 +104,10 @@ describe('friends', function () {
 		});
 
 		it('should add new user to friend and remove from followers', function () {
-			agent.post('/add_friend')
-				 .send({
-				 	friend_id: user_1.id
-				 })
+			agent.post('/friends/' + user_1.id)
 				 .end(function (err, res) {
 				 	if ( err ) throw err;
-				 	agent.get('/current_user')
+				 	agent.get('/users/me')
 				 		.end(function (err, res) {
 				 			expect(res.body.subscriptions).to.have.length(0);
 				 			expect(res.body.followers).to.have.length(0);
@@ -124,12 +123,9 @@ describe('friends', function () {
 		});
 
 		it('should add new user to friend and remove from followers', function () {
-			agent.post('/remove_friend')
-				 .send({
-				 	friend_id: user_1.id
-				 })
+			agent.delete('/friends/' + user_1.id)
 				 .end(function (err, res) {
-				 	agent.get('/current_user')
+				 	agent.get('/users/me')
 				 		.end(function (err, res) {
 				 			expect(res.body.subscriptions).to.have.length(0);
 				 			expect(res.body.followers).to.have.length(0);

@@ -64,7 +64,8 @@ module.exports = function(grunt) {
                 'server.js',
                 'Gruntfile.js',
                 'config.js',
-                '!public/js/libs/**/*'
+                '!public/js/libs/**/*',
+                '!server/tests/**/*'
             ],
             options: {
                 jshintrc: '.jshintrc'

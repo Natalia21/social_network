@@ -93,7 +93,11 @@ describe('user', function () {
 					},
 					function (err) {
 						if (err) throw err;
-						agent.get('/login/ivan@mail.com/12345')
+						agent.post('/login')
+							 .send({
+							 	email: users[0]['email'],
+							 	password: users[0]['password']
+							 })
 							 .end(function (err, res) {
 								if ( err ) throw err;
 								done();

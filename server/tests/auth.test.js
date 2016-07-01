@@ -31,7 +31,11 @@ describe('auth', function () {
 		});
 
 		it('should login user', function (done) {
-			agent.get('/login/example@mail.com/12345')
+			agent.post('/login')
+				 .send({
+				 	email: user.email,
+				 	password: user.password
+				 })
 				 .end(function (err, res) {
 					expect(res.body.first_name).to.equal('ivan');
 					expect(res.body.last_name).to.equal('test');
@@ -45,7 +49,11 @@ describe('auth', function () {
 		it('should return error if user password is incorrect', function (done) {
 			var id = mongoose.Types.ObjectId();
 
-			agent.get('/login/example@mail.com/1234')
+			agent.post('/login')
+				 .send({
+				 	email: user.email,
+				 	password: 'incorrect_password'
+				 })
 				 .end(function (err, res) {
 					expect(res.status).to.equal(500);
 					expect(res.body.first_name).to.be.undefined;
@@ -59,7 +67,11 @@ describe('auth', function () {
 		it('should return error if user email is incorrect', function (done) {
 			var id = mongoose.Types.ObjectId();
 
-			agent.get('/login/incorrect@mail.com/12345')
+			agent.post('/login')
+				 .send({
+				 	email: 'incorrect@mail.com',
+				 	password: user.password
+				 })
 				 .end(function (err, res) {
 					expect(res.status).to.equal(500);
 					expect(res.body.first_name).to.be.undefined;
@@ -81,7 +93,7 @@ describe('auth', function () {
 		});
 
 		it('should sing up user', function (done) {
-			agent.post('/current_user')
+			agent.post('/users/me')
 				 .send(user)
 				 .end(function (err, res) {
 				 	expect(res.status).to.equal(200);
@@ -95,7 +107,7 @@ describe('auth', function () {
 			new User(user).save(function (err) {
 				if ( err ) throw err;
 
-				agent.post('/current_user')
+				agent.post('/users/me')
 					 .send(user)
 					 .end(function (err, res) {
 					 	expect(res.status).to.equal(500);
@@ -124,10 +136,14 @@ describe('auth', function () {
 		});
 
 		it('should return correct user data', function (done) {
-			agent.get('/login/example@mail.com/12345')
+			agent.post('/login')
+				 .send({
+				 	email: user.email,
+				 	password: user.password
+				 })
 				 .end(function (err, res) {
 					if ( err ) throw err;
-					agent.get('/current_user')
+					agent.get('/users/me')
 						 .end(function (err, res) {
 							expect(res.body.first_name).to.be.equal('ivan');
 							expect(res.body.last_name).to.equal('test');
@@ -140,7 +156,7 @@ describe('auth', function () {
 		});
 
 		it('should return error if authentication is failed', function (done) {
-			agent.get('/current_user')
+			agent.get('/users/me')
 				 .end(function (err, res) {
 					expect(res.status).to.be.equal(500);
 					expect(res.body.first_name).to.be.undefined;

@@ -13,16 +13,14 @@ define([
         postFriend: function (id) {
         	return $.ajax({
         	    method: 'POST',
-        	    url: '/add_friend',
-        	    data: {friend_id: id}
+        	    url: '/friends/' + id
         	});
         },
 
         deleteFriend: function (id) {
         	return $.ajax({
-                method: 'POST',
-                url: '/remove_friend',
-                data: {friend_id: id}
+                method: 'DELETE',
+                url: '/friends/' + id
             }); 
         },
 
