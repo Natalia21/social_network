@@ -16,15 +16,15 @@ define([
             this.render();
         },
 
+        renderUser: function (user) {
+            $(this.el).html(this.template(user.attributes));
+        },
+
         getUser: function () {
             var model = new UserModel({'_id': this.user_id});
             model.fetch().success(function () {
                 self.renderUser(model);
             });
-        },
-
-        renderUser: function (user) {
-            $(this.el).html(this.template(user.attributes));
         },
 
         render: function () {

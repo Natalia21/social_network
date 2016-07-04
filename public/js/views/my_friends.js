@@ -114,6 +114,12 @@ define([
             } else {
                 $('.kill_friend').hide();
             }
+
+            if ( this.status === '1' ) {
+                $('#friends').addClass('active');
+            } else {
+                $('#followers').addClass('active');
+            }
         }
     });
 

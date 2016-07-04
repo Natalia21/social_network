@@ -9,10 +9,10 @@ define([
 ], function ($, _, Backbone, Jscookie, LoginTmpl, CurrentUserModel, MainView) {
     var LoginView = App.Views.Main.extend({
         template: _.template(LoginTmpl),
-        el: $('.login_container'),
+        el: $('#content'),
 
         events: {
-            'click #signIn': 'submitSignIn',
+            'click #log_in': 'submitLogIn',
             'click #register_in_login': 'goToSignUp'
         },
 
@@ -20,7 +20,7 @@ define([
             this.render();
         },
 
-        submitSignIn: function (e) {
+        submitLogIn: function (e) {
             e.preventDefault();
             var form = $('form');
             var email = form.find('#email').val();
@@ -60,7 +60,6 @@ define([
 
         render: function () {
             $(this.el).html(this.template);
-            $('.main').hide();
             return this;
         }
     });

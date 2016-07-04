@@ -1,0 +1,163 @@
+body {
+	background-color: #FAFBFC;
+}
+
+#main {
+	height: 100vh;
+}
+
+#content {
+	height: 100%;
+	border-left: 1px solid rgb(242, 242, 242);
+	border-right: 1px solid rgb(242, 242, 242);
+	padding: 15px;
+}
+
+#header {
+	height: 60px;
+	background-color: rgb(216, 53, 53);
+	border-bottom-left-radius: 10px;
+	border-bottom-right-radius: 10px;
+}
+
+.right_btns {
+	float: right;
+}
+
+.search {
+	display: inline-block;
+	margin-right: 20px;
+	height: 60px;
+	padding-top: 15px;
+	overflow: overlay;
+}
+
+.search input {
+	height: 30px;
+	width: 250px;
+}
+
+.search input:focus {
+	border: 1px solid #ccc;
+}
+
+.auth_btn {
+	display: inline-block;
+	color: rgb(250, 251, 252);
+	height: 60px;
+	overflow: overlay;
+	padding-right: 25px;
+	padding-left: 15px;
+	padding-top: 15px;
+	border-bottom-right-radius: 10px;
+}
+
+.auth_btn:hover {
+	cursor: pointer;
+	background-color: rgb(205, 48, 48);
+}
+
+.auth_btn a {
+	color: rgb(250, 251, 252);
+}
+
+.auth_btn a:hover {
+	cursor: pointer;
+	background-color: rgb(205, 48, 48);
+	text-decoration: none;
+}
+
+nav {
+	float: left;
+	margin-left: 70px;
+}
+
+nav div {
+	display: inline-block;
+	height: 60px;
+	padding-left: 15px;
+	padding-right: 15px;
+	padding-top: 15px;
+	margin-left: -5px;
+}
+
+nav>a,
+nav>div span {
+	color: rgb(250, 251, 252);
+}
+
+nav div:hover {
+	color: rgb(250, 251, 252);
+	text-decoration: none;
+	background-color: rgb(205, 48, 48);
+}
+
+.active {
+	background-color: rgb(205, 48, 48);
+}
+
+.logo {
+	float: left;
+	margin-left: 25px;
+	padding-top: 15px;
+}
+
+.logo img {
+	height: 25px;
+}
+
+nav .dropdown:hover .dropdown-menu {
+    display: block;
+    margin-top: 0;
+ }
+
+nav .dropdown-menu {
+	width: 130px;
+	min-width: inherit;
+ 	margin-top: 0;
+ 	border: 0;
+ 	border-top-left-radius: 0;
+ 	border-top-right-radius: 0;
+ 	background-color: rgb(216, 53, 53);
+}
+
+nav .dropdown-menu a {
+ 	color: rgb(250, 251, 252);
+}
+
+nav .dropdown-menu a:hover {
+ 	background-color: rgb(205, 48, 48);
+ 	color: rgb(250, 251, 252);
+}
+
+#login_form,
+#signup_form {
+	width: 500px;
+	margin: 0 auto;
+	margin-top: 15%;
+}
+
+#login_form input,
+#signup_form input {
+	height: 45px;
+}
+
+#login_form button,
+#signup_form button {
+	height: 50px;
+	color: white;
+	font-size: 16px;
+	margin-top: 30px;
+	background-color: #F58925;
+}
+
+#login_form button:hover,
+#signup_form button:hover {
+	background-color: #EA8527;
+}
+
+#search_result {
+	width: 250px;
+	top: initial;
+	left: initial;
+}

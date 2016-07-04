@@ -16,7 +16,6 @@ define([
         },
 
         views: {
-            navbar: null,
             current: null,
             header: null
         },
@@ -66,8 +65,6 @@ define([
             var that = this;
             require(['views/profile'], function (ProfileView) {
                 that.views.current = new ProfileView(id);
-                that.navbar();
-                that.header();
             });
         },
 
@@ -78,8 +75,6 @@ define([
             var that = this;
             require(['views/my_friends'], function (FriendsView) {
                 that.views.current = new FriendsView(status);
-                that.navbar();
-                that.header();
             });
         },
 
@@ -87,8 +82,6 @@ define([
             var that = this;
             require(['views/users'], function (UsersView) {
                 that.views.current = new UsersView();
-                that.navbar();
-                that.header();
             });
         },
 
@@ -96,8 +89,6 @@ define([
             var that = this;
             require(['views/dialogues'], function (MessagesView) {
                 that.views.current = new MessagesView();
-                that.navbar();
-                that.header();
             });
         },
 
@@ -105,8 +96,6 @@ define([
             var that = this;
             require(['views/one_dialogue'], function (DialogueView) {
                 that.views.current = new DialogueView(id);
-                that.navbar();
-                that.header();
             });
         },
 
@@ -126,13 +115,14 @@ define([
 
         before: function (route) {
             _.each([this.views.current, 
-                    this.views.navbar, 
                     this.views.header], 
                     App.close
                 );
             if (Cookies.get('user') && ! App.session.isAuthenticated()) {
                 App.setSessionFromCookie();
             }
+
+            this.header();
 
             if ( ! App.session.isAuthenticated() && route !== 'signUp') {
                 this.navigate('login', true);

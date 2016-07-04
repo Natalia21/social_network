@@ -5,9 +5,8 @@ define([
     'text!/templates/search.html',
     'text!/templates/users_list.html',
     '../collections/users_collection',
-    '../models/current_user_model',
     './user_actions'
-], function ($, _, Backbone, SearchTmpl, UserListTmpl, UsersCollection, CurrentUserModel, UserActions) {
+], function ($, _, Backbone, SearchTmpl, UserListTmpl, UsersCollection, UserActions) {
     var GetUsersView = App.Views.UserActions.extend({
 
         user_list_tmpl: _.template(UserListTmpl),
@@ -16,7 +15,7 @@ define([
         el: $('#content'),
 
         events: {
-            'keyup #user_name': 'filter',
+            //'keyup #search': 'filter',
             'click .add_friend': 'addFriend',
             'click .kill_friend': 'removeFriend',
             'click .write_msg': 'showMsgModal'
@@ -26,7 +25,6 @@ define([
             self = this;
             this.render();
             this.users_collection = new UsersCollection();
-            this.current_user_model = new CurrentUserModel();
             this.getUsers();
         },
 

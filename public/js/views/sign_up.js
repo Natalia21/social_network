@@ -3,16 +3,16 @@ define([
     'underscore',
     'backbone',
     'socketio',
-    'text!/templates/registering.html',
+    'text!/templates/sign_up.html',
     '../models/current_user_model',
     './main'
 ], function ($, _, Backbone, io, SignUpTmpl, CurrentUserModel, MainView) {
     var SignUpView = App.Views.Main.extend({
         template: _.template(SignUpTmpl),
-        el: $('.login_container'),
+        el: $('#content'),
 
         events: {
-            'click #register': 'submitSignUp'
+            'click #sign_up': 'submitSignUp'
         },
 
         initialize: function () {

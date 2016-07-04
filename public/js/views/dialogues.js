@@ -66,6 +66,7 @@ define([
             } else {
                 $you.hide();
             }
+            $('#dialogues').addClass('active');
         }
     });
 

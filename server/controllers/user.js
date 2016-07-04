@@ -1,5 +1,6 @@
 var User  = require('../models/user');
 var _ = require('lodash');
+var url = require('url');
 
 var conditions = {
     password: 0,
@@ -32,13 +33,34 @@ var isUserInSubscriptions = function (user, subscriptions) {
 module.exports = {
     getAllUsers: function (req, res) {
         var user_id = req.session.user_id;
+        var url_parts = url.parse(req.url, true);
+        var query = url_parts.query;
+
+        var filter = query.filter;
+        var limit = query.limit || 20;
+        var skip = query.skip || 0;
+
         var find_data = {
             _id: {
                 $ne: user_id
             }
         };
 
+        if ( filter ) {
+            var filter_data = {
+                $regex: filter,
+                $options: 'i'
+            };
+            find_data.$or = [{
+                first_name: filter_data
+            }, {
+                last_name: filter_data
+            }];
+        }
+
         User.find(find_data, conditions)
+            .limit(limit)
+            .skip(skip)
             .lean()
             .exec(function (err, users) {
                 if ( err ) throw err;

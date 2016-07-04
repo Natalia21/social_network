@@ -1,15 +1,42 @@
-<ul class="nav nav-tabs add_style friend_navbar">
-    <li>
-        <a href="#friends/1">Мои друзья</a>
-    </li>
-    <li>
-    	<a href="#friends/2">Исходящие заявки</a>
-    </li>
-    <li>
-    	<a href="#friends/3">Новые заявки</a>
-    </li>
-</ul>
-<div id="div_with_buttons">
-    <button type="submit" class="btn btn-primary" id="search">Поиск</button>
-    <button type="submit" class="btn btn-primary" id="signOut">Выйти</button>
+<div class="logo">
+    <img src="../imgs/logo.png">
+</div>
+<nav>
+    <a href="#profile/<%= id %>">
+        <div id="profile">
+            Profile
+        </div>
+    </a>
+    <a href="#friends/1">
+        <div id="friends">
+            Friends
+        </div>
+    </a>
+    <div class="followers dropdown" id="followers">
+        <span class="dropdown-toggle" data-toggle="dropdown">Followers</span>
+        <ul class="dropdown-menu">
+            <li><a href="#friends/2">I follow</a></li>
+            <li><a href="#friends/3">My followers</a></li>
+        </ul>
+    </div>
+    <a href="#messages">
+        <div id="dialogues">
+            Dialogues
+        </div>
+    </a>
+</nav>
+<div class="right_btns">
+    <div class="search">
+        <input type="text" class="form-control" placeholder="Search…" id="search">
+        <ul class="dropdown-menu" id="search_result"></ul>
+    </div>
+    <div class="log_out auth_btn">
+        Log Out
+    </div>
+    <div class="sign_up auth_btn">
+        <a href="#/signUp">Sign Up</a>
+    </div>
+    <div class="log_in auth_btn">
+        <a href="#/login">Log In</a>
+    </div>
 </div>
