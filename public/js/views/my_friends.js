@@ -57,11 +57,11 @@ define([
         },
 
         addFriend: function (e) {
-            var $users_list = $('.users_list'),
-                $add_btn   = $(e.currentTarget),
-                $user_row  = $add_btn.parent();
-            var id   = $user_row.data('id'),
-                name = $.trim($user_row.find('h3').text());
+            var $users_list = $('.users_list');
+            var $add_btn = $(e.currentTarget);
+            var $user_row = $add_btn.parent();
+            var id = $user_row.data('id');
+            var name = $.trim($user_row.find('h3').text());
 
             this.postFriend(id)
                 .success(function () {
@@ -77,11 +77,11 @@ define([
         },
 
         removeFriend: function (e) {
-            var $users_list  = $('.users_list'),
-                $remove_btn = $(e.currentTarget),
-                $user_row   = $remove_btn.parent();
-            var id   = $user_row.data('id'),
-                name = $.trim($user_row.find('h3').text());
+            var $users_list = $('.users_list');
+            var $remove_btn = $(e.currentTarget);
+            var $user_row = $remove_btn.parent();
+            var id = $user_row.data('id');
+            var name = $.trim($user_row.find('h3').text());
 
             this.deleteFriend(id)
                 .success(function () {

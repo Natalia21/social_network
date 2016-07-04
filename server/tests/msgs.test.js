@@ -27,10 +27,11 @@ var options ={
     transports: ['websocket'],
     'force new connection': true
 };
+
 var client_1 = null;
 var client_2 = null;
 
-describe.only('msg', function () {
+describe('msg', function () {
 	beforeEach(function (done) {
 		async.parallel([
 			function (cb) {
@@ -122,6 +123,7 @@ describe.only('msg', function () {
 					 });
 			}, 2000);
 		});
+
 		it('should return nothing if user is not logged in', function (done) {
 			agent.get('/sign_out')
 				 .end(function (err) {
@@ -143,8 +145,9 @@ describe.only('msg', function () {
 			setTimeout(function () {
 				agent.get('/dialogues')
 					 .end(function (err, res) {
+					 	expect(1).to.be.equal(1);
 						var id = res.body[0]._id;
-						agent.get('/dialogue/' + id)
+						agent.get('/dialogues/' + id)
 							 .end(function (err, res) {
 							 	expect(err).to.be.null;
 							 	expect(res.body['msgs']).to.have.length(1);
@@ -171,7 +174,7 @@ describe.only('msg', function () {
 			this.timeout(3000);
 			setTimeout(function () {
 				var id = mongoose.Types.ObjectId();
-				agent.get('/dialogue/' + id)
+				agent.get('/dialogues/' + id)
 					 .end(function (err, res) {
 					 	expect(err).to.be.null;
 					 	expect(res.status).to.be.equal(200);

@@ -24,13 +24,13 @@ define([
         showNewMsg: function (msg) {
             var name = ' ' + msg.from.first_name + ' ' + msg.from.last_name;
             $.toaster({
-                        'priority': 'info',
-                        'title':    name,
-                        'message':  msg.text,
-                        'settings': {
-                            'timeout':  5000
-                        }
-                      });
+                priority: 'info',
+                title: name,
+                message: msg.text,
+                settings: {
+                    'timeout':  5000
+                }
+            });
         }
     });
 

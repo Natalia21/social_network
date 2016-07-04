@@ -25,16 +25,16 @@ define([
         },
 
         showMsgModal: function (e) {
-            var $msg_btn   = $(e.currentTarget),
-                $user_row  = $msg_btn.parent(),
-                $send_msg  = null,
-                $modal     = null;
-            var id   = $user_row.data('id'),
-                name = $.trim($user_row.find('h3').text());
+            var $msg_btn = $(e.currentTarget);
+            var $user_row = $msg_btn.parent();
+            var $send_msg = null;
+            var $modal = null;
+            var id = $user_row.data('id');
+            var name = $.trim($user_row.find('h3').text());
 
             if ( ! this.$el.find('#msg_modal').length ) {
                 this.$el.append(this.modal_tmpl());
-                $modal    = $('#msg_modal');
+                $modal = $('#msg_modal');
                 $send_msg = $('.send_msg');
             }
 

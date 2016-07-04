@@ -53,12 +53,12 @@ define([
 
         renderDialogue: function (msg) {
             this.$el.append(this.template({
-                                        'id':        msg.dialogue_id,
-                                        'user_name': msg.user_name,
-                                        'user_id':   msg.user_id,
-                                        'msg':       msg.text,
-                                        'time':      msg.time
-                                    }));
+                id: msg.dialogue_id,
+                user_name: msg.user_name,
+                user_id: msg.user_id,
+                msg: msg.text,
+                time: msg.time
+            }));
 
             var $you = $('.dialogue_in_dialogues:last-child .you');
             if ( msg.from._id ==  this.current_user_id ) {

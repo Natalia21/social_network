@@ -36,13 +36,15 @@ define([
         sendMsg: function () {
             var $text = $('#text');
             var now = new Date(); 
+            var time = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
+            var name = this.current_user.get('first_name') + ' ' + this.current_user.get('last_name');
 
             var msg = {
-                'to': this.friend_id,
-                'text': $text.val(),
-                'user_id': this.current_user.get('_id'),
-                'user_name': this.current_user.get('first_name') + ' ' + this.current_user.get('last_name'),
-                'time': now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds()
+                to: this.friend_id,
+                text: $text.val(),
+                user_id: this.current_user.get('_id'),
+                user_name: name,
+                time: time
             };
 
             App.socket.emit('send_msg', msg);
@@ -74,7 +76,7 @@ define([
         getDialogue: function () {
             $.ajax({
                 method: 'GET',
-                url:    '/dialogue/' + this.dialogue_id,
+                url: '/dialogues/' + this.dialogue_id,
                 success: function (res) {
                     self.setFriendId(res.participants);
                     self.prepareData(res.msgs);

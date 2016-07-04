@@ -33,7 +33,7 @@ describe('user', function () {
 		});
 
 		it('should return correct user data', function (done) {
-			agent.get('/user/' + id)
+			agent.get('/users/' + id)
 				 .end(function (err, res) {
 					expect(res.body.first_name).to.equal('User');
 					expect(res.body.last_name).to.equal('Example');
@@ -49,7 +49,7 @@ describe('user', function () {
 		it('should return nothing if id is incorrect', function (done) {
 			var id = mongoose.Types.ObjectId();
 
-			agent.get('/user/' + id)
+			agent.get('/users/' + id)
 				 .end(function (err, res) {
 					expect(res.body).to.be.empty;
 					done();

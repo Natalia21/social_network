@@ -45,11 +45,11 @@ define([
         },
 
         addFriend: function (e) {
-            var $add_btn    = $(e.currentTarget),
-                $user_row   = $add_btn.parent(),
-                $remove_btn = $user_row.find('.kill_friend');
-            var id   = $user_row.data('id'),
-                name = $.trim($user_row.find('h3').text());
+            var $add_btn = $(e.currentTarget);
+            var $user_row = $add_btn.parent();
+            var $remove_btn = $user_row.find('.kill_friend');
+            var id = $user_row.data('id');
+            var name = $.trim($user_row.find('h3').text());
 
             this.postFriend(id)
                 .success(function () {
@@ -63,11 +63,11 @@ define([
         },
 
         removeFriend: function (e) {
-            var $remove_btn = $(e.currentTarget),
-                $user_row   = $remove_btn.parent(),
-                $add_btn    = $user_row.find('.add_friend');
-            var id   = $user_row.data('id'),
-                name = $.trim($user_row.find('h3').text());
+            var $remove_btn = $(e.currentTarget);
+            var $user_row = $remove_btn.parent();
+            var $add_btn = $user_row.find('.add_friend');
+            var id = $user_row.data('id');
+            var name = $.trim($user_row.find('h3').text());
 
             this.deleteFriend(id)
                 .success(function () {
@@ -90,9 +90,9 @@ define([
             _.each(users, function (user) {
                 users_container.append(self.user_list_tmpl(user.attributes));
 
-                var $current_row = users_container.find('li:last-child'),
-                    $add_btn = $current_row.find('.add_friend'),
-                    $remove_btn = $current_row.find('.kill_friend');
+                var $current_row = users_container.find('li:last-child');
+                var $add_btn = $current_row.find('.add_friend');
+                var $remove_btn = $current_row.find('.kill_friend');
 
                 if ( self.isUserAFriend(user) ) {
                     $add_btn.hide();
