@@ -55,6 +55,12 @@ module.exports = function(grunt) {
                 cwd: 'node_modules/socket.io/node_modules/socket.io-client',
                 src: ['socket.io.js'],
                 dest: 'public/js/libs/socketio'
+            },
+            fontawesome: {
+                expand: true,
+                cwd: 'bower_components/fontawesome',
+                src: ['css/font-awesome.css', 'fonts/*'],
+                dest: 'public/css/libs/fontawesome'
             }
         },
         jshint: {

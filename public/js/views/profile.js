@@ -12,8 +12,18 @@ define([
 
         initialize: function (id) {
             self = this;
-            this.user_id = id || App.session.getUser().get('_id');
+            this.setUserId(id);
             this.render();
+        },
+
+        setUserId: function (id) {
+            if ( id ) {
+                return this.user_id = id;
+            }
+            if ( App.session.isAuthorized() ) {
+                return this.user_id = App.session.getUser().get('_id');
+            }
+            Backbone.history.navigate('login', true);
         },
 
         renderUser: function (user) {

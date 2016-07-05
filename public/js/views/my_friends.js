@@ -2,7 +2,7 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'text!/templates/my_friends.html',
+    'text!/templates/search_user_entry.html',
     'text!/templates/info_msg.html',
     'text!/templates/friends_container.html',
     '../models/current_user_model',
@@ -19,7 +19,8 @@ define([
         events: {
             'click .add_friend': 'addFriend',
             'click .kill_friend': 'removeFriend',
-            'click .write_msg': 'showMsgModal'
+            'click .write_msg': 'showMsgModal',
+            'click #my_friends_list': 'navigateToProfile'
         },
 
         initialize: function (status) {
@@ -56,16 +57,22 @@ define([
             });
         },
 
+        navigateToProfile: function (e) {
+            var id = $(e.target).closest('li').data('id');
+            Backbone.history.navigate('profile/' + id, true);
+        },
+
         addFriend: function (e) {
+            e.stopPropagation();
             var $users_list = $('.users_list');
             var $add_btn = $(e.currentTarget);
-            var $user_row = $add_btn.parent();
+            var $user_row = $add_btn.closest('li');
             var id = $user_row.data('id');
-            var name = $.trim($user_row.find('h3').text());
+            var name = $.trim($user_row.find('.user_name').text());
 
             this.postFriend(id)
                 .success(function () {
-                    alert('Вы и ' + name + ' теперь друзья.');
+                    alert('You and ' + name + ' are friends now');
                     $user_row.remove();
                     if ( $users_list.find('li').length ) {
                         self.renderMsg();
@@ -77,15 +84,16 @@ define([
         },
 
         removeFriend: function (e) {
+            e.stopPropagation();
             var $users_list = $('.users_list');
             var $remove_btn = $(e.currentTarget);
-            var $user_row = $remove_btn.parent();
+            var $user_row = $remove_btn.closest('li');
             var id = $user_row.data('id');
-            var name = $.trim($user_row.find('h3').text());
+            var name = $.trim($user_row.find('.user_name').text());
 
             this.deleteFriend(id)
                 .success(function () {
-                    alert('Вы удалили ' + name + ' из друзей.');
+                    alert('You have removed ' + name + ' from your friends.');
                     $user_row.remove();
                     if ( ! $users_list.find('li').length ) {
                         self.renderMsg();
@@ -104,9 +112,8 @@ define([
             this.$el.html(this.friends_container_tmpl());
 
             var friendsContainer = $('#my_friends_list');
-
             _.each(users, function (user) {
-                friendsContainer.append(self.my_friends_tmpl(user));
+                friendsContainer.append(self.my_friends_tmpl({user: user}));
             });
 
             if ( this.status.match(/^[1-2]$/) ) {

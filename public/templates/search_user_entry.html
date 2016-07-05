@@ -1,6 +1,11 @@
-<li>
-	<a href="#/profile/<%= user.get('_id') %>">
-		<%= user.get('first_name') %>
-		<%= user.get('last_name') %>
-	</a>
+<li data-id="<%= user._id %>">
+	<div class="user_name">
+		<%= user.first_name %>
+		<%= user.last_name %>
+	</div>
+	<div class="icons">
+		<i class="fa fa-plus add_friend" aria-hidden="true"></i>
+		<i class="fa fa-trash-o kill_friend" aria-hidden="true"></i>
+		<i class="fa fa-envelope write_msg" aria-hidden="true"></i>
+	</div>
 </li>

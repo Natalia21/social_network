@@ -64,19 +64,22 @@ module.exports = {
             .lean()
             .exec(function (err, users) {
                 if ( err ) throw err;
-
-                var find_data  = {
-                    _id: user_id
-                };
-                User.findOne(find_data, function (err, current_user) {
-                    if ( err ) throw err;
-                    _.each(users, function (user) {
-                        user.is_a_friend = isUserAFriend(user, current_user.friends);
-                        user.is_a_follower = isUserAFollower(user, current_user.followers);
-                        user.is_in_subscriptions = isUserInSubscriptions(user, current_user.subscriptions);
+                if ( user_id ) {
+                    var find_data  = {
+                        _id: user_id
+                    };
+                    User.findOne(find_data, function (err, current_user) {
+                        if ( err ) throw err;
+                        _.each(users, function (user) {
+                            user.is_a_friend = isUserAFriend(user, current_user.friends);
+                            user.is_a_follower = isUserAFollower(user, current_user.followers);
+                            user.is_in_subscriptions = isUserInSubscriptions(user, current_user.subscriptions);
+                        });
+                        res.send(users);
                     });
+                } else {
                     res.send(users);
-                });
+                }
             });
     },
 

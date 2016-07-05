@@ -123,8 +123,7 @@ define([
             }
 
             this.header();
-
-            if ( ! App.session.isAuthenticated() && route !== 'signUp') {
+            if ( ! App.session.isAuthenticated() && route !== 'signUp' && route.indexOf('profile') === -1) {
                 this.navigate('login', true);
                 return 'login';
             }

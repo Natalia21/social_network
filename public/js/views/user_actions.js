@@ -25,20 +25,25 @@ define([
         },
 
         showMsgModal: function (e) {
+            e.stopPropagation();
             var $msg_btn = $(e.currentTarget);
-            var $user_row = $msg_btn.parent();
-            var $send_msg = null;
-            var $modal = null;
+            var $user_row = $msg_btn.closest('li');
             var id = $user_row.data('id');
-            var name = $.trim($user_row.find('h3').text());
+            var name = $.trim($user_row.find('.user_name').text());
+
+            if ( ! App.session.isAuthenticated() ) {
+                alert('Log in to write a message to ' + name);
+                return;
+            }
 
             if ( ! this.$el.find('#msg_modal').length ) {
                 this.$el.append(this.modal_tmpl());
-                $modal = $('#msg_modal');
-                $send_msg = $('.send_msg');
             }
 
-            $modal.modal('show');
+            $modal = $('#msg_modal');
+            $send_msg = $('.send_msg');
+            $close = $('.close');
+
             $send_msg.unbind('click');
             $send_msg.click(function () {
                 var text = $modal.find('textarea').val();
@@ -52,7 +57,10 @@ define([
                     alert('Ваше сообщение отправлено ' + name);
                 }, 1500);
             });
-
+            $close.unbind('click');
+            $close.click(function () {
+                $modal.modal('hide');
+            });
             $modal.find('.reciever').html(name);
             $modal.modal('show');
         }

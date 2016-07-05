@@ -17,8 +17,7 @@ define([
         events: {
             //'keyup #search': 'filter',
             'click .add_friend': 'addFriend',
-            'click .kill_friend': 'removeFriend',
-            'click .write_msg': 'showMsgModal'
+            'click .kill_friend': 'removeFriend'
         },
 
         initialize: function () {
@@ -83,12 +82,12 @@ define([
         },
 
         renderUsers: function (users) {
-            var users_container = $('#list').empty();
+            var $users_container = $('#list').empty();
 
             _.each(users, function (user) {
-                users_container.append(self.user_list_tmpl(user.attributes));
+                $users_container.append(self.user_list_tmpl(user.attributes));
 
-                var $current_row = users_container.find('li:last-child');
+                var $current_row = $users_container.find('li:last-child');
                 var $add_btn = $current_row.find('.add_friend');
                 var $remove_btn = $current_row.find('.kill_friend');
 
