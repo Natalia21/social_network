@@ -107,6 +107,7 @@ define([
         render: function () {
             this.$el.html(this.dialogue_container_tmpl());
             $('.dialogue_container').append(this.new_msg_tpml());
+            $('.dialogue_container textarea').focus();
             return this;
         }
     });

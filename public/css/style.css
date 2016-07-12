@@ -7,10 +7,10 @@ body {
 }
 
 #content {
-	height: 100%;
+	height: calc(100% - 70px);
 	border-left: 1px solid rgb(242, 242, 242);
 	border-right: 1px solid rgb(242, 242, 242);
-	padding: 15px 0;
+	padding: 10px 0;
 }
 
 #header {
@@ -227,10 +227,11 @@ nav .dropdown-menu a:hover {
 }
 
 #search_result li:hover,
-#my_friends_list li:hover {
+#my_friends_list li:hover,
+#search_for_recipient li:hover {
 	background-color: rgb(247, 245, 242);
-	cursor: pointer;
 	color: rgb(0, 0, 0);
+	cursor: pointer;
 }
 
 .info_msg {
@@ -263,4 +264,271 @@ nav .dropdown-menu a:hover {
 .profile .name {
 	font-size: 18px;
 	text-transform: capitalize;
+}
+
+.write_msg_btn {
+	margin: 20px 50px;
+	color: white;
+	margin-top: 30px;
+	background-color: #6A9CFC;
+	width: 130px;
+	border-radius: 6px;
+}
+
+.write_msg_btn:hover {
+	background-color: #5E89DA;
+	color: white;
+}
+
+.dialogues {
+	margin: 0 50px;
+}
+
+.dialogues ul,
+.msgs_here ul {
+	padding: 0;
+}
+
+.msgs_here ul {
+	padding: 0;
+	margin: 0;
+}
+
+.dialogue_in_dialogues:first-child table {
+	border-top-left-radius: 20px;
+	border-top-right-radius: 20px;
+}
+
+.msgs_here li:first-child table {
+	border-top: 0;
+}
+
+.dialogues table {
+	width: 100%;
+	overflow: hidden;
+}
+
+.dialogues li:hover td {
+	background: rgb(247, 245, 242) !important;
+}
+
+#name_of_user {
+	background: linear-gradient(to left, rgb(250, 251, 252), rgb(247, 245, 242));
+	padding-left: 20px;
+	width: 30%;
+}
+
+#name_of_user a {
+	text-transform: capitalize;
+	color: rgb(106, 156, 252);
+	font-weight: bold;
+}
+
+#name_of_user a:hover {
+	text-decoration: none;
+	color: #5E89DA;
+}
+
+#dialogues_text {
+	color: black;
+	word-wrap: break-word;
+	width: 60%;
+	padding-left: 30px;
+	font-size: 16px;
+}
+
+#dialogues_text .you {
+	font-size: 14px;
+}
+
+#time {
+	color: black;
+	background: linear-gradient(to right, rgb(250, 251, 252), rgb(247, 245, 242));
+	width: 10%;
+	text-align: center;
+	font-size: 13px;
+}
+
+.dialogues table tr,
+.dialogues_container table tr {
+	border: 1px solid rgb(242, 242, 242);
+}
+
+#search_for_recipient {
+	top: initial;
+	left: initial;
+	margin: 0;
+}
+
+#msg_modal span:not(.close_icon) {
+	line-height: 30px;
+	font-size: 16px;
+	color: #5E89DA;
+	font-weight: bold;
+}
+
+#msg_modal input {
+	width: 100%;
+	margin-bottom: 20px;
+	height: 30px;
+	padding-left: 5px;
+}
+
+#msg_modal textarea {
+	width: 100%;
+	height: 100px;
+	padding-left: 5px;
+}
+
+#msg_modal input:focus,
+#msg_modal textarea:focus {
+	border: 1px solid rgb(129, 129, 129);
+}
+
+#msg_modal button.send_msg {
+	color: white;
+	background-color: #6A9CFC;
+	width: 130px;
+}
+
+#msg_modal button.send_msg:hover {
+	color: white;
+	background-color: #5E89DA;
+}
+
+#msg_modal .modal-body {
+	padding: 10px 30px 0 30px;
+}
+
+#msg_modal .modal-footer {
+	padding: 15px 30px 17px 30px;
+	border: 0; 
+}
+
+#msg_modal .modal-header {
+	padding: 15px 30px;
+	text-align: center;
+}
+
+#search_for_recipient {
+	width: 538px;
+	margin-top: -20px;
+	padding: 0;
+}
+
+#search_for_recipient li {
+	min-height: 40px;
+	border-bottom: 1px solid rgb(242, 242, 242);
+	padding: 0 10px;
+	line-height: 40px;
+	text-transform: capitalize;
+	cursor: pointer;
+}
+
+li {
+	list-style-type: none;
+}
+
+.dialogues_container td {
+	height: 60px;
+}
+
+.msgs_here {
+	overflow-y: scroll;
+	height: 100%;
+	border-top-left-radius: 20px;
+}
+
+.msgs_here table {
+	width: 100%;
+	overflow: hidden;
+}
+
+.msgs_here td {
+	height: 50px;
+}
+
+.msgs_here .msg_sender {
+	background: linear-gradient(to left, rgb(250, 251, 252), rgb(247, 245, 242));
+	padding-left: 20px;
+	width: 30%;
+}
+
+.msgs_here .msg_content {
+	color: black;
+	word-wrap: break-word;
+	width: 60%;
+	padding-left: 30px;
+	font-size: 16px;
+}
+
+.msgs_here .msg_time {
+	color: black;
+	background: linear-gradient(to right, rgb(250, 251, 252), rgb(247, 245, 242));
+	width: 10%;
+	font-size: 13px;
+	text-align: right;
+	padding-right: 15px;
+}
+
+.dialogue_container {
+	position: relative;
+	height: 60%;
+	margin: 20px 50px;
+}
+
+.msgs_here a {
+	text-transform: capitalize;
+	color: rgb(106, 156, 252);
+	font-weight: bold;
+}
+
+#div_with_textarea {
+	position: absolute;
+	width: 100%;
+	margin-bottom: -159px;
+}
+
+#div_with_textarea textarea {
+	border: 1px solid rgb(228, 226, 226);
+	background-color: rgb(250, 251, 252);
+	border-bottom-left-radius: 20px;
+	height: 120px;
+	width: 100%;
+	padding-left: 10px;
+}
+
+input:focus,
+textarea:focus {
+	outline: none !important;
+}
+
+#div_with_textarea textarea:focus {
+	border: 1px solid rgb(200, 200, 200) !important;
+	outline: none !important;
+}
+
+button:focus {
+	color: white !important;
+	outline: none !important;
+}
+
+#div_with_textarea button {
+	margin: 10px 0px !important;
+	color: white;
+	margin-top: 30px;
+	background-color: #6A9CFC;
+	width: 130px;
+	border-radius: 6px;
+	float: right;
+}
+
+#div_with_textarea button:hover {
+	color: white;
+	background-color: #5E89DA;
+}
+
+.msgs_here a {
+	text-decoration: none;
+	color: #5E89DA;
 }

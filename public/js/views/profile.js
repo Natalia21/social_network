@@ -20,7 +20,7 @@ define([
             if ( id ) {
                 return this.user_id = id;
             }
-            if ( App.session.isAuthorized() ) {
+            if ( App.session.isAuthenticated() ) {
                 return this.user_id = App.session.getUser().get('_id');
             }
             Backbone.history.navigate('login', true);

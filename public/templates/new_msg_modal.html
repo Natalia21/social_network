@@ -3,17 +3,25 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                    <span aria-hidden="true" class="close_icon">&times;</span>
                 </button>
-                <h4 class="modal-title"> Новое сообщение </h4>
+                <h4 class="modal-title"> New message </h4>
             </div>
             <div class="modal-body">
-                <h3> Получатель <span class="reciever"> </span></h3>
-                <h4> Сообщение </h4>
+                <span class="recipient">
+                    Recipient
+                    <span class="reciever"> </span>
+                </span>
+                <br>
+                <input class="recipient_name">
+                <ul class="dropdown-menu" id="search_for_recipient"></ul>
+                <br>
+                <span> Message </span>
                 <textarea></textarea>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary send_msg">Отправить</button>
+                <button type="button" class="btn btn-primary send_msg">     Send
+                </button>
             </div>
         </div>
     </div>

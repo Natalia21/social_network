@@ -105,6 +105,7 @@ define([
 
         closeSearchBox: function (e) {
             $('#search_result').empty().hide();
+            $('#search_for_recipient').empty().hide();
         },
 
         navigateToProfile: function (e) {

@@ -42,6 +42,7 @@ io.on('connection', function (socket) {
                 });
             }
         });
+
         var msg = new Msg({
             from: user_from,
             to:   user_to,

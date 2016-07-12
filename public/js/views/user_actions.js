@@ -10,6 +10,10 @@ define([
     App.Views.UserActions = App.Views.Main.extend({
     	modal_tmpl: _.template(ModalTmpl),
 
+        initialize: function () {
+            self = this;
+        },
+
         postFriend: function (id) {
         	return $.ajax({
         	    method: 'POST',
@@ -22,6 +26,29 @@ define([
                 method: 'DELETE',
                 url: '/friends/' + id
             }); 
+        },
+
+        sendMsg: function (e) {
+            var $input = $('.recipient_name');
+            var $modal = e.data.$modal;
+            var user = e.data.user || {
+                name: $input.val(),
+                id: $input.attr('data-id')
+            };
+
+            var text = $modal.find('textarea').val();
+            var msg = {
+                to: user.id,
+                text: text
+            };
+
+            App.socket.emit('send_msg', msg);
+            setTimeout(function () {
+                $modal.modal('hide');
+                $modal.find('textarea').val('');
+                alert('Your message send to ' + user.name);
+                App.object.trigger('msg_is_send');
+            }, 1000);
         },
 
         showMsgModal: function (e) {
@@ -44,24 +71,30 @@ define([
             $send_msg = $('.send_msg');
             $close = $('.close');
 
+            var data = {
+                $modal: $modal,
+                user: {
+                    id: id,
+                    name: name
+                }
+            };
+
             $send_msg.unbind('click');
-            $send_msg.click(function () {
-                var text = $modal.find('textarea').val();
-                var msg = {'to': id, 'text': text};
+            $send_msg.bind('click', data, self.sendMsg);
 
-                App.socket.emit('send_msg', msg);
-
-                setTimeout(function () {
-                    $modal.modal('hide');
-                    $modal.find('textarea').val('');
-                    alert('Ваше сообщение отправлено ' + name);
-                }, 1500);
-            });
             $close.unbind('click');
-            $close.click(function () {
+            $close.bind('click', function () {
                 $modal.modal('hide');
             });
-            $modal.find('.reciever').html(name);
+
+            if ( name ) {
+                $modal.find('.reciever').html(name);
+                $('input.recipient_name').hide();
+                $('ul#search_for_recipient').hide();
+            } else {
+                this.showFriendsInSearchBox();
+            }
+
             $modal.modal('show');
         }
     });
